@@ -1,6 +1,7 @@
 #ifndef XF_VECTOR_H
 #define XF_VECTOR_H
 #include "_Iter.hpp"
+#include "_Reverse_Iter.h"
 #include <exception>
 
 
@@ -8,6 +9,12 @@ template<class T>
 class vector
 {
 public:
+
+	typedef _Iter<T> iterator;
+	typedef _Reverse_Iter<T> reverse_iterator;
+	typedef _Const_Iter<T> const_iterator;
+	typedef _Reverse_Const_Iter<T> reverse_const_iterator;
+
 	vector();
 	vector(const vector &right);
 	vector(int count);
@@ -15,17 +22,25 @@ public:
 	vector(_Iter<T> &first, const _Iter<T> &last);
 	virtual ~vector();
 
-	int size() const;
 	int capacity() const;
+	int size() const;
+	void reserve(int capacity);
+	void resize(int size);
+	int max_size() const;
 
 	void push_back(const T &item);
 	void pop_back();
 	T& at(int index) const;		// 找出第index个元素，有越界检查
 	T& operator [](int index) const;	// 找出第index个元素，无越界检查
 
-	void reserve(int capacity);
-	void resize(int size);
-	int max_size() const;
+	_Const_Iter<T> begin() const;
+	_Const_Iter<T> end() const;
+	_Iter<T> begin();
+	_Iter<T> end();
+	_Reverse_Const_Iter<T> rbegin() const;
+	_Reverse_Const_Iter<T> rend() const;
+	_Reverse_Iter<T> rbegin();
+	_Reverse_Iter<T> rend();
 
 private:
 	T *p_;
@@ -132,56 +147,15 @@ vector<T>::~vector()
 }
 
 template<class T>
-int vector<T>::size() const
-{
-	return size_;
-}
-
-template<class T>
 int vector<T>::capacity() const
 {
 	return capacity_;
 }
 
 template<class T>
-void vector<T>::push_back(const T &item)
+int vector<T>::size() const
 {
-	if(size_ == capacity_)
-	{
-		// 扩容
-		capacity_ = (0 == capacity_) ? 1 : 2 * capacity_;
-		T *buf = new T[capacity_];
-		if(!buf)
-		{
-			throw std::bad_alloc();
-		}
-		// 复制
-		if(p_)
-		{
-			for(int i = 0; i < size_; ++i)
-			{
-				buf[i] = p_[i];
-			}
-			delete []p_;
-		}
-		p_ = buf;
-	}
-	// 添加新元素
-	p_[size_] = item;
-	++size_;
-}
-
-template<class T>
-void vector<T>::pop_back()
-{
-	if(0 == size_)
-	{
-		throw std::out_of_range("invalid vector<T> subscript");
-	}
-	else
-	{
-		--size_;
-	}
+	return size_;
 }
 
 template<class T>
@@ -274,6 +248,90 @@ template<class T>
 int vector<T>::max_size() const
 {
 	return ((1 << 30) - 1);
+}
+
+
+template<class T>
+void vector<T>::push_back(const T &item)
+{
+	if(size_ == capacity_)
+	{
+		// 扩容
+		capacity_ = (0 == capacity_) ? 1 : 2 * capacity_;
+		T *buf = new T[capacity_];
+		if(!buf)
+		{
+			throw std::bad_alloc();
+		}
+		// 复制
+		if(p_)
+		{
+			for(int i = 0; i < size_; ++i)
+			{
+				buf[i] = p_[i];
+			}
+			delete []p_;
+		}
+		p_ = buf;
+	}
+	// 添加新元素
+	p_[size_] = item;
+	++size_;
+}
+
+template<class T>
+void vector<T>::pop_back()
+{
+	if(0 == size_)
+	{
+		throw std::out_of_range("invalid vector<T> subscript");
+	}
+	else
+	{
+		--size_;
+	}
+}
+
+template<class T>
+_Const_Iter<T> vector<T>::begin() const
+{
+	return _Const_Iter<T>(p_);
+}
+template<class T>
+_Const_Iter<T> vector<T>::end() const
+{
+	return _Const_Iter<T>(p_ + size_);
+}
+template<class T>
+_Iter<T> vector<T>::begin()
+{
+	return _Iter<T>(p_);
+}
+template<class T>
+_Iter<T> vector<T>::end()
+{
+	return _Iter<T>(p_ + size_);
+}
+
+template<class T>
+_Reverse_Const_Iter<T> vector<T>::rbegin() const
+{
+	return _Reverse_Const_Iter<T>(p_ + size_ - 1);
+}
+template<class T>
+_Reverse_Const_Iter<T> vector<T>::rend() const
+{
+	return _Reverse_Const_Iter<T>(p_ - 1);
+}
+template<class T>
+_Reverse_Iter<T> vector<T>::rbegin()
+{
+	return _Reverse_Iter<T>(p_ + size_ - 1);
+}
+template<class T>
+_Reverse_Iter<T> vector<T>::rend()
+{
+	return _Reverse_Iter<T>(p_ - 1);
 }
 
 #endif

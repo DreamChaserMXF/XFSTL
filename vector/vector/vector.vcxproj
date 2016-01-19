@@ -78,7 +78,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vector.hpp" />
+    <ClInclude Include="_Const_Iter.hpp" />
     <ClInclude Include="_Iter.hpp" />
+    <ClInclude Include="_Reverse_Const_Iter.hpp" />
+    <ClInclude Include="_Reverse_Iter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -26,5 +26,14 @@
     <ClInclude Include="_Iter.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="_Const_Iter.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_Reverse_Const_Iter.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_Reverse_Iter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
