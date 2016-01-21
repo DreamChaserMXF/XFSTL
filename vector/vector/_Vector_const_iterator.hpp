@@ -1,5 +1,5 @@
-#ifndef XF_CONST_ITER_H
-#define XF_CONST_ITER_H
+#ifndef _VECTOR_CONST_ITERATOR
+#define _VECTOR_CONST_ITERATOR
 
 namespace xf
 {

@@ -1,5 +1,5 @@
-#ifndef XF_ITER_H
-#define XF_ITER_H
+#ifndef _VECTOR_ITERATOR
+#define _VECTOR_ITERATOR
 
 #include "_Vector_const_iterator.hpp"
 
@@ -13,6 +13,7 @@ namespace xf
 		_Vector_iterator() throw();
 		explicit _Vector_iterator(T *p) throw();	// 如果不加explicit，则_Vector_iterator就可以直接和指针对象相比较了
 		_Vector_iterator(const _Vector_iterator<T> &iter) throw();
+		// overwrite
 		T& operator *() const throw();
 		T* operator ->() const throw();
 	};

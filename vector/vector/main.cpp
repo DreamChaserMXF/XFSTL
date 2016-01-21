@@ -52,6 +52,7 @@ int main()
 	v.push_back(5);
 	int a[10] = {1,3,5,7,9,2,4,6,8,10};
 	vector<float> v2(a, a + 10);
+	vector<float> v3(a + 10, a);
 	for(vector<int>::const_iterator iter = v1.begin(); iter != v1.end(); ++iter)
 	{
 		cout << *iter << ' ';

@@ -35,8 +35,10 @@ namespace xf
 
 		void push_back(const T &item) throw(std::bad_alloc, std::length_error);
 		void pop_back() throw(std::length_error);
-		T& at(int index) const throw(std::out_of_range);		// 找出第index个元素，有越界检查
-		T& operator [](int index) const throw();	// 找出第index个元素，无越界检查
+		const T& at(int index) const throw(std::out_of_range);	// 找出第index个元素，有越界检查
+		const T& operator [](int index) const throw();			// 找出第index个元素，无越界检查
+		T& at(int index) throw(std::out_of_range);				// 找出第index个元素，有越界检查
+		T& operator [](int index) throw();						// 找出第index个元素，无越界检查
 
 		_Vector_const_iterator<T> begin() const throw();
 		_Vector_const_iterator<T> end() const throw();
@@ -250,8 +252,9 @@ namespace xf
 		}
 	}
 
+	
 	template<class T>
-	T& vector<T>::at(int index) const throw(std::out_of_range)
+	const T& vector<T>::at(int index) const throw(std::out_of_range)
 	{
 		if(index < 0 || index >= size_)
 		{
@@ -262,12 +265,29 @@ namespace xf
 			return p_[index];
 		}
 	}
-
 	template<class T>
-	T& vector<T>::operator [](int index) const throw()
+	const T& vector<T>::operator [](int index) const throw()
 	{
 		return p_[index];
 	}
+	template<class T>
+	T& vector<T>::at(int index) throw(std::out_of_range)
+	{
+		if(index < 0 || index >= size_)
+		{
+			throw std::out_of_range("invalid vector<T> subscript");
+		}
+		else
+		{
+			return p_[index];
+		}
+	}
+	template<class T>
+	T& vector<T>::operator [](int index) throw()
+	{
+		return p_[index];
+	}
+	
 
 	template<class T>
 	_Vector_const_iterator<T> vector<T>::begin() const throw()

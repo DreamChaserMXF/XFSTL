@@ -1,5 +1,5 @@
-#ifndef XF_REVERSE_ITER_H
-#define XF_REVERSE_ITER_H
+#ifndef _VECTOR_REVERSE_ITERATOR
+#define _VECTOR_REVERSE_ITERATOR
 
 #include "_Vector_reverse_const_iterator.hpp"
 namespace xf
