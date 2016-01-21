@@ -10,14 +10,15 @@ namespace xf
 	public:
 		_Vector_reverse_const_iterator() throw();
 		explicit _Vector_reverse_const_iterator(T *p) throw();
-		_Vector_reverse_const_iterator(const _Vector_reverse_const_iterator<T> &iter) throw();
+		//_Vector_reverse_const_iterator(const _Vector_reverse_const_iterator<T> &iter) throw();
 
 		// Overwrite
 		_Vector_reverse_const_iterator<T> operator ++() throw();
 		_Vector_reverse_const_iterator<T> operator ++(int) throw();
 		_Vector_reverse_const_iterator<T> operator --() throw();
 		_Vector_reverse_const_iterator<T> operator --(int) throw();
-		//TODO +n, -n
+		_Vector_reverse_const_iterator<T> operator +(int n) throw();
+		_Vector_reverse_const_iterator<T> operator -(int n) throw();
 	private:
 	};
 
@@ -31,10 +32,10 @@ namespace xf
 	{
 	}
 
-	template<class T>
-	_Vector_reverse_const_iterator<T>::_Vector_reverse_const_iterator(const _Vector_reverse_const_iterator<T> &iter) throw() : _Vector_const_iterator(iter)
-	{
-	}
+	//template<class T>
+	//_Vector_reverse_const_iterator<T>::_Vector_reverse_const_iterator(const _Vector_reverse_const_iterator<T> &iter) throw() : _Vector_const_iterator(iter)
+	//{
+	//}
 
 	template<class T>
 	_Vector_reverse_const_iterator<T> _Vector_reverse_const_iterator<T>::operator ++() throw()
@@ -65,6 +66,20 @@ namespace xf
 		_Vector_reverse_const_iterator iter(*this);
 		++p_;
 		return iter;
+	}
+
+	template<class T>
+	_Vector_reverse_const_iterator<T> _Vector_reverse_const_iterator<T>::operator +(int n) throw()
+	{
+		p_ -= n;
+		return *this;
+	}
+
+	template<class T>
+	_Vector_reverse_const_iterator<T> _Vector_reverse_const_iterator<T>::operator -(int n) throw()
+	{
+		p_ += n;
+		return *this;
 	}
 
 }

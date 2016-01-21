@@ -2,11 +2,13 @@
 #define XF_VECTOR_H
 
 #pragma warning(disable:4290)	// for msvc's not fully supporting the exception specifications
+#pragma warning(disable:4996)	// for msvc's safety concern about unintialized_copy()
 
 #include "_Vector_iterator.hpp"
 #include "_Vector_reverse_iterator.hpp"
 #include <exception>
-
+#include <allocators>
+#include <memory>
 namespace xf
 {
 
@@ -22,23 +24,23 @@ namespace xf
 
 		vector() throw();
 		vector(const vector<T> &right) throw(std::bad_alloc);
-		vector(int count) throw(std::bad_alloc, std::length_error);
-		vector(int count, const T &val) throw(std::bad_alloc, std::length_error);
+		vector(size_t count) throw(std::bad_alloc, std::length_error);
+		vector(size_t count, const T &val) throw(std::bad_alloc, std::length_error);
 		template<class _Iter> vector(_Iter first, _Iter last) throw(std::bad_alloc, std::length_error);
 		virtual ~vector() throw();
 
-		int capacity() const throw();
-		int size() const throw();
-		void reserve(int capacity) throw(std::bad_alloc, std::length_error);
-		void resize(int size) throw(std::bad_alloc, std::length_error);
-		int max_size() const throw();
+		size_t capacity() const throw();
+		size_t size() const throw();
+		void reserve(size_t capacity) throw(std::bad_alloc, std::length_error);
+		void resize(size_t size) throw(std::bad_alloc, std::length_error);
+		size_t max_size() const throw();
 
 		void push_back(const T &item) throw(std::bad_alloc, std::length_error);
 		void pop_back() throw(std::length_error);
-		const T& at(int index) const throw(std::out_of_range);	// 找出第index个元素，有越界检查
-		const T& operator [](int index) const throw();			// 找出第index个元素，无越界检查
-		T& at(int index) throw(std::out_of_range);				// 找出第index个元素，有越界检查
-		T& operator [](int index) throw();						// 找出第index个元素，无越界检查
+		const T& at(size_t index) const throw(std::out_of_range);	// 找出第index个元素，有越界检查
+		const T& operator [](size_t index) const throw();			// 找出第index个元素，无越界检查
+		T& at(size_t index) throw(std::out_of_range);				// 找出第index个元素，有越界检查
+		T& operator [](size_t index) throw();						// 找出第index个元素，无越界检查
 
 		_Vector_const_iterator<T> begin() const throw();
 		_Vector_const_iterator<T> end() const throw();
@@ -49,12 +51,18 @@ namespace xf
 		_Vector_reverse_iterator<T> rbegin() throw();
 		_Vector_reverse_iterator<T> rend() throw();
 
+		vector<T>& operator = (const vector<T> &right);
+
 	private:
 		T *p_;
-		int size_;
-		int capacity_;
-	};
+		size_t size_;
+		size_t capacity_;
 
+		static std::allocator<T> alc;
+	};
+	// initialize static member alc
+	template<class T>
+	std::allocator<T> vector<T>::alc;
 
 	template<class T>
 	vector<T>::vector() throw() : p_(NULL), size_(0), capacity_(0) 
@@ -62,12 +70,10 @@ namespace xf
 	}
 
 	template<class T>
-	vector<T>::vector(const vector<T> &right) throw(std::bad_alloc) try : p_(new T[right.capacity_]), size_(right.size_), capacity_(right.capacity_) 
+	vector<T>::vector(const vector<T> &right) throw(std::bad_alloc) try : p_(alc.allocate(right.size_)), size_(right.size_), capacity_(right.size_) 
 	{
-		for(int i = 0; i < size_; ++i)
-		{
-			p_[i] = right.p_[i];
-		}
+		// 通过构造函数在p_处建立right.p_的副本
+		std::uninitialized_copy(right.p_, right.p_ + size_, p_);
 	}
 	catch(const std::bad_alloc)
 	{
@@ -76,59 +82,37 @@ namespace xf
 	}
 
 	template<class T>
-	vector<T>::vector(int count) throw(std::bad_alloc, std::length_error) : p_(NULL), size_(count), capacity_(count) 
+	vector<T>::vector(size_t count) throw(std::bad_alloc, std::length_error) : p_(NULL), size_(count), capacity_(count) 
 	{
-		if(count < 0)
-		{
-			throw std::length_error("negative size for vector<T> initialization");
-		}
-		else if((size_t)count > max_size() * sizeof(T))
+		if(count > max_size())
 		{
 			throw std::length_error("too much memory to allocate");
 		}
 		p_ = new T[capacity_];
-		for(int i = 0; i < size_; ++i)
-		{
-			p_[i] = T();
-		}
 	}
 
 
 	template<class T>
-	vector<T>::vector(int count, const T &val) throw(std::bad_alloc, std::length_error) : p_(NULL), size_(count), capacity_(count) 
+	vector<T>::vector(size_t count, const T &val) throw(std::bad_alloc, std::length_error) : p_(NULL), size_(count), capacity_(count) 
 	{
-		if(count < 0)
-		{
-			throw std::length_error("negative size for vector<T> initialization");
-		}
-		else if((size_t)count > max_size() * sizeof(T))
+		if(count > max_size())
 		{
 			throw std::length_error("too much memory to allocate");
 		}
 
-		p_ = new T[capacity_];
-		for(int i = 0; i < size_; ++i)
-		{
-			p_[i] = val;
-		}
+		p_ = alc.allocate(capacity_);					// allocate memory
+		std::uninitialized_fill(p_, p_ + size_, val);	// construct elements
 	}
-	//template<class _Iter> vector(_Iter &first, _Iter &last) throw(std::bad_alloc, std::length_error);
+
 	template<class T>template<class _Iter>
 	vector<T>::vector(_Iter first, _Iter last) throw(std::bad_alloc, std::length_error) : p_(NULL), size_(last - first), capacity_(last - first) 
 	{
-		if(capacity_ < 0)
-		{
-			throw std::length_error("negative size for vector<T> initialization");
-		}
-		else if((size_t)capacity_ > max_size() * sizeof(T))
+		if(capacity_ > max_size())
 		{
 			throw std::length_error("too much memory to allocate");
 		}
-		p_ = new T[capacity_];
-		for(int i = 0; first != last; ++first, ++i)
-		{
-			p_[i] = *first;
-		}
+		p_ = alc.allocate(capacity_);				// allocate memory
+		std::uninitialized_copy(first, last, p_);	// construct elements
 	}
 
 	template<class T>
@@ -136,18 +120,22 @@ namespace xf
 	{
 		if(p_)
 		{
-			delete []p_;
+			for(T *last = p_ + size_; last != p_; )
+			{
+				alc.destroy(--last);	// destruct elements
+			}
+			alc.deallocate(p_, capacity_);	// release memory
 		}
 	}
 
 	template<class T>
-	int vector<T>::capacity() const throw()
+	size_t vector<T>::capacity() const throw()
 	{
 		return capacity_;
 	}
 
 	template<class T>
-	int vector<T>::size() const throw()
+	size_t vector<T>::size() const throw()
 	{
 		return size_;
 	}
@@ -155,73 +143,70 @@ namespace xf
 
 
 	template<class T>
-	void vector<T>::reserve(int capacity) throw(std::bad_alloc, std::length_error)
+	void vector<T>::reserve(size_t new_capacity) throw(std::bad_alloc, std::length_error)
 	{
 		// 小于0的情况可以不考虑，因为此时真正的capacity_不会改变
-		if(capacity < 0)
+		if(new_capacity < 0)
 		{
 			return;
 		}
 		// 判断是否太大了
-		if((size_t)capacity > max_size() * sizeof(T))
+		if(new_capacity > max_size())
 		{
 			throw std::length_error("too much memory to allocate");
 		}
 
-		if(capacity > capacity_)
+		if(new_capacity > capacity_)
 		{
-			capacity_ = capacity;
-			T *buf = new T[capacity_];
-			// 复制
+			T *buf = alc.allocate(new_capacity);
 			if(p_)
 			{
-				for(int i = 0; i < size_; ++i)
+				std::uninitialized_copy(p_, p_ + size_, buf);	// copy elements using copy constructor
+				for(T *last = p_ + size_; last != p_; )
 				{
-					buf[i] = p_[i];
+					alc.destroy(--last);	// destruct elements
 				}
-				delete []p_;
+				alc.deallocate(p_, capacity_);	// release memory
 			}
 			p_ = buf;
+			capacity_ = new_capacity;
 		}
 	}
 
 	template<class T>
-	void vector<T>::resize(int size) throw(std::bad_alloc, std::length_error)
+	void vector<T>::resize(size_t new_size) throw(std::bad_alloc, std::length_error)
 	{
-		if(size < 0)
-		{
-			throw std::length_error("negative size for vector<T> resize");
-		}
-		else if((size_t)size > max_size() * sizeof(T))
+		if(new_size > max_size())
 		{
 			throw std::length_error("too much memory to allocate");
 		}
 		// 变小的话，要把多余的元素清除掉
-		if(size < size_)
+		if(new_size < size_)
 		{
-			for(int i = size; i < size_; ++i)
+			for(size_t i = new_size; i < size_; ++i)
 			{
-				p_[i] = T();
+				alc.destroy(p_ + i);	// destructor
 			}
 		}
 		// 变大且要扩容的情况
-		else if(size > capacity_)
+		else if(new_size > capacity_)
 		{
-			reserve(size);
+			reserve(new_size);
 		}
 		// 变大后，初始化扩大后的size
-		for(int i = size_; i < size; ++i)
+		for(size_t i = size_; i < new_size; ++i)
 		{
+			alc.construct(p_ + i, NULL);
 			p_[i] = T();
 		}
 		// 调整size_
-		size_ = size;
+		size_ = new_size;
 	}
 
 	template<class T>
-	int vector<T>::max_size() const throw()
+	size_t vector<T>::max_size() const throw()
 	{
-		return ((1 << 30) - 1);
+		return static_cast<size_t>(-1) / sizeof(T);
 	}
 
 
@@ -231,11 +216,11 @@ namespace xf
 		if(size_ == capacity_)
 		{
 			// 扩容
-			int new_capacity = (0 == capacity_) ? 1 : 2 * capacity_;
+			size_t new_capacity = (0 == capacity_) ? 1 : 2 * capacity_;
 			reserve(new_capacity);
 		}
 		// 添加新元素
-		p_[size_] = item;
+		alc.construct(p_ + size_, item);
 		++size_;
 	}
 
@@ -249,12 +234,13 @@ namespace xf
 		else
 		{
 			--size_;
+			alc.destroy(p_ + size_);
 		}
 	}
 
 	
 	template<class T>
-	const T& vector<T>::at(int index) const throw(std::out_of_range)
+	const T& vector<T>::at(size_t index) const throw(std::out_of_range)
 	{
 		if(index < 0 || index >= size_)
 		{
@@ -266,12 +252,12 @@ namespace xf
 		}
 	}
 	template<class T>
-	const T& vector<T>::operator [](int index) const throw()
+	const T& vector<T>::operator [](size_t index) const throw()
 	{
 		return p_[index];
 	}
 	template<class T>
-	T& vector<T>::at(int index) throw(std::out_of_range)
+	T& vector<T>::at(size_t index) throw(std::out_of_range)
 	{
 		if(index < 0 || index >= size_)
 		{
@@ -283,7 +269,7 @@ namespace xf
 		}
 	}
 	template<class T>
-	T& vector<T>::operator [](int index) throw()
+	T& vector<T>::operator [](size_t index) throw()
 	{
 		return p_[index];
 	}
@@ -329,6 +315,62 @@ namespace xf
 	_Vector_reverse_iterator<T> vector<T>::rend() throw()
 	{
 		return _Vector_reverse_iterator<T>(p_ - 1);
+	}
+
+	// STL中的=运算符中，对每个元素的复制，不一定用每个元素的=还是拷贝构造函数
+	// 视right与*this的size大小而定
+	template<class T>
+	vector<T>& vector<T>::operator = (const vector<T> &right)
+	{
+		if(this == &right)
+		{
+			return *this;
+		}
+		else if(right.size_ <= size_)
+		{
+			size_t i = 0;
+			while(i < right.size_)
+			{
+				p_[i] = right.p_[i];
+				++i;
+			}
+			while(i < size_)
+			{
+				alc.destroy(p_ + i);
+				++i;
+			}
+			size_ = right.size_;
+		}
+		else if(right.size_ < capacity_)
+		{
+			size_t i = 0;
+			while(i < size_)
+			{
+				p_[i] = right.p_[i];
+				++i;
+			}
+			while(i < right.size_)
+			{
+				alc.construct(p_ + i, *(right.p_ + i));
+				++i;
+			}
+			size_ = right.size_;
+		}
+		else
+		{
+			for(size_t i = 0; i < size_; ++i)
+			{
+				alc.destroy(p_ + i);
+			}
+			alc.deallocate(p_, capacity_);
+			p_ = alc.allocate(right.size_);
+			for(size_t i = 0; i < right.size_; ++i)
+			{
+				alc.construct(p_ + i, *(right.p_ + i));
+			}
+			size_ = right.size_;
+			capacity_ = right.size_;
+		}
 	}
 
 }

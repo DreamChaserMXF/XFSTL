@@ -12,7 +12,7 @@ namespace xf
 	public:
 		_Vector_iterator() throw();
 		explicit _Vector_iterator(T *p) throw();	// 如果不加explicit，则_Vector_iterator就可以直接和指针对象相比较了
-		_Vector_iterator(const _Vector_iterator<T> &iter) throw();
+//		_Vector_iterator(const _Vector_iterator<T> &iter) throw();
 		// overwrite
 		T& operator *() const throw();
 		T* operator ->() const throw();
@@ -27,10 +27,11 @@ namespace xf
 	_Vector_iterator<T>::_Vector_iterator(T *p) throw() : _Vector_const_iterator(p)
 	{
 	}
-	template<class T>
-	_Vector_iterator<T>::_Vector_iterator(const _Vector_iterator<T> &iter) throw() : _Vector_const_iterator(iter)
-	{
-	}
+
+	//template<class T>
+	//_Vector_iterator<T>::_Vector_iterator(const _Vector_iterator<T> &iter) throw() : _Vector_const_iterator(iter)
+	//{
+	//}
 
 	template<class T>
 	T& _Vector_iterator<T>::operator *() const throw()
