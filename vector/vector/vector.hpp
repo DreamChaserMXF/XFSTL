@@ -35,11 +35,36 @@ namespace xf
 		void resize(size_t size) throw(std::bad_alloc, std::length_error);
 		size_t max_size() const throw();
 
+		void clear() throw();
+		void assign(size_t count, const T &val) throw(std::length_error, std::bad_alloc);
+		template<class _Iter> void assign(_Iter first, _Iter last) throw(std::length_error, std::bad_alloc);
+		// 这个模板的特化不能在类外定义，不知道为啥
+		template<> void assign<int>(int first, int last) throw(std::bad_cast, std::length_error, std::bad_alloc)
+		{
+			size_t count = first;
+			T val = static_cast<T>(last);
+
+			clear();
+			size_ = count;
+			if(count > capacity_)
+			{
+				reserve(count);
+				capacity_ = count;
+			}
+			std::uninitialized_fill(p_, p_ + count, val);
+		}
+
 		void push_back(const T &item) throw(std::bad_alloc, std::length_error);
 		void pop_back() throw(std::length_error);
+
+		const T& front() const throw();
+		const T& back() const throw();
+		T& front();
+		T& back();
+
 		const T& at(size_t index) const throw(std::out_of_range);	// 找出第index个元素，有越界检查
-		const T& operator [](size_t index) const throw();			// 找出第index个元素，无越界检查
 		T& at(size_t index) throw(std::out_of_range);				// 找出第index个元素，有越界检查
+		const T& operator [](size_t index) const throw();			// 找出第index个元素，无越界检查
 		T& operator [](size_t index) throw();						// 找出第index个元素，无越界检查
 
 		_Vector_const_iterator<T> begin() const throw();
@@ -88,7 +113,12 @@ namespace xf
 		{
 			throw std::length_error("too much memory to allocate");
 		}
-		p_ = new T[capacity_];
+		p_ = alc.allocate(capacity_);
+		for(size_t i = 0; i < size_; ++i)
+		{
+//			alc.construct(p_ + i, NULL);	// 这里到底是不是调用了默认构造函数？
+			new (p_ + i) T();	// 调用真正的默认构造函数
+		}
 	}
 
 
@@ -196,8 +226,8 @@ namespace xf
 		// 变大后，初始化扩大后的size
 		for(size_t i = size_; i < new_size; ++i)
 		{
-			alc.construct(p_ + i, NULL);
-			p_[i] = T();
+			//alc.construct(p_ + i, NULL);
+			new (p_ + i) T();
 		}
 		// 调整size_
 		size_ = new_size;
@@ -209,6 +239,42 @@ namespace xf
 		return static_cast<size_t>(-1) / sizeof(T);
 	}
 
+	template<class T>
+	void vector<T>::clear() throw()
+	{
+		for(size_t i = 0; i < size_; ++i)
+		{
+			alc.destroy(p_ + i);
+		}
+		size_ = 0;
+	}
+
+	template<class T>
+	void vector<T>::assign(size_t count, const T &val) throw()
+	{
+		clear();
+		size_ = count;
+		if(count > capacity_)
+		{
+			reserve(count);
+			capacity_ = count;
+		}
+		std::uninitialized_fill(p_, p_ + count, val);
+	}
+
+	template<class T>
+	template<class _Iter>
+	void vector<T>::assign(_Iter first, _Iter last) throw()
+	{
+		clear();
+		size_ = last - first;
+		if(size_ > capacity_)
+		{
+			reserve(size_);
+			capacity_ = size_;
+		}
+		std::uninitialized_copy(first, last, p_);
+	}
 
 	template<class T>
 	void vector<T>::push_back(const T &item) throw(std::bad_alloc, std::length_error)
@@ -238,9 +304,41 @@ namespace xf
 		}
 	}
 
-	
+	template<class T>
+	const T& vector<T>::front() const throw()
+	{
+		return *p_;
+	}
+	template<class T>
+	const T& vector<T>::back() const throw()
+	{
+		return p_[size_ - 1];
+	}
+	template<class T>
+	T& vector<T>::front() throw()
+	{
+		return *p_;
+	}
+	template<class T>
+	T& vector<T>::back() throw()
+	{
+		return p_[size_ - 1];
+	}
+
 	template<class T>
 	const T& vector<T>::at(size_t index) const throw(std::out_of_range)
+	{
+		if(index < 0 || index >= size_)
+		{
+			throw std::out_of_range("invalid vector<T> subscript");
+		}
+		else
+		{
+			return p_[index];
+		}
+	}
+	template<class T>
+	T& vector<T>::at(size_t index) throw(std::out_of_range)
 	{
 		if(index < 0 || index >= size_)
 		{
@@ -255,18 +353,6 @@ namespace xf
 	const T& vector<T>::operator [](size_t index) const throw()
 	{
 		return p_[index];
-	}
-	template<class T>
-	T& vector<T>::at(size_t index) throw(std::out_of_range)
-	{
-		if(index < 0 || index >= size_)
-		{
-			throw std::out_of_range("invalid vector<T> subscript");
-		}
-		else
-		{
-			return p_[index];
-		}
 	}
 	template<class T>
 	T& vector<T>::operator [](size_t index) throw()
@@ -371,6 +457,7 @@ namespace xf
 			size_ = right.size_;
 			capacity_ = right.size_;
 		}
+		return *this;
 	}
 
 }
