@@ -10,7 +10,7 @@ namespace xf
 	public:
 		_Vector_const_iterator() throw();
 		explicit _Vector_const_iterator(T *p) throw();
-		//_Vector_const_iterator(const _Vector_const_iterator<T> &iter) throw();
+		//_Vector_const_iterator(const _Vector_const_iterator<T> &iter) throw();	// 用其默认实现即可，不必重新定义
 
 		const T& operator *() const throw();
 		const T* operator ->() const throw();

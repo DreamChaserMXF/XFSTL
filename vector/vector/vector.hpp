@@ -7,7 +7,7 @@
 #include "_Vector_iterator.hpp"
 #include "_Vector_reverse_iterator.hpp"
 #include <exception>
-#include <allocators>
+#include <stdexcept>
 #include <memory>
 namespace xf
 {
@@ -83,11 +83,11 @@ namespace xf
 		size_t size_;
 		size_t capacity_;
 
-		static std::allocator<T> alc;
+//		static std::allocator<T> alc;
 	};
 	// initialize static member alc
-	template<class T>
-	std::allocator<T> vector<T>::alc;
+	//template<class T>
+	//std::allocator<T> vector<T>::alc;
 
 	template<class T>
 	vector<T>::vector() throw() : p_(NULL), size_(0), capacity_(0) 
@@ -95,7 +95,7 @@ namespace xf
 	}
 
 	template<class T>
-	vector<T>::vector(const vector<T> &right) throw(std::bad_alloc) try : p_(alc.allocate(right.size_)), size_(right.size_), capacity_(right.size_) 
+	vector<T>::vector(const vector<T> &right) throw(std::bad_alloc) try : p_(static_cast<T*>(operator new[](right.size_ * sizeof(T)))), size_(right.size_), capacity_(right.size_) 
 	{
 		// 通过构造函数在p_处建立right.p_的副本
 		std::uninitialized_copy(right.p_, right.p_ + size_, p_);
@@ -113,10 +113,11 @@ namespace xf
 		{
 			throw std::length_error("too much memory to allocate");
 		}
-		p_ = alc.allocate(capacity_);
+		//p_ = alc.allocate(capacity_);
+		p_ = static_cast<T*>(operator new[](capacity_ * sizeof(T)));
 		for(size_t i = 0; i < size_; ++i)
 		{
-//			alc.construct(p_ + i, NULL);	// 这里到底是不是调用了默认构造函数？
+//			alc.construct(p_ + i, NULL);	// 这里到底是不是调用了默认构造函数？不是，只是参数为0的复制构造函数
 			new (p_ + i) T();	// 调用真正的默认构造函数
 		}
 	}
@@ -130,7 +131,8 @@ namespace xf
 			throw std::length_error("too much memory to allocate");
 		}
 
-		p_ = alc.allocate(capacity_);					// allocate memory
+		//p_ = alc.allocate(capacity_);					// allocate memory
+		p_ = static_cast<T*>(operator new[](capacity_ * sizeof(T)));
 		std::uninitialized_fill(p_, p_ + size_, val);	// construct elements
 	}
 
@@ -141,7 +143,8 @@ namespace xf
 		{
 			throw std::length_error("too much memory to allocate");
 		}
-		p_ = alc.allocate(capacity_);				// allocate memory
+		//p_ = alc.allocate(capacity_);				// allocate memory
+		p_ = static_cast<T*>(operator new[](capacity_ * sizeof(T)));
 		std::uninitialized_copy(first, last, p_);	// construct elements
 	}
 
@@ -152,9 +155,11 @@ namespace xf
 		{
 			for(T *last = p_ + size_; last != p_; )
 			{
-				alc.destroy(--last);	// destruct elements
+				//alc.destroy(--last);	// destruct elements
+				(--last)->~T();
 			}
-			alc.deallocate(p_, capacity_);	// release memory
+			//alc.deallocate(p_, capacity_);	// release memory
+			operator delete[](p_);
 		}
 	}
 
@@ -188,15 +193,18 @@ namespace xf
 
 		if(new_capacity > capacity_)
 		{
-			T *buf = alc.allocate(new_capacity);
+			//T *buf = alc.allocate(new_capacity);
+			T *buf = static_cast<T*>(operator new[](new_capacity * sizeof(T)));
 			if(p_)
 			{
 				std::uninitialized_copy(p_, p_ + size_, buf);	// copy elements using copy constructor
 				for(T *last = p_ + size_; last != p_; )
 				{
-					alc.destroy(--last);	// destruct elements
+					//alc.destroy(--last);	// destruct elements
+					(--last)->~T();
 				}
-				alc.deallocate(p_, capacity_);	// release memory
+				//alc.deallocate(p_, capacity_);	// release memory
+				operator delete[](p_);
 			}
 			p_ = buf;
 			capacity_ = new_capacity;
@@ -215,7 +223,8 @@ namespace xf
 		{
 			for(size_t i = new_size; i < size_; ++i)
 			{
-				alc.destroy(p_ + i);	// destructor
+				//alc.destroy(p_ + i);	// destructor
+				(p_ + i)->~T();
 			}
 		}
 		// 变大且要扩容的情况
@@ -223,7 +232,8 @@ namespace xf
 		{
 			reserve(new_size);
 		}
-		// 变大后，初始化扩大后的size
+		// 现在容量够了
+		// 对变大的地方进行初始化
 		for(size_t i = size_; i < new_size; ++i)
 		{
 			//alc.construct(p_ + i, NULL);
@@ -244,7 +254,8 @@ namespace xf
 	{
 		for(size_t i = 0; i < size_; ++i)
 		{
-			alc.destroy(p_ + i);
+			//alc.destroy(p_ + i);
+			(p_ + i)->~T();
 		}
 		size_ = 0;
 	}
@@ -286,7 +297,8 @@ namespace xf
 			reserve(new_capacity);
 		}
 		// 添加新元素
-		alc.construct(p_ + size_, item);
+		//alc.construct(p_ + size_, item);
+		new (p_ + size_) T(item);
 		++size_;
 	}
 
@@ -300,7 +312,8 @@ namespace xf
 		else
 		{
 			--size_;
-			alc.destroy(p_ + size_);
+			//alc.destroy(p_ + size_);
+			(p_ + size_)->~T();
 		}
 	}
 
@@ -422,12 +435,13 @@ namespace xf
 			}
 			while(i < size_)
 			{
-				alc.destroy(p_ + i);
+				//alc.destroy(p_ + i);
+				(p_ + i)->~T();
 				++i;
 			}
 			size_ = right.size_;
 		}
-		else if(right.size_ < capacity_)
+		else if(right.size_ <= capacity_)
 		{
 			size_t i = 0;
 			while(i < size_)
@@ -437,7 +451,8 @@ namespace xf
 			}
 			while(i < right.size_)
 			{
-				alc.construct(p_ + i, *(right.p_ + i));
+				//alc.construct(p_ + i, *(right.p_ + i));
+				new (p_ + i) T(*(right.p_ + i));
 				++i;
 			}
 			size_ = right.size_;
@@ -446,13 +461,17 @@ namespace xf
 		{
 			for(size_t i = 0; i < size_; ++i)
 			{
-				alc.destroy(p_ + i);
+				//alc.destroy(p_ + i);
+				(p_ + i)->~T();
 			}
-			alc.deallocate(p_, capacity_);
-			p_ = alc.allocate(right.size_);
+			//alc.deallocate(p_, capacity_);
+			operator delete[](p_);
+			//p_ = alc.allocate(right.size_);
+			p_ = static_cast<T*>(operator new[](right.size_ * sizeof(T)));
 			for(size_t i = 0; i < right.size_; ++i)
 			{
-				alc.construct(p_ + i, *(right.p_ + i));
+				//alc.construct(p_ + i, *(right.p_ + i));
+				new (p_ + i) T(*(right.p_ + i));
 			}
 			size_ = right.size_;
 			capacity_ = right.size_;
