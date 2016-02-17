@@ -33,6 +33,7 @@ public:
 
 int main()
 {
+	// assign, front, back, push, pop, clear
 	vector<int> v1;
 	{
 		// default constructor
@@ -83,8 +84,8 @@ int main()
 
 		// push
 		cout << "push" << endl;
-		v1.push_back(101);
-		v1.push_back(202);
+		v1.push_back(1);
+		v1.push_back(2);
 		cout << "size: " << v1.size() << endl;
 		cout << "capacity: " << v1.capacity() << endl;
 		for(vector<int>::iterator iter = v1.begin(); iter != v1.end(); ++iter)
@@ -105,6 +106,7 @@ int main()
 		cout << endl;
 	}
 
+	// resize and reserve
 	vector<A> v2(10);
 	{
 		cout << "constructor with count 10" << endl;
@@ -161,6 +163,7 @@ int main()
 		cout << endl;
 	}
 
+	// =, [], at
 	vector<A> v3(v2);
 	{
 		// copy constructor 
@@ -207,6 +210,7 @@ int main()
 		// reverse iterator
 	}
 
+	// iterator
 	int a[10] = {1,3,5,7,9,2,4,6,8,10};
 	vector<int> v4(a, a + 10);
 	{
@@ -243,7 +247,35 @@ int main()
 			cout << *iter << ' ';
 		}
 		cout << endl;
+
+		// transformation between reverse and forward const iterator
+		cout << "transformation between reverse and forward iterator" << endl;
+		vector<int>::reverse_iterator r_iter = v4.rbegin();
+		cout << *r_iter << ' ';
+		++r_iter;
+		cout << *r_iter << ' ';
+		++r_iter;
+		vector<int>::iterator iter = r_iter.base();
+		cout << *iter << ' ';
+		++iter;
+		cout << *iter << ' ';	
+		cout << endl;
+
+		// transformation between reverse and forward const iterator
+		cout << "transformation between reverse and forward const iterator" << endl;
+		vector<int>::reverse_const_iterator rc_iter = v4.rbegin();
+		cout << *rc_iter << ' ';
+		++rc_iter;
+		cout << *rc_iter << ' ';
+		++rc_iter;
+		vector<int>::const_iterator c_iter = rc_iter.base();
+		cout << *c_iter << ' ';
+		++c_iter;
+		cout << *c_iter << ' ';	
+		cout << endl;
 	}
+
+	// another constructor
 	vector<double> v5(10, 1.5);
 	{
 		// constructor with count and value
@@ -257,8 +289,8 @@ int main()
 		cout << endl;
 	}
 
+	// max_size
 	{
-		// max_size
 		cout << "max size" << endl;
 		cout << "v1: " << v1.max_size() << endl;
 		cout << "v2: " << v2.max_size() << endl;

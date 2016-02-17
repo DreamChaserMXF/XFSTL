@@ -11,6 +11,7 @@ namespace xf
 		_Vector_reverse_iterator() throw();
 		explicit _Vector_reverse_iterator(T *p) throw();	// 如果不加explicit，则_Vector_reverse_iterator就可以直接和指针对象相比较了
 		//_Vector_reverse_iterator(const _Vector_reverse_iterator<T> &iter) throw();
+		_Vector_iterator<T> base() throw();
 		T& operator *() const throw();
 		T* operator ->() const throw();
 	};
@@ -29,6 +30,12 @@ namespace xf
 	//_Vector_reverse_iterator<T>::_Vector_reverse_iterator(const _Vector_reverse_iterator<T> &iter) throw() : _Vector_reverse_const_iterator(iter)
 	//{
 	//}
+
+	template<class T>
+	_Vector_iterator<T> _Vector_reverse_iterator<T>::base() throw()
+	{
+		return _Vector_iterator<T>(p_ + 1);
+	}
 
 	template<class T>
 	T& _Vector_reverse_iterator<T>::operator *() const throw()
