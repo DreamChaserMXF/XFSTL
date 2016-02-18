@@ -1,0 +1,9 @@
+对于四种迭代器的继承关系：
+const_iterator  iterator
+reverse_const_iterator reverse_iterator
+
+一开始想的是 const_iterator作为基类，iterator从const_iterator派生出即可，只要重写解引用的函数就行。reverse_const_iterator也从const_iterator派生出，重写=-操作符就可以。
+后来，一方面是发现了另一种继承关系，即input_iterator, output_iterator, forward_iterator，biderectional_iterator和randomaccess_iterator。觉得这样的继承关系更容易理解一些。
+另一方面，发现iterator继承const_iterator后，不仅要重写解引用，还要重写=-等等函数（因为返回值不同）。所以，现在打算摒弃最开始的继承关系，换用网上查到，第二种继承关系。
+对于reverse迭代器，可以在正向迭代器的基础上继承而来。
+对于const迭代器，初步打算使其平行于一般迭代器，同样有那么一套继承关系。而对const与非const迭代器，在每一层的继承关系上，都重写一个类型转换的函数，使非const迭代器可以直接转换为同层次的const迭代器。

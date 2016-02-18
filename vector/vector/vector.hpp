@@ -2,10 +2,10 @@
 #define XF_VECTOR_H
 
 #pragma warning(disable:4290)	// for msvc's not fully supporting the exception specifications
-#pragma warning(disable:4996)	// for msvc's safety concern about unintialized_copy()
+#pragma warning(disable:4996)	// for msvc's safety concern about uninitialized_xxxx()
 
 #include "_Vector_iterator.hpp"
-#include "_Vector_reverse_iterator.hpp"
+#include "_Reverse_Iterator.hpp"
 #include <exception>
 #include <stdexcept>
 #include <memory>
@@ -19,8 +19,12 @@ namespace xf
 
 		typedef _Vector_iterator<T> iterator;
 		typedef _Vector_const_iterator<T> const_iterator;
-		typedef _Vector_reverse_iterator<T> reverse_iterator;
-		typedef _Vector_reverse_const_iterator<T> reverse_const_iterator;
+		typedef _Reverse_Iterator<iterator> reverse_iterator;
+		typedef _Reverse_Iterator<const_iterator> const_reverse_iterator;
+
+		//typedef _Vector_reverse_iterator<T> reverse_iterator;
+		//typedef _Vector_reverse_const_iterator<T> reverse_const_iterator;
+
 
 		vector() throw();
 		vector(const vector<T> &right) throw(std::bad_alloc);
@@ -67,14 +71,14 @@ namespace xf
 		const T& operator [](size_t index) const throw();			// 找出第index个元素，无越界检查
 		T& operator [](size_t index) throw();						// 找出第index个元素，无越界检查
 
-		_Vector_const_iterator<T> begin() const throw();
-		_Vector_const_iterator<T> end() const throw();
-		_Vector_iterator<T> begin() throw();
-		_Vector_iterator<T> end() throw();
-		_Vector_reverse_const_iterator<T> rbegin() const throw();
-		_Vector_reverse_const_iterator<T> rend() const throw();
-		_Vector_reverse_iterator<T> rbegin() throw();
-		_Vector_reverse_iterator<T> rend() throw();
+		const_iterator begin() const throw();
+		const_iterator end() const throw();
+		iterator begin() throw();
+		iterator end() throw();
+		const_reverse_iterator rbegin() const throw();
+		const_reverse_iterator rend() const throw();
+		reverse_iterator rbegin() throw();
+		reverse_iterator rend() throw();
 
 		vector<T>& operator = (const vector<T> &right);
 
@@ -375,45 +379,45 @@ namespace xf
 	
 
 	template<class T>
-	_Vector_const_iterator<T> vector<T>::begin() const throw()
+	typename vector<T>::const_iterator vector<T>::begin() const throw()
 	{
-		return _Vector_const_iterator<T>(p_);
+		return const_iterator(p_);
 	}
 	template<class T>
-	_Vector_const_iterator<T> vector<T>::end() const throw()
+	typename vector<T>::const_iterator vector<T>::end() const throw()
 	{
-		return _Vector_const_iterator<T>(p_ + size_);
+		return const_iterator(p_ + size_);
 	}
 	template<class T>
-	_Vector_iterator<T> vector<T>::begin() throw()
+	typename vector<T>::iterator vector<T>::begin() throw()
 	{
-		return _Vector_iterator<T>(p_);
+		return iterator(p_);
 	}
 	template<class T>
-	_Vector_iterator<T> vector<T>::end() throw()
+	typename vector<T>::iterator vector<T>::end() throw()
 	{
-		return _Vector_iterator<T>(p_ + size_);
+		return iterator(p_ + size_);
 	}
 
 	template<class T>
-	_Vector_reverse_const_iterator<T> vector<T>::rbegin() const throw()
+	typename vector<T>::const_reverse_iterator vector<T>::rbegin() const throw()
 	{
-		return _Vector_reverse_const_iterator<T>(p_ + size_ - 1);
+		return const_reverse_iterator(p_ + size_ - 1);
 	}
 	template<class T>
-	_Vector_reverse_const_iterator<T> vector<T>::rend() const throw()
+	typename vector<T>::const_reverse_iterator vector<T>::rend() const throw()
 	{
-		return _Vector_reverse_const_iterator<T>(p_ - 1);
+		return const_reverse_iterator(p_ - 1);
 	}
 	template<class T>
-	_Vector_reverse_iterator<T> vector<T>::rbegin() throw()
+	typename vector<T>::reverse_iterator vector<T>::rbegin() throw()
 	{
-		return _Vector_reverse_iterator<T>(p_ + size_ - 1);
+		return reverse_iterator(p_ + size_ - 1);
 	}
 	template<class T>
-	_Vector_reverse_iterator<T> vector<T>::rend() throw()
+	typename vector<T>::reverse_iterator vector<T>::rend() throw()
 	{
-		return _Vector_reverse_iterator<T>(p_ - 1);
+		return reverse_iterator(p_ - 1);
 	}
 
 	// STL中的=运算符中，对每个元素的复制，不一定用每个元素的=还是拷贝构造函数
