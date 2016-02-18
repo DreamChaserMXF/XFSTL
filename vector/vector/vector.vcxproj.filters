@@ -26,16 +26,13 @@
     <ClInclude Include="vector.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="_Vector_reverse_const_iterator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="_Vector_reverse_iterator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="_Vector_const_iterator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_Vector_iterator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_Reverse_Iterator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

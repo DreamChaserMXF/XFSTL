@@ -3,14 +3,15 @@
 
 namespace xf
 {
-
 	template<class T>
 	class _Vector_const_iterator
 	{
 	public:
+		typedef const T& reference;
+		typedef const T* pointer;
+
 		_Vector_const_iterator() throw();
 		explicit _Vector_const_iterator(T *p) throw();
-		//_Vector_const_iterator(const _Vector_const_iterator<T> &iter) throw();	// 用其默认实现即可，不必重新定义
 
 		const T& operator *() const throw();
 		const T* operator ->() const throw();
@@ -18,8 +19,11 @@ namespace xf
 		_Vector_const_iterator<T> operator ++(int) throw();
 		_Vector_const_iterator<T>& operator --() throw();
 		_Vector_const_iterator<T> operator --(int) throw();
-		_Vector_const_iterator<T> operator +(int n) throw();
-		_Vector_const_iterator<T> operator -(int n) throw();
+		_Vector_const_iterator<T>& operator +=(int n) throw();
+		_Vector_const_iterator<T> operator +(int n) const throw();
+		_Vector_const_iterator<T>& operator -=(int n) throw();
+		_Vector_const_iterator<T> operator -(int n) const throw();
+		int operator -(const _Vector_const_iterator &right) throw();
 		bool operator == (const _Vector_const_iterator<T> &iter) const throw();
 		bool operator != (const _Vector_const_iterator<T> &iter) const throw();
 	protected:
@@ -36,11 +40,6 @@ namespace xf
 	{
 	}
 
-	//template<class T>
-	//_Vector_const_iterator<T>::_Vector_const_iterator(const _Vector_const_iterator<T> &iter) throw() : p_(iter.p_)
-	//{
-	//}
-
 	template<class T>
 	const T& _Vector_const_iterator<T>::operator *() const throw()
 	{
@@ -52,6 +51,8 @@ namespace xf
 	{
 		return p_;
 	}
+
+	
 
 	template<class T>
 	_Vector_const_iterator<T>& _Vector_const_iterator<T>::operator ++() throw()
@@ -84,16 +85,35 @@ namespace xf
 	}
 
 	template<class T>
-	_Vector_const_iterator<T> _Vector_const_iterator<T>::operator +(int n) throw()
+	_Vector_const_iterator<T>& _Vector_const_iterator<T>::operator +=(int n) throw()
 	{
 		p_ += n;
 		return *this;
 	}
+
 	template<class T>
-	_Vector_const_iterator<T> _Vector_const_iterator<T>::operator -(int n) throw()
+	_Vector_const_iterator<T> _Vector_const_iterator<T>::operator +(int n) const throw()
+	{
+		return _Vector_const_iterator<T>(p_ + n);
+	}
+
+	template<class T>
+	_Vector_const_iterator<T>& _Vector_const_iterator<T>::operator -=(int n) throw()
 	{
 		p_ -= n;
 		return *this;
+	}
+
+	template<class T>
+	_Vector_const_iterator<T> _Vector_const_iterator<T>::operator -(int n) const throw()
+	{
+		return _Vector_const_iterator<T>(p_ - n);
+	}
+
+	template<class T>
+	int _Vector_const_iterator<T>::operator -(const _Vector_const_iterator &right) throw()
+	{
+		return (p_ - right.p_);
 	}
 
 	template<class T>
