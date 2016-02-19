@@ -11,15 +11,17 @@ namespace xf
 		typedef typename T::pointer pointer;
 
 		_Reverse_Iterator();
-		explicit _Reverse_Iterator(const pointer right) throw();
+		explicit _Reverse_Iterator(const pointer &right) throw();
 		explicit _Reverse_Iterator(const T &right) throw();
 		// 用于类型转换的构造函数
 		template<class Other>
 		_Reverse_Iterator(const _Reverse_Iterator<Other> &right) throw();
 
 		T base() const throw();
-		reference operator *() const throw();
-		pointer operator ->() const throw();
+		const reference operator *() const throw();
+		reference operator *() throw();
+		const pointer operator ->() const throw();
+		pointer operator ->() throw();
 		_Reverse_Iterator<T>& operator ++() throw();
 		_Reverse_Iterator<T> operator ++(int) throw();
 		_Reverse_Iterator<T>& operator --() throw();
@@ -42,7 +44,7 @@ namespace xf
 	}
 
 	template<class T>
-	_Reverse_Iterator<T>::_Reverse_Iterator(const pointer right) throw() : iter_(right)
+	_Reverse_Iterator<T>::_Reverse_Iterator(const pointer &right) throw() : iter_(right)
 	{
 		;
 	}
@@ -66,13 +68,23 @@ namespace xf
 	}
 
 	template<class T>
-	typename _Reverse_Iterator<T>::reference _Reverse_Iterator<T>::operator*() const throw()
+	typename const _Reverse_Iterator<T>::reference _Reverse_Iterator<T>::operator*() const throw()
+	{
+		return *iter_;
+	}
+	template<class T>
+	typename _Reverse_Iterator<T>::reference _Reverse_Iterator<T>::operator*() throw()
 	{
 		return *iter_;
 	}
 
 	template<class T>
-	typename _Reverse_Iterator<T>::pointer _Reverse_Iterator<T>::operator ->() const throw()
+	typename const _Reverse_Iterator<T>::pointer _Reverse_Iterator<T>::operator ->() const throw()
+	{
+		return &(*iter_);
+	}
+	template<class T>
+	typename _Reverse_Iterator<T>::pointer _Reverse_Iterator<T>::operator ->() throw()
 	{
 		return &(*iter_);
 	}

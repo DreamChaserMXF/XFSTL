@@ -7,3 +7,15 @@ reverse_const_iterator reverse_iterator
 另一方面，发现iterator继承const_iterator后，不仅要重写解引用，还要重写=-等等函数（因为返回值不同）。所以，现在打算摒弃最开始的继承关系，换用网上查到，第二种继承关系。
 对于reverse迭代器，可以在正向迭代器的基础上继承而来。
 对于const迭代器，初步打算使其平行于一般迭代器，同样有那么一套继承关系。而对const与非const迭代器，在每一层的继承关系上，都重写一个类型转换的函数，使非const迭代器可以直接转换为同层次的const迭代器。
+
+
+后来发现，网上的input_iterator和output_iterator两个类一起根本没办法派生出子类（未验证）。而看了STL的源码后发现也没这种关系。
+而且，因为迭代器是容器与算法的桥梁，所以必须要清楚容器的内部实现。所以对每个容器，可能都需要编写它们各自的迭代器。
+
+关于迭代器的继承关系，iterator中的指针是一般指针，const_iterator中的指针是常量指针，如果通过从const_iterator继承来实现iterator的话，那么，每次iterator的函数的返回值，可能都需要去除const_iterator中常量指针的常量属性，非常麻烦。
+所以把这两个类分开，各自独立实现。
+在类型转换上，由于要将iterator透明地转换为const_iterator，所以要提供类型转换的途径。
+有两个思路，一个是对const_iterator定义参数为iterator的构造函数，另一个是在iterator中实现专门的类型转换操作符。
+前者要使用iterator中的指针（私有成员），要将const_iterator声明为iterator的友元，很麻烦。所以用后者来实现。利用iterator的指针来初始化const_iterator对象即可。
+
+对于reverse_iterator，实现了一个类模板，只要将任一种iterator作为该类模板的参数，便可得到+-效果相反的reverse_iterator

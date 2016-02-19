@@ -40,6 +40,10 @@ int main()
 		cout << "\tsize: " << v1.size() << endl;
 		cout << "\tcapacity: " << v1.capacity() << endl;
 		
+		// empty test
+		cout << "empty test" << endl;
+		cout << '\t' << std::boolalpha << v1.empty() << endl;
+
 		// assign
 		cout << "assign" << endl;
 		v1.assign(10, 2);
@@ -51,6 +55,10 @@ int main()
 			cout << (*iter) << ends;
 		}
 		cout << endl;
+
+		// empty test
+		cout << "empty test" << endl;
+		cout << '\t' << v1.empty() << endl;
 
 		// re-assign
 		cout << "re-assign" << endl;
@@ -107,6 +115,11 @@ int main()
 		{
 			cout << (*iter) << ends;
 		}
+		cout << endl;
+
+		// empty test
+		cout << "empty test" << endl;
+		cout << '\t' << v1.empty() << endl;
 		cout << endl;
 	}
 
@@ -403,6 +416,29 @@ int main()
 			cout << *next_iter << ends;
 		}
 		cout << endl;
+		
+		// cbegin, cend
+		cout << "cbegin, cend" << endl;
+		cout << '\t';
+		for(vector<int>::const_iterator iter = v4.cbegin(); iter != v4.cend(); iter += 2)
+		{
+			cout << *iter << ends;
+			vector<int>::const_iterator next_iter = iter + 1;
+			cout << *next_iter << ends;
+		}
+		cout << endl;
+
+		// crbegin, crend
+		cout << "crbegin, crend" << endl;
+		cout << '\t';
+		//vector<int>::const_reverse_iterator cr_iter1 = v4.crbegin();
+		for(vector<int>::const_reverse_iterator iter = v4.crbegin(); iter != v4.crend(); iter += 2)
+		{
+			cout << *iter << ends;
+			vector<int>::const_reverse_iterator next_iter = iter + 1;
+			cout << *next_iter << ends;
+		}
+		cout << endl;
 
 		// transformation between reverse and forward iterator
 		cout << "transformation between reverse and forward iterator" << endl;
@@ -429,6 +465,7 @@ int main()
 		++c_iter;
 		cout << *c_iter << ' ';	
 		cout << endl;
+
 	}
 
 	// another constructor

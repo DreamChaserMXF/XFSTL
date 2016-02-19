@@ -22,10 +22,6 @@ namespace xf
 		typedef _Reverse_Iterator<iterator> reverse_iterator;
 		typedef _Reverse_Iterator<const_iterator> const_reverse_iterator;
 
-		//typedef _Vector_reverse_iterator<T> reverse_iterator;
-		//typedef _Vector_reverse_const_iterator<T> reverse_const_iterator;
-
-
 		vector() throw();
 		vector(const vector<T> &right) throw(std::bad_alloc);
 		vector(size_t count) throw(std::bad_alloc, std::length_error);
@@ -35,6 +31,7 @@ namespace xf
 
 		size_t capacity() const throw();
 		size_t size() const throw();
+		bool empty() const throw();
 		void reserve(size_t capacity) throw(std::bad_alloc, std::length_error);
 		void resize(size_t size) throw(std::bad_alloc, std::length_error);
 		size_t max_size() const throw();
@@ -62,22 +59,30 @@ namespace xf
 		void pop_back() throw(std::length_error);
 
 		const T& front() const throw();
-		const T& back() const throw();
 		T& front();
+		const T& back() const throw();
 		T& back();
 
 		const T& at(size_t index) const throw(std::out_of_range);	// 找出第index个元素，有越界检查
 		T& at(size_t index) throw(std::out_of_range);				// 找出第index个元素，有越界检查
+		
 		const T& operator [](size_t index) const throw();			// 找出第index个元素，无越界检查
 		T& operator [](size_t index) throw();						// 找出第index个元素，无越界检查
 
+		const_iterator cbegin() const throw();
 		const_iterator begin() const throw();
-		const_iterator end() const throw();
 		iterator begin() throw();
+
+		const_iterator cend() const throw();
+		const_iterator end() const throw();
 		iterator end() throw();
+
+		const_reverse_iterator crbegin() const throw();
 		const_reverse_iterator rbegin() const throw();
-		const_reverse_iterator rend() const throw();
 		reverse_iterator rbegin() throw();
+
+		const_reverse_iterator crend() const throw();
+		const_reverse_iterator rend() const throw();
 		reverse_iterator rend() throw();
 
 		vector<T>& operator = (const vector<T> &right);
@@ -87,11 +92,7 @@ namespace xf
 		size_t size_;
 		size_t capacity_;
 
-//		static std::allocator<T> alc;
 	};
-	// initialize static member alc
-	//template<class T>
-	//std::allocator<T> vector<T>::alc;
 
 	template<class T>
 	vector<T>::vector() throw() : p_(NULL), size_(0), capacity_(0) 
@@ -117,11 +118,9 @@ namespace xf
 		{
 			throw std::length_error("too much memory to allocate");
 		}
-		//p_ = alc.allocate(capacity_);
 		p_ = static_cast<T*>(operator new[](capacity_ * sizeof(T)));
 		for(size_t i = 0; i < size_; ++i)
 		{
-//			alc.construct(p_ + i, NULL);	// 这里到底是不是调用了默认构造函数？不是，只是参数为0的复制构造函数
 			new (p_ + i) T();	// 调用真正的默认构造函数
 		}
 	}
@@ -135,7 +134,6 @@ namespace xf
 			throw std::length_error("too much memory to allocate");
 		}
 
-		//p_ = alc.allocate(capacity_);					// allocate memory
 		p_ = static_cast<T*>(operator new[](capacity_ * sizeof(T)));
 		std::uninitialized_fill(p_, p_ + size_, val);	// construct elements
 	}
@@ -147,7 +145,6 @@ namespace xf
 		{
 			throw std::length_error("too much memory to allocate");
 		}
-		//p_ = alc.allocate(capacity_);				// allocate memory
 		p_ = static_cast<T*>(operator new[](capacity_ * sizeof(T)));
 		std::uninitialized_copy(first, last, p_);	// construct elements
 	}
@@ -159,10 +156,8 @@ namespace xf
 		{
 			for(T *last = p_ + size_; last != p_; )
 			{
-				//alc.destroy(--last);	// destruct elements
 				(--last)->~T();
 			}
-			//alc.deallocate(p_, capacity_);	// release memory
 			operator delete[](p_);
 		}
 	}
@@ -179,7 +174,11 @@ namespace xf
 		return size_;
 	}
 
-
+	template<class T>
+	bool vector<T>::empty() const throw()
+	{
+		return (size_ == 0);
+	}
 
 	template<class T>
 	void vector<T>::reserve(size_t new_capacity) throw(std::bad_alloc, std::length_error)
@@ -197,17 +196,14 @@ namespace xf
 
 		if(new_capacity > capacity_)
 		{
-			//T *buf = alc.allocate(new_capacity);
 			T *buf = static_cast<T*>(operator new[](new_capacity * sizeof(T)));
 			if(p_)
 			{
 				std::uninitialized_copy(p_, p_ + size_, buf);	// copy elements using copy constructor
 				for(T *last = p_ + size_; last != p_; )
 				{
-					//alc.destroy(--last);	// destruct elements
 					(--last)->~T();
 				}
-				//alc.deallocate(p_, capacity_);	// release memory
 				operator delete[](p_);
 			}
 			p_ = buf;
@@ -227,7 +223,6 @@ namespace xf
 		{
 			for(size_t i = new_size; i < size_; ++i)
 			{
-				//alc.destroy(p_ + i);	// destructor
 				(p_ + i)->~T();
 			}
 		}
@@ -240,7 +235,6 @@ namespace xf
 		// 对变大的地方进行初始化
 		for(size_t i = size_; i < new_size; ++i)
 		{
-			//alc.construct(p_ + i, NULL);
 			new (p_ + i) T();
 		}
 		// 调整size_
@@ -258,7 +252,6 @@ namespace xf
 	{
 		for(size_t i = 0; i < size_; ++i)
 		{
-			//alc.destroy(p_ + i);
 			(p_ + i)->~T();
 		}
 		size_ = 0;
@@ -301,7 +294,6 @@ namespace xf
 			reserve(new_capacity);
 		}
 		// 添加新元素
-		//alc.construct(p_ + size_, item);
 		new (p_ + size_) T(item);
 		++size_;
 	}
@@ -316,7 +308,6 @@ namespace xf
 		else
 		{
 			--size_;
-			//alc.destroy(p_ + size_);
 			(p_ + size_)->~T();
 		}
 	}
@@ -366,6 +357,7 @@ namespace xf
 			return p_[index];
 		}
 	}
+
 	template<class T>
 	const T& vector<T>::operator [](size_t index) const throw()
 	{
@@ -377,21 +369,31 @@ namespace xf
 		return p_[index];
 	}
 	
-
 	template<class T>
-	typename vector<T>::const_iterator vector<T>::begin() const throw()
+	typename vector<T>::const_iterator vector<T>::cbegin() const throw()
 	{
 		return const_iterator(p_);
 	}
 	template<class T>
-	typename vector<T>::const_iterator vector<T>::end() const throw()
+	typename vector<T>::const_iterator vector<T>::begin() const throw()
 	{
-		return const_iterator(p_ + size_);
+		return cbegin();
 	}
 	template<class T>
 	typename vector<T>::iterator vector<T>::begin() throw()
 	{
 		return iterator(p_);
+	}
+
+	template<class T>
+	typename vector<T>::const_iterator vector<T>::cend() const throw()
+	{
+		return const_iterator(p_ + size_);
+	}
+	template<class T>
+	typename vector<T>::const_iterator vector<T>::end() const throw()
+	{
+		return cend();
 	}
 	template<class T>
 	typename vector<T>::iterator vector<T>::end() throw()
@@ -400,19 +402,30 @@ namespace xf
 	}
 
 	template<class T>
-	typename vector<T>::const_reverse_iterator vector<T>::rbegin() const throw()
+	typename vector<T>::const_reverse_iterator vector<T>::crbegin() const throw()
 	{
 		return const_reverse_iterator(p_ + size_ - 1);
 	}
 	template<class T>
-	typename vector<T>::const_reverse_iterator vector<T>::rend() const throw()
+	typename vector<T>::const_reverse_iterator vector<T>::rbegin() const throw()
 	{
-		return const_reverse_iterator(p_ - 1);
+		return crbegin();
 	}
 	template<class T>
 	typename vector<T>::reverse_iterator vector<T>::rbegin() throw()
 	{
 		return reverse_iterator(p_ + size_ - 1);
+	}
+
+	template<class T>
+	typename vector<T>::const_reverse_iterator vector<T>::crend() const throw()
+	{
+		return const_reverse_iterator(p_ - 1);
+	}
+	template<class T>
+	typename vector<T>::const_reverse_iterator vector<T>::rend() const throw()
+	{
+		return crend();
 	}
 	template<class T>
 	typename vector<T>::reverse_iterator vector<T>::rend() throw()
@@ -439,7 +452,6 @@ namespace xf
 			}
 			while(i < size_)
 			{
-				//alc.destroy(p_ + i);
 				(p_ + i)->~T();
 				++i;
 			}
@@ -455,7 +467,6 @@ namespace xf
 			}
 			while(i < right.size_)
 			{
-				//alc.construct(p_ + i, *(right.p_ + i));
 				new (p_ + i) T(*(right.p_ + i));
 				++i;
 			}
@@ -465,16 +476,12 @@ namespace xf
 		{
 			for(size_t i = 0; i < size_; ++i)
 			{
-				//alc.destroy(p_ + i);
 				(p_ + i)->~T();
 			}
-			//alc.deallocate(p_, capacity_);
 			operator delete[](p_);
-			//p_ = alc.allocate(right.size_);
 			p_ = static_cast<T*>(operator new[](right.size_ * sizeof(T)));
 			for(size_t i = 0; i < right.size_; ++i)
 			{
-				//alc.construct(p_ + i, *(right.p_ + i));
 				new (p_ + i) T(*(right.p_ + i));
 			}
 			size_ = right.size_;

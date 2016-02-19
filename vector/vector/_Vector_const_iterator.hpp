@@ -1,6 +1,8 @@
 #ifndef _VECTOR_CONST_ITERATOR
 #define _VECTOR_CONST_ITERATOR
 
+#include "_Vector_iterator.hpp"
+
 namespace xf
 {
 	template<class T>
@@ -11,7 +13,7 @@ namespace xf
 		typedef const T* pointer;
 
 		_Vector_const_iterator() throw();
-		explicit _Vector_const_iterator(T *p) throw();
+		explicit _Vector_const_iterator(const T *p) throw();
 
 		const T& operator *() const throw();
 		const T* operator ->() const throw();
@@ -27,7 +29,7 @@ namespace xf
 		bool operator == (const _Vector_const_iterator<T> &iter) const throw();
 		bool operator != (const _Vector_const_iterator<T> &iter) const throw();
 	protected:
-		T* p_;
+		const T* p_;
 	};
 
 	template<class T>
@@ -36,7 +38,7 @@ namespace xf
 	}
 
 	template<class T>
-	_Vector_const_iterator<T>::_Vector_const_iterator(T *p) throw() : p_(p)
+	_Vector_const_iterator<T>::_Vector_const_iterator(const T * p) throw() : p_(p)
 	{
 	}
 
