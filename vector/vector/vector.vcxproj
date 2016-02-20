@@ -74,8 +74,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="exp.cpp" />
+    <ClCompile Include="multifile_test.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="vector_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vector.hpp" />

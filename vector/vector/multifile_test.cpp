@@ -10,4 +10,3 @@ void multi_file_test()
 	(i += 5) = 10;
 	std::cout << "multi file test successful!\n";
 }
-

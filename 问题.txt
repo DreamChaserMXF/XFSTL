@@ -1,0 +1,6 @@
+一. vector
+1. 为什么assign和insert函数的模板参数_Iter _First, _Iter _Last不是const引用的形式？
+答：大概是因为，在assign与insert函数中，要对迭代器进行加减运算，所以即使使用const引用传参，还是要再复制一个非const的副本。与其如此，不如直接用按值传参的方式来定义函数。
+2. 为什么erase与insert的定位参数_Wherer是const迭代器而不是一般迭代器？
+答：可能是因为，const迭代器就已足够表示位置了吧？
+不够有说服力。

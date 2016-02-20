@@ -28,7 +28,10 @@ namespace xf
 		int operator -(const _Vector_const_iterator &right) throw();
 		bool operator == (const _Vector_const_iterator<T> &iter) const throw();
 		bool operator != (const _Vector_const_iterator<T> &iter) const throw();
-	protected:
+		bool operator > (const _Vector_const_iterator<T> &iter) const throw();
+		bool operator >= (const _Vector_const_iterator<T> &iter) const throw();
+		bool operator < (const _Vector_const_iterator<T> &iter) const throw();
+		bool operator <= (const _Vector_const_iterator<T> &iter) const throw();
 		const T* p_;
 	};
 
@@ -130,6 +133,29 @@ namespace xf
 		return p_ != iter.p_;
 	}
 
+	template<class T>
+	bool _Vector_const_iterator<T>::operator > (const _Vector_const_iterator<T> &iter) const throw()
+	{
+		return p_ > iter.p_;
+	}
+
+	template<class T>
+	bool _Vector_const_iterator<T>::operator >= (const _Vector_const_iterator<T> &iter) const throw()
+	{
+		return p_ >= iter.p_;
+	}
+
+	template<class T>
+	bool _Vector_const_iterator<T>::operator < (const _Vector_const_iterator<T> &iter) const throw()
+	{
+		return p_ < iter.p_;
+	}
+
+	template<class T>
+	bool _Vector_const_iterator<T>::operator <= (const _Vector_const_iterator<T> &iter) const throw()
+	{
+		return p_ <= iter.p_;
+	}
 }
 
 #endif

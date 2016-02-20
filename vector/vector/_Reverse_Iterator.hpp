@@ -99,7 +99,7 @@ namespace xf
 	template<class T>
 	_Reverse_Iterator<T> _Reverse_Iterator<T>::operator ++(int) throw()
 	{
-		T tmp = iter_;
+		_Reverse_Iterator<T> tmp(*this);
 		--iter_;
 		return tmp;
 	}
@@ -114,7 +114,7 @@ namespace xf
 	template<class T>
 	_Reverse_Iterator<T> _Reverse_Iterator<T>::operator --(int) throw()
 	{
-		T tmp = iter_;
+		_Reverse_Iterator<T> tmp(*this);
 		++iter_;
 		return tmp;
 	}
