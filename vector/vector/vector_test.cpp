@@ -9,6 +9,9 @@ using std::cout;
 using std::endl;
 using std::ends;
 
+#include <list>
+using std::list;
+
 class A
 {
 public:
@@ -33,6 +36,8 @@ void vector_test()
 {
 	void multi_file_test();
 	multi_file_test();
+
+	
 
 	// assign, front, back, push, pop, clear
 	vector<int> v1;
@@ -714,6 +719,36 @@ void vector_test()
 		}
 		cout << endl;
 	}
+	
+	// another constructor
+	vector<int> v6(10, 15);
+	{
+		// constructor with count and value to test the template spetialization
+		cout << "\nconstructor with count and value" << endl;
+		cout << "\tsize: " << v6.size() << endl;
+		cout << "\tcapacity: " << v6.capacity() << endl;
+		cout << '\t';
+		for(vector<int>::iterator iter = v6.begin(); iter != v6.end(); ++iter)
+		{
+			cout << *iter << ends;
+		}
+		cout << endl;
+	}
+
+	// another constructor
+	vector<double> v7(10, 15);
+	{
+		// constructor with count and value to test the template spetialization
+		cout << "\nconstructor with count and value" << endl;
+		cout << "\tsize: " << v7.size() << endl;
+		cout << "\tcapacity: " << v7.capacity() << endl;
+		cout << '\t';
+		for(vector<double>::iterator iter = v7.begin(); iter != v7.end(); ++iter)
+		{
+			cout << *iter << ends;
+		}
+		cout << endl;
+	}
 
 	// max_size
 	{
@@ -725,11 +760,22 @@ void vector_test()
 		cout << "\tv5: " << v5.max_size() << endl;
 	}
 
-	// test
+	// constructur and assign function test
 	{
+		cout <<"constructur and assign function test" << endl;
 		vector<unsigned int> vui;
 		vui.assign(10, 100);
+
+		list<int> li;
+		li.push_back(1);
+		li.push_back(2);
+		li.push_back(3);
+		// µü´úÆ÷²âÊÔ
+		vector<int> vv(li.begin(), li.end());
+		vv.assign(li.begin(), li.end());
+		cout << "ok!" << endl;
 	}
+
 	
 	vector<string> vs;
 	vs.push_back("abc");

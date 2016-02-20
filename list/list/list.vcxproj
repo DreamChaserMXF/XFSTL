@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{884287A3-3D37-4AC9-AD4B-4658B3D1D3B6}</ProjectGuid>
+    <ProjectGuid>{7D034B11-EF97-4017-A49F-80AFF9FD148E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>vector</RootNamespace>
+    <RootNamespace>list</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -74,15 +74,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="multifile_test.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="vector_test.cpp" />
+    <ClInclude Include="list.hpp" />
+    <ClInclude Include="list_item.hpp" />
+    <ClInclude Include="_List_Const_Iterator.hpp" />
+    <ClInclude Include="_List_Iterator.hpp" />
+    <ClInclude Include="_Reverse_Iterator.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="vector.hpp" />
-    <ClInclude Include="_Reverse_Iterator.hpp" />
-    <ClInclude Include="_Vector_Const_Iterator.hpp" />
-    <ClInclude Include="_Vector_Iterator.hpp" />
+    <ClCompile Include="list_test.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="multifile_test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

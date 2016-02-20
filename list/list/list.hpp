@@ -4,47 +4,56 @@
 #pragma warning(disable:4290)	// for msvc's not fully supporting the exception specifications
 #pragma warning(disable:4996)	// for msvc's safety concern about uninitialized_xxxx()
 
-#include "_Vector_Iterator.hpp"
+#include "_List_Iterator.hpp"
 #include "_Reverse_Iterator.hpp"
+#include "list_item.hpp"
 #include <cassert>
 #include <exception>
 #include <stdexcept>
 #include <memory>
 namespace xf
 {
-
+	
 	template<class T>
-	class vector
+	class list
 	{
+		
 	public:
 
-		typedef _Vector_Iterator<T> iterator;
-		typedef _Vector_Const_Iterator<T> const_iterator;
+		typedef _List_Iterator<T> iterator;
+		typedef _List_Const_Iterator<T> const_iterator;
 		typedef _Reverse_Iterator<iterator> reverse_iterator;
 		typedef _Reverse_Iterator<const_iterator> const_reverse_iterator;
 
-		vector() throw();
-		vector(const vector<T> &right) throw(std::bad_alloc);
-		vector(size_t count) throw(std::bad_alloc, std::length_error);
-		vector(size_t count, const T &val) throw(std::bad_alloc, std::length_error);
-		template<class _Iter> vector(_Iter first, _Iter last) throw(std::bad_alloc, std::length_error);
-		template<> vector(int count, int val) throw(std::bad_alloc, std::length_error) : p_(NULL), size_(count), capacity_(count) 
+		list() throw(std::bad_alloc, std::bad_cast);
+		list(const list<T> &right) throw(std::bad_alloc, std::bad_cast);
+		list(size_t _Count) throw(std::bad_alloc, std::bad_cast, std::length_error);
+		list(size_t _Count, const T &_Value) throw(std::bad_alloc, std::bad_cast, std::length_error);
+		template<class _Iter> list(_Iter first, _Iter last) throw(std::bad_alloc, std::bad_cast, std::length_error);
+		template<> list(int _Count, int _Value) throw(std::bad_alloc, std::bad_cast, std::length_error) : 
+			head_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), tail_(head_), size_(count), prev_index_(PREV_POS), next_index_(NEXT_POS)
 		{
-			if(static_cast<size_t>(count) > max_size())
+			if(_Count > max_size())
 			{
 				throw std::length_error("too much memory to allocate");
 			}
-			p_ = static_cast<T*>(operator new[](capacity_ * sizeof(T)));
-			std::uninitialized_fill(p_, p_ + size_, static_cast<T>(val));	// construct elements
+			for(size_t i = 0; i < size_; ++i)
+			{
+				list_item<T> *new_item = new list_item<T>(static_cast<T>(_Value), prev_index_, tail_, next_index_, NULL);
+				tail_->item_ptr_[next_index_] = new_item;
+				tail_ = new_item;
+			}
+			// 最后再加一个尾巴
+			list_item<T> *new_item = static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)));
+			new_item->item_ptr_[prev_index_] = tail_;
+			new_item->item_ptr_[next_index_] = NULL;
+			tail_->item_ptr_[next_index_] = new_item;
+			tail_ = new_item;
 		}
-		virtual ~vector() throw();
+		virtual ~list() throw();
 
-		size_t capacity() const throw();
 		size_t size() const throw();
 		bool empty() const throw();
-		void reserve(size_t capacity) throw(std::bad_alloc, std::length_error);
-		void resize(size_t size) throw(std::bad_alloc, std::length_error);
-		void shrink_to_fit() throw(std::bad_alloc);	// 释放多余的内存
 
 		static size_t max_size()throw();
 
@@ -76,7 +85,6 @@ namespace xf
 		}
 
 
-		// TODO 这里不懂为什么STL在设计时，要接受const_iterator而不是iterator做参数
 		iterator erase(const const_iterator &_First, const const_iterator &_Last) throw();
 		iterator erase(const const_iterator &_Where) throw();
 
@@ -105,197 +113,159 @@ namespace xf
 		const_reverse_iterator rend() const throw();
 		reverse_iterator rend() throw();
 
-		vector<T>& operator = (const vector<T> &right);
+		list<T>& operator = (const list<T> &right);
 
 	private:
-		size_t get_new_capacity() const throw(std::length_error);
-		size_t get_new_capacity(size_t min_request_size) const throw(std::length_error);
 		void assign_n(size_t count, const T &val) throw(std::length_error, std::bad_alloc);
 		iterator insert_n(const const_iterator _Where, size_t _Count, const T &_Value) throw(std::bad_alloc, std::length_error, std::bad_cast);
-
 		T *p_;
-		size_t size_;
 		size_t capacity_;
 
+		list_item<T> *head_;
+		list_item<T> *tail_;
+		size_t size_;
+		PTR_POS prev_index_;
+		PTR_POS next_index_;
 	};
 
 	template<class T>
-	vector<T>::vector() throw() : p_(NULL), size_(0), capacity_(0) 
+	list<T>::list() throw(std::bad_alloc, std::bad_cast) :
+		head_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), tail_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), size_(0), prev_index_(PREV_POS), next_index_(NEXT_POS)
 	{
+		head_->item_ptr_[prev_index_] = NULL;
+		head_->item_ptr_[next_index_] = tail_;
+		tail_->item_ptr_[prev_index_] = head_;
+		tail_->item_ptr_[next_index_] = NULL;
 	}
 
 	template<class T>
-	vector<T>::vector(const vector<T> &right) throw(std::bad_alloc) : p_(static_cast<T*>(operator new[](right.size_ * sizeof(T)))), size_(right.size_), capacity_(right.size_) 
+	list<T>::list(const list<T> &right) throw(std::bad_alloc, std::bad_cast) : 
+		head_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), tail_(head_), size_(right.size_), prev_index_(PREV_POS), next_index_(NEXT_POS)
 	{
-		// 通过构造函数在p_处建立right.p_的副本
-		std::uninitialized_copy(right.p_, right.p_ + size_, p_);
+		// 逐个复制
+		list_item<T> *p = right.head_->item_ptr_[right.next_index_];
+		while(p)
+		{
+			list_item<T> *new_item = new list_item<T>(p->val_, prev_index_, tail_, next_index_, NULL);
+			tail_->item_ptr_[next_index_] = new_item;
+			tail_ = new_item;
+			p = p->item_ptr_[right.next_index_];
+		}
+		// 最后再加一个尾巴
+		list_item<T> *new_item = static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)));
+		new_item->item_ptr_[prev_index_] = tail_;
+		new_item->item_ptr_[next_index_] = NULL;
+		tail_->item_ptr_[next_index_] = new_item;
+		tail_ = new_item;
 	}
 
 	template<class T>
-	vector<T>::vector(size_t count) throw(std::bad_alloc, std::length_error) : p_(NULL), size_(count), capacity_(count) 
+	list<T>::list(size_t _Count) throw(std::bad_alloc, std::bad_cast, std::length_error) : 
+		head_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), tail_(head_), size_(_Count), prev_index_(PREV_POS), next_index_(NEXT_POS)
 	{
-		if(count > max_size())
+		if(_Count > max_size())
 		{
 			throw std::length_error("too much memory to allocate");
 		}
-		p_ = static_cast<T*>(operator new[](capacity_ * sizeof(T)));
 		for(size_t i = 0; i < size_; ++i)
 		{
-			new (p_ + i) T();	// 调用真正的默认构造函数
+			list_item<T> *new_item = new list_item<T>(prev_index_, tail_, next_index_, NULL);
+			tail_->item_ptr_[next_index_] = new_item;
+			tail_ = new_item;
 		}
+		// 最后再加一个尾巴
+		list_item<T> *new_item = static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)));
+		new_item->item_ptr_[prev_index_] = tail_;
+		new_item->item_ptr_[next_index_] = NULL;
+		tail_->item_ptr_[next_index_] = new_item;
+		tail_ = new_item;
 	}
 
 
 	template<class T>
-	vector<T>::vector(size_t count, const T &val) throw(std::bad_alloc, std::length_error) : p_(NULL), size_(count), capacity_(count) 
+	list<T>::list(size_t _Count, const T &_Value) throw(std::bad_alloc, std::bad_cast, std::length_error) : 
+		head_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), tail_(head_), size_(_Count), prev_index_(PREV_POS), next_index_(NEXT_POS)
 	{
-		if(count > max_size())
+		if(_Count > max_size())
 		{
 			throw std::length_error("too much memory to allocate");
 		}
-
-		p_ = static_cast<T*>(operator new[](capacity_ * sizeof(T)));
-		std::uninitialized_fill(p_, p_ + size_, val);	// construct elements
+		for(size_t i = 0; i < size_; ++i)
+		{
+			list_item<T> *new_item = new list_item<T>(_Value, prev_index_, tail_, next_index_, NULL);
+			tail_->item_ptr_[next_index_] = new_item;
+			tail_ = new_item;
+		}
+		// 最后再加一个尾巴
+		list_item<T> *new_item = static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)));
+		new_item->item_ptr_[prev_index_] = tail_;
+		new_item->item_ptr_[next_index_] = NULL;
+		tail_->item_ptr_[next_index_] = new_item;
+		tail_ = new_item;
 	}
 
 	template<class T>template<class _Iter>
-	vector<T>::vector(_Iter first, _Iter last) throw(std::bad_alloc, std::length_error) : p_(NULL), size_(0U), capacity_(0U) 
+	list<T>::list(_Iter first, _Iter last) throw(std::bad_alloc, std::bad_cast, std::length_error) : 
+		head_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), tail_(head_), size_(0U), prev_index_(PREV_POS), next_index_(NEXT_POS)
 	{
-		_Iter tmp = first;
-		while(tmp != last)
+		while(first != last)
 		{
-			++tmp;
+			list_item<T> *new_item = new list_item<T>(*first++, prev_index_, tail_, next_index_, NULL);
+			tail_->item_ptr_[next_index_] = new_item;
+			tail_ = new_item;
 			++size_;
 		}
-		capacity_ = size_;
-		if(capacity_ > max_size())
-		{
-			throw std::length_error("too much memory to allocate");
-		}
-		p_ = static_cast<T*>(operator new[](capacity_ * sizeof(T)));
-		std::uninitialized_copy(first, last, p_);	// construct elements
+		// 最后再加一个尾巴
+		list_item<T> *new_item = static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)));
+		new_item->item_ptr_[prev_index_] = tail_;
+		new_item->item_ptr_[next_index_] = NULL;
+		tail_->item_ptr_[next_index_] = new_item;
+		tail_ = new_item;
 	}
 
 	template<class T>
-	vector<T>::~vector() throw()
+	list<T>::~list() throw()
 	{
-		if(p_)
+		const list_item<T> *tmp_tail = tail_;
+		list_item<T> *p = tail_->item_ptr_[prev_index_];
+		while(p)
 		{
-			for(T *last = p_ + size_; last != p_; )
+			if(tmp_tail == tail_)
 			{
-				(--last)->~T();
+				operator delete(tail_);
 			}
-			operator delete[](p_);
+			else
+			{
+				delete tail_;
+			}
+			tail_ = p;
+			p = p->item_ptr_[prev_index_];
 		}
+		operator delete(head_);
 	}
 
-	template<class T>
-	size_t vector<T>::capacity() const throw()
-	{
-		return capacity_;
-	}
-	
 
 	template<class T>
-	size_t vector<T>::size() const throw()
+	size_t list<T>::size() const throw()
 	{
 		return size_;
 	}
 
 	template<class T>
-	bool vector<T>::empty() const throw()
+	bool list<T>::empty() const throw()
 	{
 		return (size_ == 0);
 	}
 
-	template<class T>
-	void vector<T>::reserve(size_t new_capacity) throw(std::bad_alloc, std::length_error)
-	{
-		// 小于0的情况可以不考虑，因为此时真正的capacity_不会改变
-		if(new_capacity < 0)
-		{
-			return;
-		}
-		// 判断是否太大了
-		if(new_capacity > max_size())
-		{
-			throw std::length_error("too much memory to allocate");
-		}
 
-		if(new_capacity > capacity_)
-		{
-			T *buf = static_cast<T*>(operator new[](new_capacity * sizeof(T)));
-			if(p_)
-			{
-				std::uninitialized_copy(p_, p_ + size_, buf);	// copy elements using copy constructor
-				for(T *last = p_ + size_; last != p_; )
-				{
-					(--last)->~T();
-				}
-				operator delete[](p_);
-			}
-			p_ = buf;
-			capacity_ = new_capacity;
-		}
+	template<class T>
+	size_t list<T>::max_size() throw()
+	{
+		return static_cast<size_t>(-1) / sizeof(list_item<T>) - 1;	// 减1是减去头结点
 	}
 
 	template<class T>
-	void vector<T>::resize(size_t new_size) throw(std::bad_alloc, std::length_error)
-	{
-		if(new_size > max_size())
-		{
-			throw std::length_error("too much memory to allocate");
-		}
-		// 变小的话，要把多余的元素清除掉
-		if(new_size < size_)
-		{
-			for(size_t i = new_size; i < size_; ++i)
-			{
-				(p_ + i)->~T();
-			}
-		}
-		// 变大且要扩容的情况
-		else if(new_size > capacity_)
-		{
-			reserve(new_size);
-		}
-		// 现在容量够了
-		// 对变大的地方进行初始化
-		for(size_t i = size_; i < new_size; ++i)
-		{
-			new (p_ + i) T();
-		}
-		// 调整size_
-		size_ = new_size;
-	}
-
-	// 释放多余的内存，使capacity_与size_相同
-	template<class T>
-	void vector<T>::shrink_to_fit() throw(std::bad_alloc)
-	{
-		if(size_ < capacity_)
-		{
-			T *new_ptr = static_cast<T*>(operator new [] (size_ * sizeof(T)));
-			std::uninitialized_copy(p_, p_ + size_, new_ptr);
-			for(size_t i = 0; i < size_; ++i)
-			{
-				(p_ + i)->~T();
-			}
-			operator delete[](p_);
-
-			p_ = new_ptr;
-			capacity_ = size_;
-		}
-	}
-
-	template<class T>
-	size_t vector<T>::max_size() throw()
-	{
-		return static_cast<size_t>(-1) / sizeof(T);
-	}
-
-	template<class T>
-	void vector<T>::clear() throw()
+	void list<T>::clear() throw()
 	{
 		for(size_t i = 0; i < size_; ++i)
 		{
@@ -305,23 +275,17 @@ namespace xf
 	}
 
 	template<class T>
-	void vector<T>::assign(size_t count, const T &val) throw()
+	void list<T>::assign(size_t count, const T &val) throw()
 	{
 		assign_n(count, val);
 	}
 
 	template<class T>
 	template<class _Iter>
-	void vector<T>::assign(_Iter first, _Iter last) throw()
+	void list<T>::assign(_Iter first, _Iter last) throw()
 	{
 		clear();
-		// 计算新的size_
-		_Iter tmp = first;
-		while(tmp != last)
-		{
-			++tmp;
-			++size_;
-		}
+		size_ = last - first;
 		if(size_ > capacity_)
 		{
 			reserve(size_);
@@ -331,25 +295,19 @@ namespace xf
 	}
 
 	template<class T>
-	void vector<T>::push_back(const T &item) throw(std::bad_alloc, std::length_error)
+	void list<T>::push_back(const T &item) throw(std::bad_alloc, std::length_error)
 	{
-		if(size_ == capacity_)
-		{
-			// 扩容
-			size_t new_capacity = get_new_capacity();
-			reserve(new_capacity);
-		}
 		// 添加新元素
 		new (p_ + size_) T(item);
 		++size_;
 	}
 
 	template<class T>
-	void vector<T>::pop_back() throw(std::length_error)
+	void list<T>::pop_back() throw(std::length_error)
 	{
 		if(0 == size_)
 		{
-			throw std::length_error("invalid vector<T> subscript");
+			throw std::length_error("invalid list<T> subscript");
 		}
 		else
 		{
@@ -359,28 +317,28 @@ namespace xf
 	}
 
 	template<class T>
-	const T& vector<T>::front() const throw()
+	const T& list<T>::front() const throw()
 	{
 		return *p_;
 	}
 	template<class T>
-	const T& vector<T>::back() const throw()
+	const T& list<T>::back() const throw()
 	{
 		return p_[size_ - 1];
 	}
 	template<class T>
-	T& vector<T>::front() throw()
+	T& list<T>::front() throw()
 	{
 		return *p_;
 	}
 	template<class T>
-	T& vector<T>::back() throw()
+	T& list<T>::back() throw()
 	{
 		return p_[size_ - 1];
 	}
 
 	template<class T>
-	typename vector<T>::iterator vector<T>::insert(const const_iterator &_Where, const T &_Value) throw(std::bad_alloc, std::length_error, std::bad_cast)
+	typename list<T>::iterator list<T>::insert(const const_iterator &_Where, const T &_Value) throw(std::bad_alloc, std::length_error, std::bad_cast)
 	{
 		if(size_ == capacity_)	// 须要扩容
 		{
@@ -398,7 +356,7 @@ namespace xf
 				p_[i].~T();
 			}
 			operator delete[](p_);
-			// 更新vector的属性
+			// 更新list的属性
 			p_ = new_ptr;
 			capacity_ = new_capacity;
 			++size_;
@@ -420,13 +378,13 @@ namespace xf
 	}
 
 	template<class T>
-	typename vector<T>::iterator vector<T>::insert(const const_iterator &_Where, size_t _Count, const T &_Value) throw(std::bad_alloc, std::length_error, std::bad_cast)
+	typename list<T>::iterator list<T>::insert(const const_iterator &_Where, size_t _Count, const T &_Value) throw(std::bad_alloc, std::length_error, std::bad_cast)
 	{
 		insert_n(_Where, _Count, _Value);
 	}
 
 	template<class T>template<class Iter>
-	typename vector<T>::iterator vector<T>::insert(const const_iterator &_Where, Iter _First, Iter _Last) throw(std::bad_alloc, std::length_error, std::bad_cast)
+	typename list<T>::iterator list<T>::insert(const const_iterator &_Where, Iter _First, Iter _Last) throw(std::bad_alloc, std::length_error, std::bad_cast)
 	{
 		assert(_First < _Last);	// 这里要不要assert？万一_Iter没有定义小于号怎么办？
 		size_t count = _Last - _First;
@@ -451,7 +409,7 @@ namespace xf
 				p_[i].~T();
 			}
 			operator delete[](p_);
-			// 更新vector的属性
+			// 更新list的属性
 			p_ = new_ptr;
 			capacity_ = new_capacity;
 			size_ += count;
@@ -489,7 +447,7 @@ namespace xf
 	}
 
 	template<class T>
-	typename vector<T>::iterator vector<T>::erase(const const_iterator &_First, const const_iterator &_Last) throw()
+	typename list<T>::iterator list<T>::erase(const const_iterator &_First, const const_iterator &_Last) throw()
 	{
 		assert(_First < _Last);
 		T * index1 = const_cast<T*>(_First.p_);
@@ -508,7 +466,7 @@ namespace xf
 		return iterator(const_cast<T*>(_First.p_));
 	}
 	template<class T>
-	typename vector<T>::iterator vector<T>::erase(const const_iterator &_Where) throw()
+	typename list<T>::iterator list<T>::erase(const const_iterator &_Where) throw()
 	{
 		T * cur = const_cast<T*>(_Where.p_);
 		while(++cur < p_ + size_)
@@ -522,11 +480,11 @@ namespace xf
 
 
 	template<class T>
-	const T& vector<T>::at(size_t index) const throw(std::out_of_range)
+	const T& list<T>::at(size_t index) const throw(std::out_of_range)
 	{
 		if(index < 0 || index >= size_)
 		{
-			throw std::out_of_range("invalid vector<T> subscript");
+			throw std::out_of_range("invalid list<T> subscript");
 		}
 		else
 		{
@@ -534,11 +492,11 @@ namespace xf
 		}
 	}
 	template<class T>
-	T& vector<T>::at(size_t index) throw(std::out_of_range)
+	T& list<T>::at(size_t index) throw(std::out_of_range)
 	{
 		if(index < 0 || index >= size_)
 		{
-			throw std::out_of_range("invalid vector<T> subscript");
+			throw std::out_of_range("invalid list<T> subscript");
 		}
 		else
 		{
@@ -547,95 +505,95 @@ namespace xf
 	}
 
 	template<class T>
-	const T& vector<T>::operator [](size_t index) const throw()
+	const T& list<T>::operator [](size_t index) const throw()
 	{
 		return p_[index];
 	}
 	template<class T>
-	T& vector<T>::operator [](size_t index) throw()
+	T& list<T>::operator [](size_t index) throw()
 	{
 		return p_[index];
 	}
 	
 	template<class T>
-	const T* vector<T>::data() const throw()
+	const T* list<T>::data() const throw()
 	{
 		return p_;
 	}
 	template<class T>
-	T* vector<T>::data() throw()
+	T* list<T>::data() throw()
 	{
 		return p_;
 	}
 
 	template<class T>
-	typename vector<T>::const_iterator vector<T>::cbegin() const throw()
+	typename list<T>::const_iterator list<T>::cbegin() const throw()
 	{
-		return const_iterator(p_);
+		return const_iterator(head_->item_ptr_[next_index_], prev_index_, next_index_);
 	}
 	template<class T>
-	typename vector<T>::const_iterator vector<T>::begin() const throw()
+	typename list<T>::const_iterator list<T>::begin() const throw()
 	{
 		return cbegin();
 	}
 	template<class T>
-	typename vector<T>::iterator vector<T>::begin() throw()
+	typename list<T>::iterator list<T>::begin() throw()
 	{
-		return iterator(p_);
+		return iterator(head_->item_ptr_[next_index_], prev_index_, next_index_);;
 	}
 
 	template<class T>
-	typename vector<T>::const_iterator vector<T>::cend() const throw()
+	typename list<T>::const_iterator list<T>::cend() const throw()
 	{
-		return const_iterator(p_ + size_);
+		return const_iterator(tail_, prev_index_, next_index_);
 	}
 	template<class T>
-	typename vector<T>::const_iterator vector<T>::end() const throw()
+	typename list<T>::const_iterator list<T>::end() const throw()
 	{
 		return cend();
 	}
 	template<class T>
-	typename vector<T>::iterator vector<T>::end() throw()
+	typename list<T>::iterator list<T>::end() throw()
 	{
-		return iterator(p_ + size_);
+		return iterator(tail_, prev_index_, next_index_);
 	}
 
 	template<class T>
-	typename vector<T>::const_reverse_iterator vector<T>::crbegin() const throw()
+	typename list<T>::const_reverse_iterator list<T>::crbegin() const throw()
 	{
-		return const_reverse_iterator(p_ + size_ - 1);
+		return const_reverse_iterator(tail_->item_ptr_[prev_index_], prev_index_, next_index_);
 	}
 	template<class T>
-	typename vector<T>::const_reverse_iterator vector<T>::rbegin() const throw()
+	typename list<T>::const_reverse_iterator list<T>::rbegin() const throw()
 	{
 		return crbegin();
 	}
 	template<class T>
-	typename vector<T>::reverse_iterator vector<T>::rbegin() throw()
+	typename list<T>::reverse_iterator list<T>::rbegin() throw()
 	{
-		return reverse_iterator(p_ + size_ - 1);
+		return reverse_iterator(tail_->item_ptr_[prev_index_], prev_index_, next_index_);
 	}
 
 	template<class T>
-	typename vector<T>::const_reverse_iterator vector<T>::crend() const throw()
+	typename list<T>::const_reverse_iterator list<T>::crend() const throw()
 	{
-		return const_reverse_iterator(p_ - 1);
+		return const_reverse_iterator(head_, prev_index_, next_index_);
 	}
 	template<class T>
-	typename vector<T>::const_reverse_iterator vector<T>::rend() const throw()
+	typename list<T>::const_reverse_iterator list<T>::rend() const throw()
 	{
 		return crend();
 	}
 	template<class T>
-	typename vector<T>::reverse_iterator vector<T>::rend() throw()
+	typename list<T>::reverse_iterator list<T>::rend() throw()
 	{
-		return reverse_iterator(p_ - 1);
+		return reverse_iterator(head_, prev_index_, next_index_);
 	}
 
 	// STL中的=运算符中，对每个元素的复制，不一定用每个元素的=还是拷贝构造函数
 	// 视right与*this的size大小而定
 	template<class T>
-	vector<T>& vector<T>::operator = (const vector<T> &right)
+	list<T>& list<T>::operator = (const list<T> &right)
 	{
 		if(this == &right)
 		{
@@ -689,67 +647,21 @@ namespace xf
 		return *this;
 	}
 
-	template<class T>
-	size_t vector<T>::get_new_capacity() const throw(std::length_error)
-	{
-		size_t new_capacity;
-		if(0 == capacity_)
-		{
-			new_capacity = 1;
-		}
-		else if(capacity_ == max_size())
-		{
-			throw std::length_error("too much memory to allocte");
-		}
-		else if(2 * capacity_ <= max_size())
-		{
-			new_capacity = 2 * capacity_;
-		}
-		else
-		{
-			new_capacity = max_size();
-		}
-		return new_capacity;
-	}
 
 	template<class T>
-	size_t vector<T>::get_new_capacity(size_t min_request_size) const throw(std::length_error)
-	{
-		size_t new_capacity = 0U;
-		if(min_request_size > max_size())	// 检查边界
-		{
-			throw std::length_error("too much memory to allocte");
-		}
-		if(2 * capacity_ > max_size())		// 尝试申请更多
-		{
-			new_capacity = max_size();
-		}
-		else if(2 * capacity_ > min_request_size)	// 尝试申请更多
-		{
-			new_capacity = 2 * capacity_;
-		}
-		else
-		{
-			new_capacity = min_request_size;
-		}
-		return new_capacity;
-	}
-
-	template<class T>
-	void vector<T>::assign_n(size_t count, const T &val) throw()
+	void list<T>::assign_n(size_t count, const T &val) throw()
 	{
 		clear();
 		size_ = count;
 		if(count > capacity_)
 		{
-			reserve(count);
 			capacity_ = count;
 		}
 		std::uninitialized_fill(p_, p_ + count, val);
 	}
 
 	template<class T>
-	typename vector<T>::iterator vector<T>::insert_n(const const_iterator _Where, size_t _Count, const T &_Value) throw(std::bad_alloc, std::length_error, std::bad_cast)
+	typename list<T>::iterator list<T>::insert_n(const const_iterator _Where, size_t _Count, const T &_Value) throw(std::bad_alloc, std::length_error, std::bad_cast)
 	{
 		if(size_ + _Count > capacity_)	// 须要扩容
 		{
@@ -770,7 +682,7 @@ namespace xf
 				p_[i].~T();
 			}
 			operator delete[](p_);
-			// 更新vector的属性
+			// 更新list的属性
 			p_ = new_ptr;
 			capacity_ = new_capacity;
 			size_ += _Count;

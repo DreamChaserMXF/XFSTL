@@ -1,170 +1,170 @@
 #ifndef _VECTOR_ITERATOR
 #define _VECTOR_ITERATOR
 
-#include "_Vector_const_iterator.hpp"
+#include "_Vector_Const_Iterator.hpp"
 
 namespace xf
 {
 
 	template<class T>
-	class _Vector_iterator
+	class _Vector_Iterator
 	{
 	public:
 		typedef T* pointer;
 		typedef T& reference;
 
-		_Vector_iterator() throw();
-		explicit _Vector_iterator(T *p) throw();	// 如果不加explicit，则_Vector_iterator就可以直接和指针对象相比较了
-		// overwrite
+		_Vector_Iterator() throw();
+		explicit _Vector_Iterator(T *p) throw();	// 如果不加explicit，则_Vector_Iterator就可以直接和指针对象相比较了
+
 		const T& operator *() const throw();
 		T& operator *() throw();
 		const T* operator ->() const throw();
 		T* operator ->() throw();
-		_Vector_iterator<T>& operator ++() throw();
-		_Vector_iterator<T> operator ++(int) throw();
-		_Vector_iterator<T>& operator --() throw();
-		_Vector_iterator<T> operator --(int) throw();
-		_Vector_iterator<T>& operator +=(int n) throw();
-		_Vector_iterator<T> operator +(int n) const throw();
-		_Vector_iterator<T>& operator -=(int n) throw();
-		_Vector_iterator<T> operator -(int n) const throw();
-		bool operator == (const _Vector_iterator<T> &iter) const throw();
-		bool operator != (const _Vector_iterator<T> &iter) const throw();
-		bool operator >  (const _Vector_iterator<T> &iter) const throw();
-		bool operator >= (const _Vector_iterator<T> &iter) const throw();
-		bool operator <  (const _Vector_iterator<T> &iter) const throw();
-		bool operator <= (const _Vector_iterator<T> &iter) const throw();
-		operator _Vector_const_iterator<T> () const throw();
+		_Vector_Iterator<T>& operator ++() throw();
+		_Vector_Iterator<T> operator ++(int) throw();
+		_Vector_Iterator<T>& operator --() throw();
+		_Vector_Iterator<T> operator --(int) throw();
+		_Vector_Iterator<T>& operator +=(int n) throw();
+		_Vector_Iterator<T> operator +(int n) const throw();
+		_Vector_Iterator<T>& operator -=(int n) throw();
+		_Vector_Iterator<T> operator -(int n) const throw();
+		bool operator == (const _Vector_Iterator<T> &iter) const throw();
+		bool operator != (const _Vector_Iterator<T> &iter) const throw();
+		bool operator >  (const _Vector_Iterator<T> &iter) const throw();
+		bool operator >= (const _Vector_Iterator<T> &iter) const throw();
+		bool operator <  (const _Vector_Iterator<T> &iter) const throw();
+		bool operator <= (const _Vector_Iterator<T> &iter) const throw();
+		operator _Vector_Const_Iterator<T> () const throw();
 
 		T *p_;
 	};
 
 	template<class T>
-	_Vector_iterator<T>::_Vector_iterator() : _Vector_const_iterator() throw()
+	_Vector_Iterator<T>::_Vector_Iterator() : _Vector_Const_Iterator() throw()
 	{
 	}
 
 	template<class T>
-	_Vector_iterator<T>::_Vector_iterator(T *p) throw() : p_(p)
+	_Vector_Iterator<T>::_Vector_Iterator(T *p) throw() : p_(p)
 	{
 	}
 
 	template<class T>
-	const T& _Vector_iterator<T>::operator *() const throw()
+	const T& _Vector_Iterator<T>::operator *() const throw()
 	{
 		return *p_;
 	}
 	template<class T>
-	T& _Vector_iterator<T>::operator *() throw()
+	T& _Vector_Iterator<T>::operator *() throw()
 	{
 		return (*p_);
 	}
 
 	template<class T>
-	const T* _Vector_iterator<T>::operator ->() const throw()
+	const T* _Vector_Iterator<T>::operator ->() const throw()
 	{
 		return p_;
 	}
 	template<class T>
-	T* _Vector_iterator<T>::operator ->() throw()
+	T* _Vector_Iterator<T>::operator ->() throw()
 	{
 		return p_;
 	}
 
 	template<class T>
-	_Vector_iterator<T>& _Vector_iterator<T>::operator ++() throw()
+	_Vector_Iterator<T>& _Vector_Iterator<T>::operator ++() throw()
 	{
 		++p_;
 		return *this;
 	}
 
 	template<class T>
-	_Vector_iterator<T> _Vector_iterator<T>::operator ++(int) throw()
+	_Vector_Iterator<T> _Vector_Iterator<T>::operator ++(int) throw()
 	{
 		T *tmp = p_++;
-		return _Vector_iterator<T>(tmp);
+		return _Vector_Iterator<T>(tmp);
 	}
 
 	template<class T>
-	_Vector_iterator<T>& _Vector_iterator<T>::operator --() throw()
+	_Vector_Iterator<T>& _Vector_Iterator<T>::operator --() throw()
 	{
 		--p_;
 		return *this;
 	}
 
 	template<class T>
-	_Vector_iterator<T> _Vector_iterator<T>::operator --(int) throw()
+	_Vector_Iterator<T> _Vector_Iterator<T>::operator --(int) throw()
 	{
 		T *tmp = p_--;
-		return _Vector_iterator<T>(tmp);
+		return _Vector_Iterator<T>(tmp);
 	}
 
 	template<class T>
-	_Vector_iterator<T>& _Vector_iterator<T>::operator +=(int n) throw()
+	_Vector_Iterator<T>& _Vector_Iterator<T>::operator +=(int n) throw()
 	{
 		p_ += n;
 		return *this;
 	}
 
 	template<class T>
-	_Vector_iterator<T> _Vector_iterator<T>::operator +(int n) const throw()
+	_Vector_Iterator<T> _Vector_Iterator<T>::operator +(int n) const throw()
 	{
-		return _Vector_iterator<T>((p_ + n));
+		return _Vector_Iterator<T>((p_ + n));
 	}
 
 	template<class T>
-	_Vector_iterator<T>& _Vector_iterator<T>::operator -=(int n) throw()
+	_Vector_Iterator<T>& _Vector_Iterator<T>::operator -=(int n) throw()
 	{
 		p_ -= n;
 		return *this;
 	}
 
 	template<class T>
-	_Vector_iterator<T> _Vector_iterator<T>::operator -(int n) const throw()
+	_Vector_Iterator<T> _Vector_Iterator<T>::operator -(int n) const throw()
 	{
-		return _Vector_iterator<T>(p_ - n);
+		return _Vector_Iterator<T>(p_ - n);
 	}
 
 	template<class T>
-	bool _Vector_iterator<T>::operator == (const _Vector_iterator<T> &iter) const throw()
+	bool _Vector_Iterator<T>::operator == (const _Vector_Iterator<T> &iter) const throw()
 	{
 		return (p_ == iter.p_);
 	}
 
 	template<class T>
-	bool _Vector_iterator<T>::operator != (const _Vector_iterator<T> &iter) const throw()
+	bool _Vector_Iterator<T>::operator != (const _Vector_Iterator<T> &iter) const throw()
 	{	
 		return (p_ != iter.p_);
 	}
 
 	template<class T>
-	bool _Vector_iterator<T>::operator > (const _Vector_iterator<T> &iter) const throw()
+	bool _Vector_Iterator<T>::operator > (const _Vector_Iterator<T> &iter) const throw()
 	{
 		return (p_ > iter.p_);
 	}
 
 	template<class T>
-	bool _Vector_iterator<T>::operator >= (const _Vector_iterator<T> &iter) const throw()
+	bool _Vector_Iterator<T>::operator >= (const _Vector_Iterator<T> &iter) const throw()
 	{	
 		return (p_ >= iter.p_);
 	}
 
 	template<class T>
-	bool _Vector_iterator<T>::operator < (const _Vector_iterator<T> &iter) const throw()
+	bool _Vector_Iterator<T>::operator < (const _Vector_Iterator<T> &iter) const throw()
 	{
 		return (p_ < iter.p_);
 	}
 
 	template<class T>
-	bool _Vector_iterator<T>::operator <= (const _Vector_iterator<T> &iter) const throw()
+	bool _Vector_Iterator<T>::operator <= (const _Vector_Iterator<T> &iter) const throw()
 	{	
 		return (p_ <= iter.p_);
 	}
 
 	template<class T>
-	_Vector_iterator<T>::operator _Vector_const_iterator<T>() const throw()
+	_Vector_Iterator<T>::operator _Vector_Const_Iterator<T>() const throw()
 	{
-		return _Vector_const_iterator<T>(p_);
+		return _Vector_Const_Iterator<T>(p_);
 	}
 }
 
