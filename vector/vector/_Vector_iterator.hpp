@@ -35,7 +35,7 @@ namespace xf
 		bool operator <  (const _Vector_Iterator<T> &iter) const throw();
 		bool operator <= (const _Vector_Iterator<T> &iter) const throw();
 		operator _Vector_Const_Iterator<T> () const throw();
-
+	private:
 		T *p_;
 	};
 

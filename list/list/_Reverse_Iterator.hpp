@@ -11,8 +11,7 @@ namespace xf
 		typedef typename T::pointer pointer;
 
 		_Reverse_Iterator();
-		explicit _Reverse_Iterator(const pointer &right) throw();
-		explicit _Reverse_Iterator(const T &right) throw();
+		explicit _Reverse_Iterator(T right) throw();
 		// 用于类型转换的构造函数
 		template<class Other>
 		_Reverse_Iterator(const _Reverse_Iterator<Other> &right) throw();
@@ -33,7 +32,8 @@ namespace xf
 
 		bool operator == (const _Reverse_Iterator &right) const throw();
 		bool operator != (const _Reverse_Iterator &right) const throw();
-	private:
+	//private:
+		// 设计为public变量，为了便于类型转换（否则在list实现时，将指向tail_的reverse_iterator转换为const_reverse_iterator时会有空指针错误）
 		T iter_;
 	};
 
@@ -44,19 +44,13 @@ namespace xf
 	}
 
 	template<class T>
-	_Reverse_Iterator<T>::_Reverse_Iterator(const pointer &right) throw() : iter_(right)
-	{
-		;
-	}
-
-	template<class T>
-	_Reverse_Iterator<T>::_Reverse_Iterator(const T &right) : iter_(right - 1)
+	_Reverse_Iterator<T>::_Reverse_Iterator(T right) : iter_(--right)
 	{
 		;
 	}
 
 	template<class T> template<class Other>
-	_Reverse_Iterator<T>::_Reverse_Iterator(const _Reverse_Iterator<Other> &right) throw() : iter_(right.base() - 1)
+	_Reverse_Iterator<T>::_Reverse_Iterator(const _Reverse_Iterator<Other> &right) throw() : iter_(right.iter_)
 	{
 		;
 	}
@@ -64,7 +58,8 @@ namespace xf
 	template<class T>
 	T _Reverse_Iterator<T>::base() const throw()
 	{
-		return iter_ + 1;
+		T ret_val = iter_;
+		return ++ret_val;
 	}
 
 	template<class T>

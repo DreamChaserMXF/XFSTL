@@ -422,7 +422,7 @@ namespace xf
 	template<class T>
 	typename vector<T>::iterator vector<T>::insert(const const_iterator &_Where, size_t _Count, const T &_Value) throw(std::bad_alloc, std::length_error, std::bad_cast)
 	{
-		insert_n(_Where, _Count, _Value);
+		return insert_n(_Where, _Count, _Value);
 	}
 
 	template<class T>template<class Iter>
@@ -603,7 +603,7 @@ namespace xf
 	template<class T>
 	typename vector<T>::const_reverse_iterator vector<T>::crbegin() const throw()
 	{
-		return const_reverse_iterator(p_ + size_ - 1);
+		return const_reverse_iterator(cend());
 	}
 	template<class T>
 	typename vector<T>::const_reverse_iterator vector<T>::rbegin() const throw()
@@ -613,13 +613,13 @@ namespace xf
 	template<class T>
 	typename vector<T>::reverse_iterator vector<T>::rbegin() throw()
 	{
-		return reverse_iterator(p_ + size_ - 1);
+		return reverse_iterator(end());
 	}
 
 	template<class T>
 	typename vector<T>::const_reverse_iterator vector<T>::crend() const throw()
 	{
-		return const_reverse_iterator(p_ - 1);
+		return const_reverse_iterator(cbegin());
 	}
 	template<class T>
 	typename vector<T>::const_reverse_iterator vector<T>::rend() const throw()
@@ -629,7 +629,7 @@ namespace xf
 	template<class T>
 	typename vector<T>::reverse_iterator vector<T>::rend() throw()
 	{
-		return reverse_iterator(p_ - 1);
+		return reverse_iterator(begin());
 	}
 
 	// STL中的=运算符中，对每个元素的复制，不一定用每个元素的=还是拷贝构造函数
@@ -778,7 +778,7 @@ namespace xf
 		}
 		else	// 不须扩容
 		{
-			T *cur = const_cast<T*>(_Where.p_);
+			const T *cur = _Where.p_;
 			T *last = p_ + size_ + _Count - 1;
 			// 须要构造的部分
 			while(last >= p_ + size_)
@@ -799,7 +799,7 @@ namespace xf
 				--last;
 			}
 			size_ += _Count;
-			return iterator(cur);
+			return iterator(const_cast<T*>(cur));
 		}
 	}
 }

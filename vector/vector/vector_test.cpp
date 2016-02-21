@@ -522,12 +522,24 @@ void vector_test()
 		}
 		cout << endl;
 
-		// const reverse iterator --
-		cout << "const reverse iterator --" << endl;
+		// const reverse iterator preorder --
+		cout << "const reverse preorder iterator --" << endl;
 		cout << '\t';
 		for(vector<int>::const_reverse_iterator iter = v4.rend() - 1; iter != v4.rbegin() - 1; --iter)
 		{
 			cout << *iter << ends;
+			vector<int>::const_reverse_iterator next_iter = --iter;
+			cout << *next_iter << ends;
+		}
+		cout << endl;
+		// const reverse iterator postorder --
+		cout << "const reverse postorder iterator --" << endl;
+		cout << '\t';
+		for(vector<int>::const_reverse_iterator iter = v4.rend() - 1; iter != v4.rbegin() - 1; iter--)
+		{
+			cout << *iter << ends;
+			vector<int>::const_reverse_iterator next_iter = (iter--) - 1;
+			cout << *next_iter << ends;
 		}
 		cout << endl;
 
@@ -703,6 +715,32 @@ void vector_test()
 			}
 			cout << endl;
 		}
+
+		// iterator assignment
+		cout << "iterator assignment" << endl;
+		cout << "iterator" << endl;
+		for(vector<int>::iterator iter = v4.begin(); iter != v4.end(); ++iter)
+		{
+			*iter = 123;
+		}
+		cout << '\t';
+		for(vector<int>::iterator iter = v4.begin(); iter != v4.end(); ++iter)
+		{
+			cout << *iter << ' ';
+		}
+		cout << endl;
+
+		cout << "reverse iterator" << endl;
+		for(vector<int>::reverse_iterator iter = v4.rbegin(); iter != v4.rend(); ++iter)
+		{
+			*iter = 321;
+		}
+		cout << '\t';
+		for(vector<int>::reverse_iterator iter = v4.rbegin(); iter != v4.rend(); ++iter)
+		{
+			cout << *iter << ' ';
+		}
+		cout << endl;
 	}
 
 	// another constructor

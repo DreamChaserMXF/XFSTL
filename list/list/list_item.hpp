@@ -26,7 +26,7 @@ namespace xf
 			item_ptr_[1] = NULL;
 		}
 		T val_;
-		list_item *item_ptr_[2];
+		list_item<T> *item_ptr_[2];
 	};
 }
 

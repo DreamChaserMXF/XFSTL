@@ -87,7 +87,7 @@ namespace xf
 	template<class T>
 	_List_Iterator<T>& _List_Iterator<T>::operator --() throw()
 	{
-		p_ = p_->item_ptr_[next_index_];
+		p_ = p_->item_ptr_[prev_index_];
 		return *this;
 	}
 
@@ -95,7 +95,7 @@ namespace xf
 	_List_Iterator<T> _List_Iterator<T>::operator --(int) throw()
 	{
 		_List_Iterator<T> iter(*this);
-		p_ = p_->item_ptr_[next_index_];
+		p_ = p_->item_ptr_[prev_index_];
 		return iter;
 	}
 

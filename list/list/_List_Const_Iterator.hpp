@@ -23,7 +23,8 @@ namespace xf
 		_List_Const_Iterator<T> operator --(int) throw();
 		bool operator == (const _List_Const_Iterator<T> &iter) const throw();
 		bool operator != (const _List_Const_Iterator<T> &iter) const throw();
-		const list_item<T> *p_;
+
+		const list_item<T> *p_;		// 这里必须要明确参数
 		enum PTR_POS prev_index_;
 		enum PTR_POS next_index_;
 	};
@@ -72,7 +73,7 @@ namespace xf
 	template<class T>
 	_List_Const_Iterator<T>& _List_Const_Iterator<T>::operator --() throw()
 	{
-		p_ = p_->item_ptr_[next_index_];
+		p_ = p_->item_ptr_[prev_index_];
 		return *this;
 	}
 
@@ -80,7 +81,7 @@ namespace xf
 	_List_Const_Iterator<T> _List_Const_Iterator<T>::operator --(int) throw()
 	{
 		_List_Const_Iterator<T> iter(*this);
-		p_ = p_->item_ptr_[next_index_];
+		p_ = p_->item_ptr_[prev_index_];
 		return iter;
 	}
 
