@@ -1,5 +1,5 @@
-#ifndef _REVERSE_ITERATOR_HPP
-#define _REVERSE_ITERATOR_HPP
+#ifndef XF_REVERSE_ITERATOR_HPP
+#define XF_REVERSE_ITERATOR_HPP
 
 namespace xf
 {
@@ -27,9 +27,10 @@ namespace xf
 		_Reverse_Iterator<T>& operator --() throw();
 		_Reverse_Iterator<T> operator --(int) throw();
 		_Reverse_Iterator<T>& operator +=(int n) throw();
-		_Reverse_Iterator<T> operator +(int n) throw();
+		_Reverse_Iterator<T> operator +(int n) const throw();
 		_Reverse_Iterator<T>& operator -=(int n) throw();
-		_Reverse_Iterator<T> operator -(int n) throw();
+		_Reverse_Iterator<T> operator -(int n) const throw();
+		int operator -(const _Reverse_Iterator &right) const throw();
 
 		bool operator == (const _Reverse_Iterator &right) const throw();
 		bool operator != (const _Reverse_Iterator &right) const throw();
@@ -124,7 +125,7 @@ namespace xf
 	}
 
 	template<class T>
-	_Reverse_Iterator<T> _Reverse_Iterator<T>::operator +(int n) throw()
+	_Reverse_Iterator<T> _Reverse_Iterator<T>::operator +(int n) const throw()
 	{
 		_Reverse_Iterator<T> tmp = *this;
 		return (tmp += n);
@@ -138,10 +139,16 @@ namespace xf
 	}
 
 	template<class T>
-	_Reverse_Iterator<T> _Reverse_Iterator<T>::operator -(int n) throw()
+	_Reverse_Iterator<T> _Reverse_Iterator<T>::operator -(int n) const throw()
 	{
 		_Reverse_Iterator<T> tmp = *this;
 		return (tmp -= n);
+	}
+
+	template<class T>
+	int _Reverse_Iterator<T>::operator -(const _Reverse_Iterator &right) const throw()
+	{
+		return right.iter_ - iter_;
 	}
 
 	template<class T>

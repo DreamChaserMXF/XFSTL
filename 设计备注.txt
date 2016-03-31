@@ -33,3 +33,5 @@ reverse_const_iterator reverse_iterator
 问题在于，当rever_iterator指向list的tail_元素时，在“还原出模板参数的对象”步骤，会将reverse_iterator中的iterator对象指向tail_元素的下一个元素，此时下一个元素是NULL。之后，再对NULL解引用时出错。
 
 所以将reverse_iterator中的iterator对象设为public变量，不严格还原模板参数对象，而是直接转换iterator对象即可。
+
+四、迭代器对象一定要定义value_type，否则，在实现算法时，只有迭代器参数，而不知道值类型的话，无法申请临时变量，也就无法进行两个元素的交换。

@@ -1,5 +1,5 @@
-#ifndef _VECTOR_ITERATOR
-#define _VECTOR_ITERATOR
+#ifndef XF_LIST_ITERATOR_HPP
+#define XF_LIST_ITERATOR_HPP
 #include "list_item.hpp"
 #include "_List_Const_Iterator.hpp"
 
