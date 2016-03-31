@@ -35,3 +35,4 @@ reverse_const_iterator reverse_iterator
 所以将reverse_iterator中的iterator对象设为public变量，不严格还原模板参数对象，而是直接转换iterator对象即可。
 
 四、迭代器对象一定要定义value_type，否则，在实现算法时，只有迭代器参数，而不知道值类型的话，无法申请临时变量，也就无法进行两个元素的交换。
+哦不，其实只要定义pointer类型就可以了，可以通过NULL转为pointer类型，再解引用，获得value_type
