@@ -1,5 +1,5 @@
-#ifndef _VECTOR_ITERATOR
-#define _VECTOR_ITERATOR
+#ifndef XF_VECTOR_ITERATOR_HPP
+#define XF_VECTOR_ITERATOR_HPP
 
 #include "_Vector_Const_Iterator.hpp"
 
@@ -29,6 +29,7 @@ namespace xf
 		_Vector_Iterator<T> operator +(int n) const throw();
 		_Vector_Iterator<T>& operator -=(int n) throw();
 		_Vector_Iterator<T> operator -(int n) const throw();
+		int operator -(const _Vector_Iterator<T> &iter) const throw();
 		bool operator == (const _Vector_Iterator<T> &iter) const throw();
 		bool operator != (const _Vector_Iterator<T> &iter) const throw();
 		bool operator >  (const _Vector_Iterator<T> &iter) const throw();
@@ -124,6 +125,12 @@ namespace xf
 	_Vector_Iterator<T> _Vector_Iterator<T>::operator -(int n) const throw()
 	{
 		return _Vector_Iterator<T>(p_ - n);
+	}
+
+	template<class T>
+	int _Vector_Iterator<T>::operator -(const _Vector_Iterator<T> &iter) const throw()
+	{
+		return p_ - iter.p_;
 	}
 
 	template<class T>

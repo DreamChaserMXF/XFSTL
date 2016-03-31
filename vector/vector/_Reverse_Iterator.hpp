@@ -9,6 +9,7 @@ namespace xf
 	public:
 		typedef typename T::reference reference;
 		typedef typename T::pointer pointer;
+		typedef T value_type;
 
 		_Reverse_Iterator();
 		//explicit _Reverse_Iterator(const pointer &right) throw();
