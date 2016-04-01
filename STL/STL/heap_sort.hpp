@@ -3,31 +3,75 @@
 
 namespace xf
 {
+	//template<class _Iter, class value_type>
+	//void max_heapify(_Iter first, int length, int index, const value_type &null_val)
+	//{
+	//	int left_child = index * 2 + 1;
+	//	int right_child = (index + 1) * 2;
+	//	if(right_child < length && *(first + right_child) > *(first + left_child))
+	//	{
+	//		// right is larger than left
+	//		// test if right is larger than index
+	//		if(*(first + right_child) > *(first + index))
+	//		{
+	//			// exchange the object pointed by index and right_child
+	//			value_type tmp(*(first + index));
+	//			*(first + index) = *(first + right_child);
+	//			*(first + right_child) = tmp;
+	//			max_heapify(first, length, right_child, null_val);
+	//		}
+	//	}
+	//	else if(left_child < length && *(first + left_child) > *(first + index))
+	//	{
+	//		// exchange the object pointed by index and left_child
+	//		value_type tmp(*(first + index));
+	//		*(first + index) = *(first + left_child);
+	//		*(first + left_child) = tmp;
+	//		max_heapify(first, length, left_child, null_val);
+	//	}
+	//}
+
+	// 尾递归优化后的max_heapify
 	template<class _Iter, class value_type>
 	void max_heapify(_Iter first, int length, int index, const value_type &null_val)
 	{
-		int left_child = index * 2 + 1;
-		int right_child = (index + 1) * 2;
-		if(right_child < length && *(first + right_child) > *(first + left_child))
+		while(index >= 0)	// 用index来指示是否退出循环
 		{
-			// right is larger than left
-			// test if right is larger than index
-			if(*(first + right_child) > *(first + index))
+			int left_child = index * 2 + 1;
+			int right_child = (index + 1) * 2;
+			if(right_child < length && *(first + right_child) > *(first + left_child))
 			{
-				// exchange the object pointed by index and right_child
-				value_type tmp(*(first + index));
-				*(first + index) = *(first + right_child);
-				*(first + right_child) = tmp;
-				max_heapify(first, length, right_child, null_val);
+				// right is larger than left
+				// test if right is larger than index
+				if(*(first + right_child) > *(first + index))
+				{
+					// exchange the object pointed by index and right_child
+					value_type tmp(*(first + index));
+					*(first + index) = *(first + right_child);
+					*(first + right_child) = tmp;
+					
+					//max_heapify(first, length, right_child, null_val);
+					index = right_child;
+				}
+				else
+				{
+					index = -1;
+				}
 			}
-		}
-		else if(left_child < length && *(first + left_child) > *(first + index))
-		{
-			// exchange the object pointed by index and left_child
-			value_type tmp(*(first + index));
-			*(first + index) = *(first + left_child);
-			*(first + left_child) = tmp;
-			max_heapify(first, length, left_child, null_val);
+			else if(left_child < length && *(first + left_child) > *(first + index))
+			{
+				// exchange the object pointed by index and left_child
+				value_type tmp(*(first + index));
+				*(first + index) = *(first + left_child);
+				*(first + left_child) = tmp;
+				
+				//max_heapify(first, length, left_child, null_val);
+				index = left_child;
+			}
+			else
+			{
+				index = -1;
+			}
 		}
 	}
 
