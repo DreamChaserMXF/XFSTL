@@ -2,11 +2,11 @@
 #include "vector.hpp"
 #include "sort.hpp"
 
-bool lessthan_func(const int &lhs, const int &rhs)
+static bool lessthan_func(const int &lhs, const int &rhs)
 {
 	return lhs < rhs;
 }
-bool largerthan_func(const int &lhs, const int &rhs)
+static bool largerthan_func(const int &lhs, const int &rhs)
 {
 	return lhs > rhs;
 }
@@ -20,9 +20,20 @@ public:
 	}
 };
 
+class larger_than_class
+{
+public:
+	bool operator () (int a, int b) const
+	{
+		return a > b;
+	}
+};
+
 
 void sort_test()
 {
+	printf("\nsort test:\n");
+
 	int a[] = {1,3,5,7,9,2,4,6,8,10};
 	int b[] = {1,3,5,7,9,2,4,6,8,10};
 	int length = sizeof(a) / sizeof(a[0]);
@@ -55,6 +66,13 @@ void sort_test()
 	{
 		printf("%d ", vb[i]);
 	}
+	printf("\n");
+
+	sort(vb.begin(), vb.end(), larger_than_class());
+	for(int i = 0; i < length; ++i)
+	{
+		printf("%d ", vb[i]);
+	}
 	printf("\n\n");
 
 
@@ -80,6 +98,13 @@ void sort_test()
 	printf("\n");
 
 	xf::sort(b, b + length, less_than_class());
+	for(int i = 0; i < length; ++i)
+	{
+		printf("%d ", b[i]);
+	}
+	printf("\n");
+
+	xf::sort(b, b + length, larger_than_class());
 	for(int i = 0; i < length; ++i)
 	{
 		printf("%d ", b[i]);

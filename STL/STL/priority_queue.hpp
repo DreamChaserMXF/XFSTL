@@ -27,10 +27,11 @@ namespace xf
 		const T& top() const;
 		T& top();
 
-	private:
+	protected:
 		void max_heapify_descending(int index);
 		void max_heapify_ascending(int index);
 		_Container arr_;
+		_Comparer comparer_;
 	};
 
 	template<class T, class _Container, class _Comparer>
@@ -79,11 +80,11 @@ namespace xf
 		{
 			size_t left_child = index * 2 + 1;
 			size_t right_child = (index + 1) * 2;
-			if(right_child < arr_.size() && arr_[right_child] > arr_[left_child])
+			if(right_child < arr_.size() && comparer_(arr_[left_child], arr_[right_child]))
 			{
 				// right is larger than left
 				// test if right is larger than index
-				if(arr_[right_child] > arr_[index])
+				if(comparer_(arr_[index], arr_[right_child]))
 				{
 					// exchange the object pointed by index and right_child
 					T tmp(arr_[index]);
@@ -98,7 +99,7 @@ namespace xf
 					index = -1;
 				}
 			}
-			else if(left_child < arr_.size() && arr_[left_child] > arr_[index])
+			else if(left_child < arr_.size() && comparer_(arr_[index], arr_[left_child]))
 			{
 				// exchange the object pointed by index and left_child
 				T tmp(arr_[index]);
@@ -121,7 +122,7 @@ namespace xf
 		while(index > 0)
 		{
 			int parent = (index - 1) / 2;
-			if(arr_[index] > arr_[parent])
+			if(comparer_(arr_[parent], arr_[index]))
 			{
 				T tmp(arr_[index]);
 				arr_[index] = arr_[parent];
