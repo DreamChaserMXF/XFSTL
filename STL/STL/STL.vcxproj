@@ -76,6 +76,7 @@
   <ItemGroup>
     <ClInclude Include="heap_sort.hpp" />
     <ClInclude Include="list_item.hpp" />
+    <ClInclude Include="priority_queue.hpp" />
     <ClInclude Include="sort.hpp" />
     <ClInclude Include="vector.hpp" />
     <ClInclude Include="_Iterator_Traits.hpp" />
@@ -86,6 +87,7 @@
     <ClInclude Include="_Vector_iterator.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="adapter_test.cpp" />
     <ClCompile Include="list_test.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="multifile_test.cpp" />

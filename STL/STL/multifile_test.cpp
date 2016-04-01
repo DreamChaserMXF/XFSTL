@@ -5,8 +5,8 @@
 // for multi file test
 void multi_file_test()
 {
-	//xf::vector<int> vi;
-	//xf::vector<double> vd;
+	xf::vector<int> vi;
+	xf::vector<double> vd;
 	xf::list<int> li;
 	xf::list<double> ld;
 	int i = 0;

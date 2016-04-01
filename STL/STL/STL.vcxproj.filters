@@ -25,6 +25,9 @@
     <Filter Include="Header Files\vector">
       <UniqueIdentifier>{50a0713e-a4b7-4263-9a40-6ea34cb2422f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\adaptor">
+      <UniqueIdentifier>{905a2f65-9072-4119-abd5-5f909350fb2c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="heap_sort.hpp">
@@ -57,6 +60,9 @@
     <ClInclude Include="vector.hpp">
       <Filter>Header Files\vector</Filter>
     </ClInclude>
+    <ClInclude Include="priority_queue.hpp">
+      <Filter>Header Files\adaptor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="list_test.cpp">
@@ -68,11 +74,14 @@
     <ClCompile Include="multifile_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sort_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="vector_test.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files\vector</Filter>
+    </ClCompile>
+    <ClCompile Include="sort_test.cpp">
+      <Filter>Header Files\algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="adapter_test.cpp">
+      <Filter>Header Files\adaptor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

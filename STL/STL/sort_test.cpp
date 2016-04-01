@@ -2,14 +2,23 @@
 #include "vector.hpp"
 #include "sort.hpp"
 
-bool my_lessthan(const int &lhs, const int &rhs)
+bool lessthan_func(const int &lhs, const int &rhs)
 {
 	return lhs < rhs;
 }
-bool my_largerthan(const int &lhs, const int &rhs)
+bool largerthan_func(const int &lhs, const int &rhs)
 {
 	return lhs > rhs;
 }
+
+class less_than_class
+{
+public:
+	bool operator () (int a, int b) const
+	{
+		return a < b;
+	}
+};
 
 
 void sort_test()
@@ -27,19 +36,27 @@ void sort_test()
 	}
 	printf("\n");
 
-	sort(vb.begin(), vb.end(), my_lessthan);
+	sort(vb.begin(), vb.end(), lessthan_func);
 	for(int i = 0; i < length; ++i)
 	{
 		printf("%d ", vb[i]);
 	}
 	printf("\n");
 
-	sort(vb.begin(), vb.end(), my_largerthan);
+	sort(vb.begin(), vb.end(), largerthan_func);
 	for(int i = 0; i < length; ++i)
 	{
 		printf("%d ", vb[i]);
 	}
 	printf("\n");
+
+	sort(vb.begin(), vb.end(), less_than_class());
+	for(int i = 0; i < length; ++i)
+	{
+		printf("%d ", vb[i]);
+	}
+	printf("\n\n");
+
 
 	xf::sort(a, a + length);
 	for(int i = 0; i < length; ++i)
@@ -48,14 +65,21 @@ void sort_test()
 	}
 	printf("\n");
 
-	xf::sort(b, b + length, my_lessthan);
+	xf::sort(b, b + length, lessthan_func);
 	for(int i = 0; i < length; ++i)
 	{
 		printf("%d ", b[i]);
 	}
 	printf("\n");
 
-	xf::sort(b, b + length, my_largerthan);
+	xf::sort(b, b + length, largerthan_func);
+	for(int i = 0; i < length; ++i)
+	{
+		printf("%d ", b[i]);
+	}
+	printf("\n");
+
+	xf::sort(b, b + length, less_than_class());
 	for(int i = 0; i < length; ++i)
 	{
 		printf("%d ", b[i]);
