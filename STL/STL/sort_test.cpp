@@ -40,7 +40,15 @@ void sort_test()
 	xf::vector<int> va(a, a + length);
 	xf::vector<int> vb(va);
 
+	// vector sort
 	sort(va.begin(), va.end());
+	for(int i = 0; i < length; ++i)
+	{
+		printf("%d ", va[i]);
+	}
+	printf("\n");
+
+	sort(va.rbegin(), va.rend());
 	for(int i = 0; i < length; ++i)
 	{
 		printf("%d ", va[i]);
@@ -76,6 +84,7 @@ void sort_test()
 	printf("\n\n");
 
 
+	// array sort
 	xf::sort(a, a + length);
 	for(int i = 0; i < length; ++i)
 	{

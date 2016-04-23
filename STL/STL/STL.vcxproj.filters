@@ -28,6 +28,15 @@
     <Filter Include="Header Files\adaptor">
       <UniqueIdentifier>{905a2f65-9072-4119-abd5-5f909350fb2c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\ContainerTest">
+      <UniqueIdentifier>{1a7dac65-300e-44f4-9928-0cac24c51707}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AlgorithmTest">
+      <UniqueIdentifier>{4605d394-95ac-4396-bdd8-f2439c3ca909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AdaptorTest">
+      <UniqueIdentifier>{d9a9673e-b486-4fac-b7b9-4027f24a3373}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="heap_sort.hpp">
@@ -63,11 +72,14 @@
     <ClInclude Include="priority_queue.hpp">
       <Filter>Header Files\adaptor</Filter>
     </ClInclude>
+    <ClInclude Include="quick_sort.hpp">
+      <Filter>Header Files\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="common.hpp">
+      <Filter>Header Files\algorithm</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="list_test.cpp">
-      <Filter>Header Files\list</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -75,13 +87,16 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vector_test.cpp">
-      <Filter>Header Files\vector</Filter>
+      <Filter>Source Files\ContainerTest</Filter>
+    </ClCompile>
+    <ClCompile Include="list_test.cpp">
+      <Filter>Source Files\ContainerTest</Filter>
     </ClCompile>
     <ClCompile Include="sort_test.cpp">
-      <Filter>Header Files\algorithm</Filter>
+      <Filter>Source Files\AlgorithmTest</Filter>
     </ClCompile>
     <ClCompile Include="adapter_test.cpp">
-      <Filter>Header Files\adaptor</Filter>
+      <Filter>Source Files\AdaptorTest</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

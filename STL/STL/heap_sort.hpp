@@ -32,10 +32,14 @@ namespace xf
 	//}
 
 	// 尾递归优化后的max_heapify
+	// first： 数组首元素的迭代器
+	// length：数组长度
+	// index:  要最大化堆的节点序号
+	// null_val: 空的数组元素值
 	template<class _Iter, class value_type>
 	void max_heapify(_Iter first, int length, int index, const value_type &null_val)
 	{
-		while(index >= 0)	// 用index来指示是否退出循环
+		while(index >= 0)	// 用index来指示尾递归的结束条件
 		{
 			int left_child = index * 2 + 1;
 			int right_child = (index + 1) * 2;
