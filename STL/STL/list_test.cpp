@@ -611,6 +611,7 @@ void list_test()
 		vui.assign(10, 100);
 	}
 	
+	cout << "string as template parameter:\n";
 	list<string> vs;
 	vs.push_back("abc");
 	cout << vs.front() << endl;

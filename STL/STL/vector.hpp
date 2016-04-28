@@ -388,8 +388,8 @@ namespace xf
 			// 新申请空间并分两段复制，空下需要插入的元素的位置
 			size_t new_capacity = get_new_capacity();
 			T * new_ptr = static_cast<T*>(operator new[] (new_capacity * sizeof(T)));
-			std::uninitialized_copy(p_, p_ + offset, new_ptr);
-			std::uninitialized_copy(p_ + offset, p_ + size_, new_ptr + offset + 1);
+			std::uninitialized_copy(p_, p_ + offset, new_ptr);	// 前段
+			std::uninitialized_copy(p_ + offset, p_ + size_, new_ptr + offset + 1);	// 后段
 			// 插入新的元素
 			new (new_ptr + offset) T(_Value);
 			// 销毁原来的空间
@@ -748,6 +748,7 @@ namespace xf
 		std::uninitialized_fill(p_, p_ + count, val);
 	}
 
+	// 公用函数，用于真正的count value型插入，以及迭代器插入的函数模板的特化版本
 	template<class T>
 	typename vector<T>::iterator vector<T>::insert_n(const const_iterator _Where, size_t _Count, const T &_Value) throw(std::bad_alloc, std::length_error, std::bad_cast)
 	{

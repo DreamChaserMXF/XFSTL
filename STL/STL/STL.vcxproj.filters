@@ -37,6 +37,9 @@
     <Filter Include="Source Files\AdaptorTest">
       <UniqueIdentifier>{d9a9673e-b486-4fac-b7b9-4027f24a3373}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\deque">
+      <UniqueIdentifier>{a3485df3-abc0-46b3-85b3-ce2785eef4e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="heap_sort.hpp">
@@ -78,6 +81,24 @@
     <ClInclude Include="common.hpp">
       <Filter>Header Files\algorithm</Filter>
     </ClInclude>
+    <ClInclude Include="list.hpp">
+      <Filter>Header Files\list</Filter>
+    </ClInclude>
+    <ClInclude Include="deque.hpp">
+      <Filter>Header Files\deque</Filter>
+    </ClInclude>
+    <ClInclude Include="_Deque_Const_Iterator.hpp">
+      <Filter>Header Files\deque</Filter>
+    </ClInclude>
+    <ClInclude Include="_Deque_Iterator.hpp">
+      <Filter>Header Files\deque</Filter>
+    </ClInclude>
+    <ClInclude Include="stack.hpp">
+      <Filter>Header Files\adaptor</Filter>
+    </ClInclude>
+    <ClInclude Include="queue.hpp">
+      <Filter>Header Files\adaptor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -95,7 +116,19 @@
     <ClCompile Include="sort_test.cpp">
       <Filter>Source Files\AlgorithmTest</Filter>
     </ClCompile>
+    <ClCompile Include="priority_queue_test.cpp">
+      <Filter>Source Files\AdaptorTest</Filter>
+    </ClCompile>
     <ClCompile Include="adapter_test.cpp">
+      <Filter>Source Files\AdaptorTest</Filter>
+    </ClCompile>
+    <ClCompile Include="deque_test.cpp">
+      <Filter>Source Files\ContainerTest</Filter>
+    </ClCompile>
+    <ClCompile Include="queue_test.cpp">
+      <Filter>Source Files\AdaptorTest</Filter>
+    </ClCompile>
+    <ClCompile Include="stack_test.cpp">
       <Filter>Source Files\AdaptorTest</Filter>
     </ClCompile>
   </ItemGroup>

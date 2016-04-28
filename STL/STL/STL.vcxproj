@@ -75,12 +75,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="common.hpp" />
+    <ClInclude Include="deque.hpp" />
     <ClInclude Include="heap_sort.hpp" />
+    <ClInclude Include="list.hpp" />
     <ClInclude Include="list_item.hpp" />
     <ClInclude Include="priority_queue.hpp" />
+    <ClInclude Include="queue.hpp" />
     <ClInclude Include="quick_sort.hpp" />
     <ClInclude Include="sort.hpp" />
+    <ClInclude Include="stack.hpp" />
     <ClInclude Include="vector.hpp" />
+    <ClInclude Include="_Deque_Const_Iterator.hpp" />
+    <ClInclude Include="_Deque_Iterator.hpp" />
     <ClInclude Include="_Iterator_Traits.hpp" />
     <ClInclude Include="_List_Const_Iterator.hpp" />
     <ClInclude Include="_List_Iterator.hpp" />
@@ -90,10 +96,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="adapter_test.cpp" />
+    <ClCompile Include="deque_test.cpp" />
+    <ClCompile Include="priority_queue_test.cpp" />
     <ClCompile Include="list_test.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="multifile_test.cpp" />
+    <ClCompile Include="queue_test.cpp" />
     <ClCompile Include="sort_test.cpp" />
+    <ClCompile Include="stack_test.cpp" />
     <ClCompile Include="vector_test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

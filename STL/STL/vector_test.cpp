@@ -32,13 +32,27 @@ public:
 	int n;
 };
 
+class NoDefaultConstructorClass
+{
+public:
+	NoDefaultConstructorClass(int n){}
+};
+
+
 void vector_test()
 {
 	//void multi_file_test();
 	//multi_file_test();
 
-	
-
+	{
+		cout << "default constructor test:\n";
+		vector<NoDefaultConstructorClass> v;
+		cout << "\tsize: " << v.size();
+		cout << "\n\tisempty: " << std::boolalpha << v.empty() << std::noboolalpha;
+		cout << endl;
+		NoDefaultConstructorClass c(1);
+		v.push_back(c);
+	}
 	// assign, front, back, push, pop, clear
 	vector<int> v1;
 	{

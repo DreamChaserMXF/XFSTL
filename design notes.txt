@@ -36,3 +36,13 @@ reverse_const_iterator reverse_iterator
 
 四、迭代器对象一定要定义value_type，否则，在实现算法时，只有迭代器参数，而不知道值类型的话，无法申请临时变量，也就无法进行两个元素的交换。
 哦不，其实只要定义pointer类型就可以了，可以通过NULL转为pointer类型，再解引用，获得value_type
+
+
+五、deque中，首个和末个bin的有效区段标号
+首个bin的有效区段为[front_bin_index_, SEGMENT_LENGTH)
+末个bin的有效区段为[0, back_bin_index_)
+在计算size()时，由于front_bin_index_与back_bin_index_的默认值(0, SEGMENT_LENGTH-1)，故当map_长度为0或1时，计算出的都是正确的长度，无须特殊处理
+在执行push_front与push_back时，也无须特殊处理
+
+【问题是】当map_长度为1时，front_bin_index_与back_bin_index_表示同一个bin，这时会造成什么影响？
+在拷贝构造函数与析构函数中，需要对map_为1时进行特殊判断：若其中任意一个不为默认值，则视作其有效。若两个都是默认值，则可视作任意一个有效

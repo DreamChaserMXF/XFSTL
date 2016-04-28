@@ -20,6 +20,8 @@ namespace xf
 	{
 	public:
 		//typedef T value_type;
+		priority_queue();
+		priority_queue(const _Container container);
 		bool empty() const;
 		size_t size() const;
 		void push(const T &val);
@@ -27,12 +29,25 @@ namespace xf
 		const T& top() const;
 		T& top();
 
-	protected:
+	//protected:
+	private:
+		void max_heapify();
 		void max_heapify_descending(int index);
 		void max_heapify_ascending(int index);
 		_Container arr_;
 		_Comparer comparer_;
 	};
+
+	template<class T, class _Container, class _Comparer>
+	priority_queue<T, _Container, _Comparer>::priority_queue() : arr_(), comparer_()
+	{
+		;
+	}
+	template<class T, class _Container, class _Comparer>
+	priority_queue<T, _Container, _Comparer>::priority_queue(const _Container container) : arr_(container), comparer_()
+	{
+		max_heapify();
+	}
 
 	template<class T, class _Container, class _Comparer>
 	bool priority_queue<T, _Container, _Comparer>::empty() const
@@ -74,6 +89,15 @@ namespace xf
 	}
 
 	template<class T, class _Container, class _Comparer>
+	void priority_queue<T, _Container, _Comparer>::max_heapify()
+	{
+		for(int i = static_cast<int>(arr_.size() / 2) - 1; i >= 0; --i)	// last node's index = length-1，its parent's index = (length-1-1)/2
+		{
+			max_heapify_descending(i);
+		}
+	}
+
+	template<class T, class _Container, class _Comparer>
 	void priority_queue<T, _Container, _Comparer>::max_heapify_descending(int index)
 	{
 		while(index >= 0)	// 用index来指示是否退出循环
@@ -91,7 +115,7 @@ namespace xf
 					arr_[index] = arr_[right_child];
 					arr_[right_child] = tmp;
 					
-					//max_heapify(right_child);
+					//max_heapify_descending(right_child);
 					index = right_child;
 				}
 				else
@@ -106,7 +130,7 @@ namespace xf
 				arr_[index] = arr_[left_child];
 				arr_[left_child] = tmp;
 				
-				//max_heapify(left_child);
+				//max_heapify_descending(left_child);
 				index = left_child;
 			}
 			else
