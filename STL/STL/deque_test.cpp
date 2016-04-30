@@ -21,8 +21,27 @@ void deque_test()
 		cout << "\tsize: " << d.size();
 		cout << "\n\tisempty: " << std::boolalpha << d.empty() << std::noboolalpha;
 		cout << endl;
+		cout << "default constructor with class wihtout default constructor:\n";
 		NoDefaultConstructorClass c(1);
 		d.push_back(c);
+	}
+	{
+		cout << "constructor with size:\n";
+		deque<double> d(10);
+		for(int i = 0; i < 10; ++i)
+		{
+			cout << d[i] << ' ';
+		}
+		cout << '\n';
+	}
+	{
+		cout << "constructor with size and value:\n";
+		deque<double> d(10, 3.3);
+		for(int i = 0; i < 10; ++i)
+		{
+			cout << d[i] << ' ';
+		}
+		cout << '\n';
 	}
 	{
 		cout << "push_back test:\n";

@@ -3,6 +3,8 @@
 #include "vector.hpp"
 #include "_Deque_Const_Iterator.hpp"
 #include "_Deque_Iterator.hpp"
+#include "common_algorithm.hpp"
+#include <memory>
 namespace xf
 {
 
@@ -153,22 +155,46 @@ namespace xf
 		}
 	}
 
-	/*template<class T>
-	deque<T>::deque(size_t n) : front_bin_index_(SEGMENT_LENGTH), back_bin_index_(n % SEGMENT_LENGTH), map_()
+	template<class T>
+	deque<T>::deque(size_t n) : front_bin_index_(0), back_bin_index_(n % SEGMENT_LENGTH), map_()
 	{
-		size_t bins = n / SEGMENT_LENGTH + 1;
-		map_.reserve(bins);
-		for(size_t i = 0; i < bins; ++i)
+		size_t full_bins = n / SEGMENT_LENGTH;
+		size_t remain_num = n % SEGMENT_LENGTH;
+		map_.reserve(full_bins + sgn(remain_num));
+		for(size_t i = 0; i < full_bins; ++i)
 		{
 			map_.push_back(new T[SEGMENT_LENGTH]);
+		}
+		if(remain_num > 0)
+		{
+			T* p = reinterpret_cast<T*>(operator new(SEGMENT_LENGTH * sizeof(T)));
+			for(size_t i = 0; i < remain_num; ++i)
+			{
+				new(p + i) T();
+			}
+			map_.push_back(p);
 		}
 	}
 
 	template<class T>
-	deque<T>::deque(size_t n, const T & _Value)
+	deque<T>::deque(size_t n, const T & _Value) : front_bin_index_(0), back_bin_index_(n % SEGMENT_LENGTH), map_()
 	{
-	
-	}*/
+		size_t full_bins = n / SEGMENT_LENGTH;
+		size_t remain_num = n % SEGMENT_LENGTH;
+		map_.reserve(full_bins + sgn(remain_num));
+		for(size_t i = 0; i < full_bins; ++i)
+		{
+			T* p = reinterpret_cast<T*>(operator new(SEGMENT_LENGTH * sizeof(T)));
+			std::uninitialized_fill(p, p + SEGMENT_LENGTH, _Value);
+			map_.push_back(p);
+		}
+		if(remain_num > 0)
+		{
+			T* p = reinterpret_cast<T*>(operator new(SEGMENT_LENGTH * sizeof(T)));
+			std::uninitialized_fill(p, p + remain_num, _Value);
+			map_.push_back(p);
+		}
+	}
 
 	template<class T>
 	template<class _Iter>

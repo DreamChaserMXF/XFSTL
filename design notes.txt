@@ -22,6 +22,7 @@ reverse_const_iterator reverse_iterator
 
 对于reverse_iterator，实现了一个类模板，只要将任一种iterator作为该类模板的参数，便可得到+-效果相反的reverse_iterator
 
+
 二、常量迭代器类中的元素指针设计为public
 原因：
 	在vector中，常需要const_iterator作为位置标记。在使用时，常常要根据位置计算偏移量。然而，如果无法访问迭代器的指针的话，就找不到const_iterator对象具体指向的位置了。
@@ -34,8 +35,9 @@ reverse_const_iterator reverse_iterator
 
 所以将reverse_iterator中的iterator对象设为public变量，不严格还原模板参数对象，而是直接转换iterator对象即可。
 
-四、迭代器对象一定要定义value_type，否则，在实现算法时，只有迭代器参数，而不知道值类型的话，无法申请临时变量，也就无法进行两个元素的交换。
+四、迭代器类一定要定义value_type，否则，在实现算法时，只有迭代器参数，而不知道值类型的话，无法申请临时变量，也就无法进行两个元素的交换。
 哦不，其实只要定义pointer类型就可以了，可以通过NULL转为pointer类型，再解引用，获得value_type
+类似地，迭代器类一定要用typedef指定iterator_category类型，这样才能针对不同标签的迭代器提供个性化的高效操作
 
 
 五、deque中，首个和末个bin的有效区段标号

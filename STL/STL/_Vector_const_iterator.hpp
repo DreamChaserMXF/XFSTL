@@ -1,6 +1,7 @@
 #ifndef XF_VECTOR_CONST_ITERATOR_HPP
 #define XF_VECTOR_CONST_ITERATOR_HPP
 
+#include "_Iterator_Traits.hpp"
 
 namespace xf
 {
@@ -11,6 +12,7 @@ namespace xf
 		typedef const T& reference;
 		typedef const T* pointer;
 		typedef T value_type;
+		typedef random_access_iterator_tag iterator_category;
 
 		_Vector_Const_Iterator() throw();
 		explicit _Vector_Const_Iterator(const T *p) throw();
@@ -25,7 +27,7 @@ namespace xf
 		_Vector_Const_Iterator<T> operator +(int n) const throw();
 		_Vector_Const_Iterator<T>& operator -=(int n) throw();
 		_Vector_Const_Iterator<T> operator -(int n) const throw();
-		int operator -(const _Vector_Const_Iterator &right) throw();
+		int operator -(const _Vector_Const_Iterator &right) const throw();
 		bool operator == (const _Vector_Const_Iterator<T> &iter) const throw();
 		bool operator != (const _Vector_Const_Iterator<T> &iter) const throw();
 		bool operator > (const _Vector_Const_Iterator<T> &iter) const throw();
@@ -116,7 +118,7 @@ namespace xf
 	}
 
 	template<class T>
-	int _Vector_Const_Iterator<T>::operator -(const _Vector_Const_Iterator &right) throw()
+	int _Vector_Const_Iterator<T>::operator -(const _Vector_Const_Iterator &right) const throw()
 	{
 		return (p_ - right.p_);
 	}

@@ -2,6 +2,7 @@
 #define XF_LIST_ITERATOR_HPP
 #include "list_item.hpp"
 #include "_List_Const_Iterator.hpp"
+#include "_Iterator_Traits.hpp"
 
 namespace xf
 {
@@ -13,6 +14,7 @@ namespace xf
 		typedef T* pointer;
 		typedef T& reference;
 		typedef T value_type;
+		typedef bi_directional_iterator_tag iterator_category;
 
 		_List_Iterator() throw();
 		_List_Iterator(list_item<T> *_Ptr, enum PTR_POS _Prev_Index, enum PTR_POS _Next_Index) throw();

@@ -78,9 +78,6 @@
     <ClInclude Include="quick_sort.hpp">
       <Filter>Header Files\algorithm</Filter>
     </ClInclude>
-    <ClInclude Include="common.hpp">
-      <Filter>Header Files\algorithm</Filter>
-    </ClInclude>
     <ClInclude Include="list.hpp">
       <Filter>Header Files\list</Filter>
     </ClInclude>
@@ -98,6 +95,12 @@
     </ClInclude>
     <ClInclude Include="queue.hpp">
       <Filter>Header Files\adaptor</Filter>
+    </ClInclude>
+    <ClInclude Include="common_algorithm.hpp">
+      <Filter>Header Files\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="xutility.hpp">
+      <Filter>Header Files\IteratorUtility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

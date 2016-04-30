@@ -1,6 +1,8 @@
 #ifndef XF_REVERSE_ITERATOR_HPP
 #define XF_REVERSE_ITERATOR_HPP
 
+#include "_Iterator_Traits.hpp"
+
 namespace xf
 {
 	template<class T>
@@ -9,7 +11,8 @@ namespace xf
 	public:
 		typedef typename T::reference reference;
 		typedef typename T::pointer pointer;
-		typedef T value_type;
+		typedef typename T::value_type value_type;
+		typedef typename T::iterator_category iterator_category;
 
 		_Reverse_Iterator();
 		explicit _Reverse_Iterator(T right) throw();
@@ -34,6 +37,10 @@ namespace xf
 
 		bool operator == (const _Reverse_Iterator &right) const throw();
 		bool operator != (const _Reverse_Iterator &right) const throw();
+		bool operator < (const _Reverse_Iterator &right) const throw();
+		bool operator <= (const _Reverse_Iterator &right) const throw();
+		bool operator > (const _Reverse_Iterator &right) const throw();
+		bool operator >= (const _Reverse_Iterator &right) const throw();
 	//private:
 		// 设计为public变量，为了便于类型转换（否则在list实现时，将指向tail_的reverse_iterator转换为const_reverse_iterator时会有空指针错误）
 		T iter_;
@@ -154,13 +161,37 @@ namespace xf
 	template<class T>
 	bool _Reverse_Iterator<T>::operator == (const _Reverse_Iterator<T> &right) const throw()
 	{
-		return (iter_ == right.rev_iter);
+		return (iter_ == right.iter_);
 	}
 
 	template<class T>
 	bool _Reverse_Iterator<T>::operator != (const _Reverse_Iterator<T> &right) const throw()
 	{
 		return (iter_ != right.iter_);
+	}
+
+	template<class T>
+	bool _Reverse_Iterator<T>::operator < (const _Reverse_Iterator<T> &right) const throw()
+	{
+		return (iter_ > right.iter_);
+	}
+
+	template<class T>
+	bool _Reverse_Iterator<T>::operator <= (const _Reverse_Iterator<T> &right) const throw()
+	{
+		return (iter_ >= right.iter_);
+	}
+
+	template<class T>
+	bool _Reverse_Iterator<T>::operator > (const _Reverse_Iterator<T> &right) const throw()
+	{
+		return (iter_ < right.iter_);
+	}
+
+	template<class T>
+	bool _Reverse_Iterator<T>::operator >= (const _Reverse_Iterator<T> &right) const throw()
+	{
+		return (iter_ <= right.iter_);
 	}
 }
 #endif

@@ -2,6 +2,7 @@
 #define XF_VECTOR_ITERATOR_HPP
 
 #include "_Vector_Const_Iterator.hpp"
+#include "_Iterator_Traits.hpp"
 
 namespace xf
 {
@@ -13,6 +14,7 @@ namespace xf
 		typedef T* pointer;
 		typedef T& reference;
 		typedef T value_type;
+		typedef random_access_iterator_tag iterator_category;
 
 		_Vector_Iterator() throw();
 		explicit _Vector_Iterator(T *p) throw();	// 如果不加explicit，则_Vector_Iterator就可以直接和指针对象相比较了

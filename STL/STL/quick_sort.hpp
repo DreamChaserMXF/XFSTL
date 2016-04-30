@@ -1,7 +1,7 @@
 #ifndef XF_QUICK_SORT_HPP
 #define XF_QUICK_SORT_HPP
 
-#include "common.hpp"
+#include "common_algorithm.hpp"
 
 namespace xf
 {
