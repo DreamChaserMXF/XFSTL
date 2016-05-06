@@ -76,6 +76,7 @@
   <ItemGroup>
     <ClInclude Include="common_algorithm.hpp" />
     <ClInclude Include="deque.hpp" />
+    <ClInclude Include="_Deque_Common.hpp" />
     <ClInclude Include="heap_sort.hpp" />
     <ClInclude Include="list.hpp" />
     <ClInclude Include="list_item.hpp" />
@@ -85,7 +86,6 @@
     <ClInclude Include="sort.hpp" />
     <ClInclude Include="stack.hpp" />
     <ClInclude Include="vector.hpp" />
-    <ClInclude Include="xutility.hpp" />
     <ClInclude Include="_Deque_Const_Iterator.hpp" />
     <ClInclude Include="_Deque_Iterator.hpp" />
     <ClInclude Include="_Iterator_Traits.hpp" />

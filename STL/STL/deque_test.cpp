@@ -14,37 +14,101 @@ public:
 
 void deque_test()
 {
-	cout << "\ndeque test:\n";
+	cout << "\nDeque Test:\n";
 	{
-		cout << "default constructor test:\n";
+		cout << "\tdefault constructor test:\n";
 		deque<NoDefaultConstructorClass> d;
-		cout << "\tsize: " << d.size();
-		cout << "\n\tisempty: " << std::boolalpha << d.empty() << std::noboolalpha;
-		cout << endl;
-		cout << "default constructor with class wihtout default constructor:\n";
+		assert(0 == d.size());
+		assert(true == d.empty());
+		cout << "\tdefault constructor with class wihtout default constructor:\n";
 		NoDefaultConstructorClass c(1);
-		d.push_back(c);
+		d.push_back(c);	// push_back时会调用申请空间而不建立对象的operator new，故可以测试deque的实现是否支持不带默认构造函数的类作为容器的模板参数
 	}
 	{
-		cout << "constructor with size:\n";
-		deque<double> d(10);
+		deque<double> d(10, 1.5);
+		cout << "\tconstructor with size & [] test:\n";
+		assert(10 == d.size());
 		for(int i = 0; i < 10; ++i)
 		{
-			cout << d[i] << ' ';
+			assert(1.5 == d[i]);
 		}
-		cout << '\n';
+		cout << "\tresize test:\n";
+		cout << "\tresize larger but smaller than SEGMENT_LENGTH:\n";
+		d.resize(15);
+		assert(15 == d.size());
+		for(int i = 0; i < 15; ++i)
+		{
+			if(i < 10)
+			{
+				assert(1.5 == d[i]);
+			}
+			else
+			{
+				assert(0.0 == d[i]);
+			}
+		}
+		cout << "\tresize larger than SEGMENT_LENGTH:\n";
+		d.resize(115);
+		assert(115 == d.size());
+		for(int i = 0; i < 115; ++i)
+		{
+			if(i < 10)
+			{
+				assert(1.5 == d[i]);
+			}
+			else
+			{
+				assert(0.0 == d[i]);
+			}
+		}
+		cout << "\tresize smaller but don't compact:\n";
+		d.resize(110);
+		assert(110 == d.size());
+		for(int i = 0; i < 110; ++i)
+		{
+			if(i < 10)
+			{
+				assert(1.5 == d[i]);
+			}
+			else
+			{
+				assert(0.0 == d[i]);
+			}
+		}
+		cout << "\tresize smaller with compacting:\n";
+		d.resize(30);
+		assert(30 == d.size());
+		for(int i = 0; i < 30; ++i)
+		{
+			if(i < 10)
+			{
+				assert(1.5 == d[i]);
+			}
+			else
+			{
+				assert(0.0 == d[i]);
+			}
+		}
 	}
 	{
-		cout << "constructor with size and value:\n";
+		cout << "\tconstructor with size and value & at() test:\n";
 		deque<double> d(10, 3.3);
+		assert(10 == d.size());
 		for(int i = 0; i < 10; ++i)
 		{
-			cout << d[i] << ' ';
+			assert(3.3 == d.at(i));
 		}
-		cout << '\n';
+		try
+		{
+			d.at(10);
+		}
+		catch(std::out_of_range &)
+		{
+			cout << "\tindex out_of_range assurance ok\n";
+		}
 	}
 	{
-		cout << "push_back test:\n";
+		cout << "\tpush_back test:\n";
 		deque<int> d;
 		d.push_back(0);
 		d.push_back(1);
@@ -56,15 +120,18 @@ void deque_test()
 		d.push_back(7);
 		d.push_back(8);
 		d.push_back(9);
-		cout << '\t';
 		for(int i = 0; i < 10; ++i)
 		{
-			cout << d[i] << ' ';
+			assert(i == d[i]);
 		}
-		cout << '\n';
+		cout << "\tback & pop_back test:\n";
+		d.pop_back();
+		assert(9 == d.size());
+		assert(false == d.empty());
+		assert(8 == d.back());
 	}
 	{
-		cout << "push_front test:\n";
+		cout << "\tpush_front test:\n";
 		deque<int> d;
 		d.push_front(9);
 		d.push_front(8);
@@ -76,31 +143,86 @@ void deque_test()
 		d.push_front(2);
 		d.push_front(1);
 		d.push_front(0);
-		cout << '\t';
 		for(int i = 0; i < 10; ++i)
 		{
-			cout << d[i] << ' ';
+			assert(i == d[i]);
 		}
-		cout << '\n';
+		cout << "\tfront & pop_front test:\n";
+		d.pop_front();
+		assert(9 == d.size());
+		assert(false == d.empty());
+		assert(1 == d.front());
 	}
 	{
-		cout << "iterator constructor test:\n";
+		cout << "\tconstructor with iterator test:\n";
 		int a[] = {0,1,2,3,4,5,6,7,8,9,};
 		deque<int> d(a, a + 10);
-		cout << '\t';
 		for(int i = 0; i < 10; ++i)
 		{
-			cout << d[i] << ' ';
+			assert(i == d[i]);
 		}
-		cout << '\n';
-		cout << "copy constructor test:\n";
+		cout << "\tcopy constructor test:\n";
 		deque<int> d1(d);
-		cout << '\t';
 		for(int i = 0; i < 10; ++i)
 		{
-			cout << d1[i] << ' ';
+			assert(i == d1[i]);
 		}
-		cout << '\n';
+	}
+	{
+		cout << "\titerator test:\n";
+		int a[] = {0,1,2,3,4,5,6,7,8,9};
+		deque<int> d(a, a + 10);
+		cout << "\tnormal iterator:\n";
+		deque<int>::iterator iter = d.begin();
+		for(; iter != d.end(); ++iter)
+		{
+			assert(a[xf::distance(d.begin(), iter)] == *iter);
+		}
+		--iter;
+		assert(a[xf::distance(d.begin(), iter)] == *iter);
+
+		cout << "\tconst iterator:\n";
+		deque<int>::const_iterator c_iter = d.cbegin();
+		for(; c_iter != d.cend(); ++c_iter)
+		{
+			assert(a[xf::distance(d.cbegin(), c_iter)] == *c_iter);
+		}
+		--c_iter;
+		assert(a[xf::distance(d.cbegin(), c_iter)] == *c_iter);
+
+		cout << "\treverse iterator:\n";
+		deque<int>::reverse_iterator r_iter = d.rbegin();
+		for(; r_iter != d.rend(); ++r_iter)
+		{
+			assert(a[9 - xf::distance(d.rbegin(), r_iter)] == *r_iter);
+		}
+		--r_iter;
+		assert(a[9 - xf::distance(d.rbegin(), r_iter)] == *r_iter);
+
+		cout << "\tconst reverse iterator:\n";
+		//xf::_Reverse_Iterator<xf::_Deque_Const_Iterator<int> > cr_iter = d.crbegin();
+		deque<int>::const_reverse_iterator cr_iter = d.crbegin();
+		for(; cr_iter != d.crend(); ++cr_iter)
+		{
+			assert(a[9 - xf::distance(d.crbegin(), cr_iter)] == *cr_iter);
+		}
+		--cr_iter;
+		assert(a[9 - xf::distance(d.crbegin(), cr_iter)] == *cr_iter);
+	}
+	{
+		cout << "\tinsert test:\n";
+	}
+	{
+		cout << "\tassign test:\n";
+	}
+	{
+		cout << "\tmax size test:\n";
+		deque<int> di;
+		deque<float> df;
+		deque<double> dd;
+		assert((unsigned int)-1 / sizeof(int) == di.max_size());
+		assert((unsigned int)-1 / sizeof(float) == df.max_size());
+		assert((unsigned int)-1 / sizeof(double) == dd.max_size());
 	}
 
 }

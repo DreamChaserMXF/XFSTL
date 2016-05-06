@@ -161,12 +161,14 @@ namespace xf
 	template<class T>template<class _Iter>
 	vector<T>::vector(_Iter first, _Iter last) throw(std::bad_alloc, std::length_error) : p_(NULL), size_(0U), capacity_(0U) 
 	{
-		_Iter tmp = first;
-		while(tmp != last)
-		{
-			++tmp;
-			++size_;
-		}
+		//_Iter tmp = first;
+		//while(tmp != last)
+		//{
+		//	++tmp;
+		//	++size_;
+		//}
+		// TODO 改！
+		size_ = std::distance(first, last);
 		capacity_ = size_;
 		if(capacity_ > max_size())
 		{
@@ -316,12 +318,14 @@ namespace xf
 	{
 		clear();
 		// 计算新的size_
-		_Iter tmp = first;
-		while(tmp != last)
-		{
-			++tmp;
-			++size_;
-		}
+		//_Iter tmp = first;
+		//while(tmp != last)
+		//{
+		//	++tmp;
+		//	++size_;
+		//}
+		// TODO 改！
+		size_ = std::distance(first, last);
 		if(size_ > capacity_)
 		{
 			reserve(size_);
@@ -429,7 +433,8 @@ namespace xf
 	typename vector<T>::iterator vector<T>::insert(const const_iterator &_Where, Iter _First, Iter _Last) throw(std::bad_alloc, std::length_error, std::bad_cast)
 	{
 		assert(_First < _Last);	// 这里要不要assert？万一_Iter没有定义小于号怎么办？
-		size_t count = _Last - _First;
+		size_t count = xf::distance(_First, _Last);
+		//size_t count = _Last - _First;
 		if(size_ + count > capacity_)	// 须要扩容
 		{
 			size_t offset = _Where.p_ - p_;	// 记录插入元素的偏移量
@@ -491,7 +496,11 @@ namespace xf
 	template<class T>
 	typename vector<T>::iterator vector<T>::erase(const const_iterator &_First, const const_iterator &_Last) throw()
 	{
-		assert(_First < _Last);
+		assert(_First <= _Last);
+		if(_First == _Last)
+		{
+			return begin() + (_First - cbegin());
+		}
 		T * index1 = const_cast<T*>(_First.p_);
 		T * index2 = const_cast<T*>(_Last.p_);
 		size_t difference = index2 - index1;

@@ -1,6 +1,6 @@
 #ifndef XF_COMMON_HPP
 #define XF_COMMON_HPP
-
+#include <float.h>
 namespace xf
 {
 	template<class T>
@@ -46,6 +46,36 @@ namespace xf
 			return 0;
 		}
 	}
+	//static int ceil(double d)
+	//{
+	//	if(d <= DBL_MIN)
+	//	{
+	//		return static_cast<int>(d);
+	//	}
+	//	else if(d >= DBL_MIN)
+	//	{
+	//		return static_cast<int>(d + 1.0 - DBL_MIN);
+	//	}
+	//	else
+	//	{
+	//		return 0;
+	//	}
+	//}
+	//static int floor(double d)
+	//{
+	//	if(d >= DBL_MIN)
+	//	{
+	//		return static_cast<int>(d);
+	//	}
+	//	else if(d <= DBL_MIN)
+	//	{
+	//		return static_cast<int>(d - 1.0 + DBL_MIN);
+	//	}
+	//	else
+	//	{
+	//		return 0;
+	//	}
+	//}
 }
 
 #endif

@@ -11,6 +11,7 @@ using std::endl;
 using std::ends;
 
 #include <list>
+//#include "list.hpp"
 //using std::list;
 
 
@@ -371,6 +372,10 @@ void vector_test()
 	int a[10] = {1,3,5,7,9,2,4,6,8,10};
 	vector<int> v4(a, a + 10);
 	{
+		// iterator compare
+		v4.cbegin() == v4.begin();
+		//v4.begin() == v4.cbegin();	// TODO friend comparer outside class definition
+
 		// iterator preorder ++
 		cout << "iterator preorder ++" << endl;
 		assert(10 == v4.size());

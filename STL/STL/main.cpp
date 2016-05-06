@@ -13,8 +13,8 @@ int main()
 	vector_test();
 	list_test();
 	deque_test();
-	return 0;
 	adapter_test();
+	return 0;
 	sort_test();
 	return 0;
 }

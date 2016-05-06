@@ -28,13 +28,13 @@ public:
 
 void priority_queue_test()
 {
-	printf("\nadapter_test:");
+	printf("\nadapter_test:\n");
 
 	// default test
 	xf::priority_queue<int, xf::vector<int>> q1;
-	// priority_queue<int, xf::list<int>> q1;
-	printf("\nempty() = %d", q1.empty());
-	printf("\nsize() = %d", q1.size());
+	// priority_queue<int, xf::list<int>> q1;	// error
+	assert(true == q1.empty());
+	assert(0 == q1.size());
 	q1.push(1);
 	q1.push(3);
 	q1.push(5);
@@ -45,53 +45,37 @@ void priority_queue_test()
 	q1.push(6);
 	q1.push(8);
 	q1.push(10);
-	printf("\nempty() = %d", q1.empty());
-	printf("\nsize() = %d", q1.size());
-	printf("\n");
+	assert(false == q1.empty());
+	assert(10 == q1.size());
 	size_t len1 = q1.size();
 	for(size_t i = 0; i < len1; ++i)
 	{
-		printf("%d ", q1.top());
+		assert(10 - i == q1.top());
 		q1.pop();
 	}
-	printf("\nempty() = %d", q1.empty());
-	printf("\nsize() = %d", q1.size());
-	printf("\n");
+	assert(true == q1.empty());
+	assert(0 == q1.size());
 
 	// less_than_class test
 	int a[] = {1,3,5,7,9,2,4,6,8,10};
 	xf::priority_queue<int, xf::vector<int>, less_than_class> q2(xf::vector<int>(a, a + sizeof(a) / sizeof(a[0])));
-	// priority_queue<int, xf::list<int>> q2;
-	printf("\nempty() = %d", q2.empty());
-	printf("\nsize() = %d", q2.size());
-	//q2.push(1);
-	//q2.push(3);
-	//q2.push(5);
-	//q2.push(7);
-	//q2.push(9);
-	//q2.push(2);
-	//q2.push(4);
-	//q2.push(6);
-	//q2.push(8);
-	//q2.push(10);
-	//printf("\nempty() = %d", q2.empty());
-	//printf("\nsize() = %d", q2.size());
-	printf("\n");
+	//xf::priority_queue<int, xf::list<int>> q2;
+	assert(false == q2.empty());
+	assert(10 == q2.size());
 	size_t len2 = q2.size();
 	for(size_t i = 0; i < len2; ++i)
 	{
-		printf("%d ", q2.top());
+		assert(10 - i == q2.top());
 		q2.pop();
 	}
-	printf("\nempty() = %d", q2.empty());
-	printf("\nsize() = %d", q2.size());
-	printf("\n");
+	assert(true == q2.empty());
+	assert(0 == q2.size());
 
 	// larger_than_class test
 	xf::priority_queue<int, xf::vector<int>, larger_than_class> q3;
 	// priority_queue<int, xf::list<int>> q3;
-	printf("\nempty() = %d", q3.empty());
-	printf("\nsize() = %d", q3.size());
+	assert(true == q3.empty());
+	assert(0 == q3.size());
 	q3.push(1);
 	q3.push(3);
 	q3.push(5);
@@ -102,17 +86,14 @@ void priority_queue_test()
 	q3.push(6);
 	q3.push(8);
 	q3.push(10);
-	printf("\nempty() = %d", q3.empty());
-	printf("\nsize() = %d", q3.size());
-	printf("\n");
+	assert(false == q3.empty());
+	assert(10 == q3.size());
 	size_t len3 = q3.size();
 	for(size_t i = 0; i < len3; ++i)
 	{
-		printf("%d ", q3.top());
+		assert(i + 1 == q3.top());
 		q3.pop();
 	}
-	printf("\nempty() = %d", q3.empty());
-	printf("\nsize() = %d", q3.size());
-	printf("\n\n");
-
+	assert(true == q3.empty());
+	assert(0 == q3.size());
 }

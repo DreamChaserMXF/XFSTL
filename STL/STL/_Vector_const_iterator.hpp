@@ -27,7 +27,7 @@ namespace xf
 		_Vector_Const_Iterator<T> operator +(int n) const throw();
 		_Vector_Const_Iterator<T>& operator -=(int n) throw();
 		_Vector_Const_Iterator<T> operator -(int n) const throw();
-		int operator -(const _Vector_Const_Iterator &right) const throw();
+		int operator -(const _Vector_Const_Iterator<T> &right) const throw();
 		bool operator == (const _Vector_Const_Iterator<T> &iter) const throw();
 		bool operator != (const _Vector_Const_Iterator<T> &iter) const throw();
 		bool operator > (const _Vector_Const_Iterator<T> &iter) const throw();
@@ -118,7 +118,7 @@ namespace xf
 	}
 
 	template<class T>
-	int _Vector_Const_Iterator<T>::operator -(const _Vector_Const_Iterator &right) const throw()
+	int _Vector_Const_Iterator<T>::operator -(const _Vector_Const_Iterator<T> &right) const throw()
 	{
 		return (p_ - right.p_);
 	}

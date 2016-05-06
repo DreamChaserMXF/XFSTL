@@ -48,3 +48,6 @@ reverse_const_iterator reverse_iterator
 
 【问题是】当map_长度为1时，front_bin_index_与back_bin_index_表示同一个bin，这时会造成什么影响？
 在拷贝构造函数与析构函数中，需要对map_为1时进行特殊判断：若其中任意一个不为默认值，则视作其有效。若两个都是默认值，则可视作任意一个有效
+
+六、有关_Deque_Const_Iterator中map_iter_的类型定义
+在_Deque_Const_Iterator中，map_iter_本应定义为vector<pointer>::const_iterator，但由于pointer是const T*，当从_Deque_Iterator向_Deque_Const_Iterator转换时，要把_Deque_Iterator中的vector<pointer>对象转换为_Deque_Const_Iterator类的vector<pointer>对象。但这后者中的pointer有const修饰，该对象无法正常转换。故修改map_iter_的类型定义，使其类型为vector<T*>::const_iterator类型，移除了const属性，失去了对其T对象的const保护。但如果不这样做的话，在前述转换过程中，就要用更为底层的转换机制。
