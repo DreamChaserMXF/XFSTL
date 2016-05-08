@@ -67,7 +67,7 @@ namespace xf
 	template<class T>
 	T _Reverse_Iterator<T>::base() const
 	{
-		//return iter_ + 1;	// 原实现，但不适用与list，因为list不允许加法
+		//return iter_ + 1;	// 原实现，但不适用于list，因为list不允许加法
 		T ret_val = iter_;
 		return ++ret_val;
 	}

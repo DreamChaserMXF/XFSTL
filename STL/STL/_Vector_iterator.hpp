@@ -8,7 +8,7 @@ namespace xf
 {
 
 	template<class T>
-	class _Vector_Iterator
+	class _Vector_Iterator : public _Vector_Const_Iterator<T>
 	{
 	public:
 		typedef T* pointer;
@@ -19,9 +19,7 @@ namespace xf
 		_Vector_Iterator();
 		explicit _Vector_Iterator(T *p);	// 如果不加explicit，则_Vector_Iterator就可以直接和指针对象相比较了
 
-		const T& operator *() const;
 		T& operator *();
-		const T* operator ->() const;
 		T* operator ->();
 		_Vector_Iterator<T>& operator ++();
 		_Vector_Iterator<T> operator ++(int);
@@ -31,16 +29,7 @@ namespace xf
 		_Vector_Iterator<T> operator +(int n) const;
 		_Vector_Iterator<T>& operator -=(int n);
 		_Vector_Iterator<T> operator -(int n) const;
-		int operator -(const _Vector_Iterator<T> &iter) const;
-		bool operator == (const _Vector_Iterator<T> &iter) const;
-		bool operator != (const _Vector_Iterator<T> &iter) const;
-		bool operator >  (const _Vector_Iterator<T> &iter) const;
-		bool operator >= (const _Vector_Iterator<T> &iter) const;
-		bool operator <  (const _Vector_Iterator<T> &iter) const;
-		bool operator <= (const _Vector_Iterator<T> &iter) const;
-		operator _Vector_Const_Iterator<T> () const;
-	//private:	// 在别的地方(_Deque_Iterator向_Deque_Const_Iterator的类型转换函数)会访问到p_，所以不设为private
-		T *p_;
+		int operator -(const _Vector_Const_Iterator<T> &right) const;
 	};
 
 	template<class T>
@@ -49,26 +38,16 @@ namespace xf
 	}
 
 	template<class T>
-	_Vector_Iterator<T>::_Vector_Iterator(T *p) : p_(p)
+	_Vector_Iterator<T>::_Vector_Iterator(T *p) : _Vector_Const_Iterator<T>(p)
 	{
 	}
 
-	template<class T>
-	const T& _Vector_Iterator<T>::operator *() const
-	{
-		return *p_;
-	}
 	template<class T>
 	T& _Vector_Iterator<T>::operator *()
 	{
 		return (*p_);
 	}
 
-	template<class T>
-	const T* _Vector_Iterator<T>::operator ->() const
-	{
-		return p_;
-	}
 	template<class T>
 	T* _Vector_Iterator<T>::operator ->()
 	{
@@ -130,51 +109,10 @@ namespace xf
 	}
 
 	template<class T>
-	int _Vector_Iterator<T>::operator -(const _Vector_Iterator<T> &iter) const
+	int _Vector_Iterator<T>::operator -(const _Vector_Const_Iterator<T> &right) const
 	{
-		return p_ - iter.p_;
-	}
-
-	template<class T>
-	bool _Vector_Iterator<T>::operator == (const _Vector_Iterator<T> &iter) const
-	{
-		return (p_ == iter.p_);
-	}
-
-	template<class T>
-	bool _Vector_Iterator<T>::operator != (const _Vector_Iterator<T> &iter) const
-	{	
-		return (p_ != iter.p_);
-	}
-
-	template<class T>
-	bool _Vector_Iterator<T>::operator > (const _Vector_Iterator<T> &iter) const
-	{
-		return (p_ > iter.p_);
-	}
-
-	template<class T>
-	bool _Vector_Iterator<T>::operator >= (const _Vector_Iterator<T> &iter) const
-	{	
-		return (p_ >= iter.p_);
-	}
-
-	template<class T>
-	bool _Vector_Iterator<T>::operator < (const _Vector_Iterator<T> &iter) const
-	{
-		return (p_ < iter.p_);
-	}
-
-	template<class T>
-	bool _Vector_Iterator<T>::operator <= (const _Vector_Iterator<T> &iter) const
-	{	
-		return (p_ <= iter.p_);
-	}
-
-	template<class T>
-	_Vector_Iterator<T>::operator _Vector_Const_Iterator<T>() const
-	{
-		return _Vector_Const_Iterator<T>(p_);
+		//return *(_Vector_Const_Iterator<T>*)this - right;
+		return *static_cast<const _Vector_Const_Iterator<T>*>(this) - right;
 	}
 }
 

@@ -635,7 +635,8 @@ namespace xf
 	template<class T>
 	typename deque<T>::const_iterator deque<T>::cbegin() const
 	{
-		return const_iterator(vector<const T*>::const_iterator(map_.cbegin().p_), front_bin_index_);
+		return const_iterator(vector<T*>::const_iterator(map_.cbegin().p_), front_bin_index_);
+		//return const_iterator(vector<const T*>::const_iterator(map_.cbegin().p_), front_bin_index_);
 		// 上句为简写，隐去了类型转换，实际的类型转换见下句
 		//return const_iterator(vector<const T*>::const_iterator(const_cast<T const * const *>(map_.cbegin().p_)), front_bin_index_);
 		// 下句当_Deque_Const_Iterator中的构造函数改为vector<T*>时才有效，但那样改过后会有隐患，在编译层面上无法约束T对象不被更改
@@ -656,11 +657,11 @@ namespace xf
 	{
 		if(empty())
 		{
-			return const_iterator(vector<const T*>::const_iterator(map_.begin().p_), 0);
+			return const_iterator(vector<T*>::const_iterator(map_.begin().p_), 0);
 		}
 		else
 		{
-			return ++const_iterator(vector<const T*>::const_iterator(map_.cend().p_) - 1, back_bin_index_);
+			return ++const_iterator(vector<T*>::const_iterator(map_.cend().p_) - 1, back_bin_index_);
 		}
 	}
 	template<class T>

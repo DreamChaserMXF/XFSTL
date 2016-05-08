@@ -16,7 +16,7 @@ namespace xf
 		typedef bi_directional_iterator_tag iterator_category;
 
 		_List_Const_Iterator();
-		_List_Const_Iterator(const list_item<T> *_Ptr, enum PTR_POS _Prev_Index, enum PTR_POS _Next_Index);
+		_List_Const_Iterator(list_item<T> *_Ptr, enum PTR_POS _Prev_Index, enum PTR_POS _Next_Index);
 
 		const T& operator *() const;
 		const T* operator ->() const;
@@ -28,10 +28,7 @@ namespace xf
 		bool operator == (const _List_Const_Iterator<T> &iter) const;
 		bool operator != (const _List_Const_Iterator<T> &iter) const;
 
-		//friend bool operator == (const _List_Const_Iterator<T> &left, const _List_Const_Iterator<T> &right);
-		//friend bool operator != (const _List_Const_Iterator<T> &left, const _List_Const_Iterator<T> &right);
-
-		const list_item<T> *p_;
+		list_item<T> *p_;
 		enum PTR_POS prev_index_;
 		enum PTR_POS next_index_;
 	};
@@ -43,7 +40,7 @@ namespace xf
 	}
 
 	template<class T>
-	_List_Const_Iterator<T>::_List_Const_Iterator(const list_item<T> *_Ptr, enum PTR_POS _Prev_Index, enum PTR_POS _Next_Index)
+	_List_Const_Iterator<T>::_List_Const_Iterator(list_item<T> *_Ptr, enum PTR_POS _Prev_Index, enum PTR_POS _Next_Index)
 		: p_(_Ptr), prev_index_(_Prev_Index), next_index_(_Next_Index)
 	{
 		;
@@ -104,18 +101,6 @@ namespace xf
 	{
 		return p_ != iter.p_;
 	}
-
-	//template<class T>
-	//bool operator == (const _List_Const_Iterator<T> &left, const _List_Const_Iterator<T> &right)
-	//{
-	//	return left.p_ == right.p_;
-	//}
-
-	//template<class T>
-	//bool operator != (const _List_Const_Iterator<T> &left, const _List_Const_Iterator<T> &right)
-	//{
-	//	return left.p_ != right.p_;
-	//}
 }
 
 #endif

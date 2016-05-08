@@ -7,7 +7,7 @@
 namespace xf
 {
 	template<class T>
-	class _Deque_Iterator
+	class _Deque_Iterator : public _Deque_Const_Iterator<T>
 	{
 	public:
 		typedef T* pointer;
@@ -18,9 +18,7 @@ namespace xf
 		_Deque_Iterator();
 		_Deque_Iterator(typename vector<pointer>::iterator map_iter, size_t item_index);
 
-		const T& operator *() const;
 		T& operator *();
-		const T* operator ->() const;
 		T* operator ->();
 		_Deque_Iterator<T>& operator ++();
 		_Deque_Iterator<T> operator ++(int);
@@ -30,53 +28,26 @@ namespace xf
 		_Deque_Iterator<T> operator +(int n) const;
 		_Deque_Iterator<T>& operator -=(int n);
 		_Deque_Iterator<T> operator -(int n) const;
-		int operator -(const _Deque_Iterator<T> &iter) const;
-		bool operator == (const _Deque_Iterator<T> &iter) const;
-		bool operator != (const _Deque_Iterator<T> &iter) const;
-		bool operator >  (const _Deque_Iterator<T> &iter) const;
-		bool operator >= (const _Deque_Iterator<T> &iter) const;
-		bool operator <  (const _Deque_Iterator<T> &iter) const;
-		bool operator <= (const _Deque_Iterator<T> &iter) const;
-		operator _Deque_Const_Iterator<T> () const;
-
-		typename vector<pointer>::iterator map_iter_;
-		size_t item_index_;
-	
-	private:
-		static size_t SEGMENT_LENGTH;
+		int operator -(const _Deque_Const_Iterator<T> &iter) const;
 	};
 
 	template<class T>
-	size_t _Deque_Iterator<T>::SEGMENT_LENGTH = DequeSegmentLength();
-
-	template<class T>
-	_Deque_Iterator<T>::_Deque_Iterator() : map_iter_(), item_index_(0)
+	_Deque_Iterator<T>::_Deque_Iterator() : _Deque_Const_Iterator<T>()
 	{
 		;
 	}
 
 	template<class T>
-	_Deque_Iterator<T>::_Deque_Iterator(typename vector<pointer>::iterator map_iter, size_t item_index) : map_iter_(map_iter), item_index_(item_index)
+	_Deque_Iterator<T>::_Deque_Iterator(typename vector<pointer>::iterator map_iter, size_t item_index) 
+		: _Deque_Const_Iterator<T>(map_iter, item_index)
 	{
 		;
-	}
-
-	template<class T>
-	const T& _Deque_Iterator<T>::operator *() const
-	{
-		return (*map_iter_)[item_index_];
 	}
 
 	template<class T>
 	T& _Deque_Iterator<T>::operator *()
 	{
 		return (*map_iter_)[item_index_];
-	}
-
-	template<class T>
-	const T* _Deque_Iterator<T>::operator ->() const
-	{
-		return &(*map_iter_)[item_index_];
 	}
 
 	template<class T>
@@ -182,59 +153,11 @@ namespace xf
 	}
 
 	template<class T>
-	int _Deque_Iterator<T>::operator -(const _Deque_Iterator<T> &right) const
+	int _Deque_Iterator<T>::operator -(const _Deque_Const_Iterator<T> &right) const
 	{
-		return (map_iter_ - right.map_iter_) * SEGMENT_LENGTH + item_index_ - right.item_index_;
+		return *static_cast<const _Deque_Const_Iterator<T>*>(this) - right;
 	}
 
-	template<class T>
-	bool _Deque_Iterator<T>::operator == (const _Deque_Iterator<T> &iter) const
-	{
-		return map_iter_ == iter.map_iter_ && item_index_ == iter.item_index_;
-	}
-
-	template<class T>
-	bool _Deque_Iterator<T>::operator != (const _Deque_Iterator<T> &iter) const
-	{
-		return map_iter_ != iter.map_iter_ || item_index_ != iter.item_index_;
-	}
-
-	template<class T>
-	bool _Deque_Iterator<T>::operator >  (const _Deque_Iterator<T> &iter) const
-	{
-		return map_iter_ > iter.map_iter_ 
-			|| (map_iter_ == iter.map_iter_ && item_index_ > iter.item_index_);
-	}
-
-	template<class T>
-	bool _Deque_Iterator<T>::operator >= (const _Deque_Iterator<T> &iter) const
-	{
-		return map_iter_ > iter.map_iter_ 
-			|| (map_iter_ == iter.map_iter_ && item_index_ >= iter.item_index_);
-	}
-
-	template<class T>
-	bool _Deque_Iterator<T>::operator <  (const _Deque_Iterator<T> &iter) const
-	{
-		return map_iter_ < iter.map_iter_ 
-			|| (map_iter_ == iter.map_iter_ && item_index_ < iter.item_index_);
-	}
-
-	template<class T>
-	bool _Deque_Iterator<T>::operator <= (const _Deque_Iterator<T> &iter) const
-	{
-		return map_iter_ < iter.map_iter_ 
-			|| (map_iter_ == iter.map_iter_ && item_index_ <= iter.item_index_);
-	}
-
-	template<class T>
-	_Deque_Iterator<T>::operator _Deque_Const_Iterator<T> () const
-	{
-		//vector<const double*>::const_iterator c_iter = reinterpret_cast<vector<const double*>::const_iterator>(map_iter_);
-		//return _Deque_Const_Iterator<T>(c_iter, item_index_);
-		//return _Deque_Const_Iterator<T>(map_iter_, item_index_);
-		return _Deque_Const_Iterator<T>(vector<const T*>::const_iterator(map_iter_.p_), item_index_);
-	}
 }
 
 #endif
