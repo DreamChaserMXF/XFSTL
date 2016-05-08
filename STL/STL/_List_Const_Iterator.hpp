@@ -15,58 +15,62 @@ namespace xf
 		typedef T value_type;
 		typedef bi_directional_iterator_tag iterator_category;
 
-		_List_Const_Iterator() throw();
-		_List_Const_Iterator(const list_item<T> *_Ptr, enum PTR_POS _Prev_Index, enum PTR_POS _Next_Index) throw();
+		_List_Const_Iterator();
+		_List_Const_Iterator(const list_item<T> *_Ptr, enum PTR_POS _Prev_Index, enum PTR_POS _Next_Index);
 
-		const T& operator *() const throw();
-		const T* operator ->() const throw();
-		_List_Const_Iterator<T>& operator ++() throw();
-		_List_Const_Iterator<T> operator ++(int) throw();
-		_List_Const_Iterator<T>& operator --() throw();
-		_List_Const_Iterator<T> operator --(int) throw();
-		bool operator == (const _List_Const_Iterator<T> &iter) const throw();
-		bool operator != (const _List_Const_Iterator<T> &iter) const throw();
+		const T& operator *() const;
+		const T* operator ->() const;
+		_List_Const_Iterator<T>& operator ++();
+		_List_Const_Iterator<T> operator ++(int);
+		_List_Const_Iterator<T>& operator --();
+		_List_Const_Iterator<T> operator --(int);
 
-		const list_item<T> *p_;		// 这里必须要明确参数
+		bool operator == (const _List_Const_Iterator<T> &iter) const;
+		bool operator != (const _List_Const_Iterator<T> &iter) const;
+
+		//friend bool operator == (const _List_Const_Iterator<T> &left, const _List_Const_Iterator<T> &right);
+		//friend bool operator != (const _List_Const_Iterator<T> &left, const _List_Const_Iterator<T> &right);
+
+		const list_item<T> *p_;
 		enum PTR_POS prev_index_;
 		enum PTR_POS next_index_;
 	};
 
 	template<class T>
-	_List_Const_Iterator<T>::_List_Const_Iterator() throw() : p_(NULL), prev_index_(PREV_POS), next_index_(NEXT_POS)
+	_List_Const_Iterator<T>::_List_Const_Iterator() : p_(NULL), prev_index_(PREV_POS), next_index_(NEXT_POS)
 	{
 		;
 	}
 
 	template<class T>
-	_List_Const_Iterator<T>::_List_Const_Iterator(const list_item<T> *_Ptr, enum PTR_POS _Prev_Index, enum PTR_POS _Next_Index) throw()
+	_List_Const_Iterator<T>::_List_Const_Iterator(const list_item<T> *_Ptr, enum PTR_POS _Prev_Index, enum PTR_POS _Next_Index)
 		: p_(_Ptr), prev_index_(_Prev_Index), next_index_(_Next_Index)
 	{
 		;
 	}
 
 	template<class T>
-	const T& _List_Const_Iterator<T>::operator *() const throw()
+	const T& _List_Const_Iterator<T>::operator *() const
 	{
 		return p_->val_;
 	}
 
 	template<class T>
-	const T* _List_Const_Iterator<T>::operator ->() const throw()
+	const T* _List_Const_Iterator<T>::operator ->() const
 	{
 		return &(p_->val_);
 	}
 
 
 	template<class T>
-	_List_Const_Iterator<T>& _List_Const_Iterator<T>::operator ++() throw()
+	_List_Const_Iterator<T>& _List_Const_Iterator<T>::operator ++()
 	{
 		p_ = p_->item_ptr_[next_index_];
 		return *this;
 	}
 
 	template<class T>
-	_List_Const_Iterator<T> _List_Const_Iterator<T>::operator ++(int) throw()
+	_List_Const_Iterator<T> _List_Const_Iterator<T>::operator ++(int)
 	{
 		_List_Const_Iterator<T> iter(*this);
 		p_ = p_->item_ptr_[next_index_];
@@ -74,14 +78,14 @@ namespace xf
 	}
 
 	template<class T>
-	_List_Const_Iterator<T>& _List_Const_Iterator<T>::operator --() throw()
+	_List_Const_Iterator<T>& _List_Const_Iterator<T>::operator --()
 	{
 		p_ = p_->item_ptr_[prev_index_];
 		return *this;
 	}
 
 	template<class T>
-	_List_Const_Iterator<T> _List_Const_Iterator<T>::operator --(int) throw()
+	_List_Const_Iterator<T> _List_Const_Iterator<T>::operator --(int)
 	{
 		_List_Const_Iterator<T> iter(*this);
 		p_ = p_->item_ptr_[prev_index_];
@@ -90,17 +94,28 @@ namespace xf
 
 	
 	template<class T>
-	bool _List_Const_Iterator<T>::operator == (const _List_Const_Iterator<T> &iter) const throw()
+	bool _List_Const_Iterator<T>::operator == (const _List_Const_Iterator<T> &iter) const
 	{
 		return p_ == iter.p_;
 	}
 
 	template<class T>
-	bool _List_Const_Iterator<T>::operator != (const _List_Const_Iterator<T> &iter) const throw()
+	bool _List_Const_Iterator<T>::operator != (const _List_Const_Iterator<T> &iter) const
 	{
 		return p_ != iter.p_;
 	}
 
+	//template<class T>
+	//bool operator == (const _List_Const_Iterator<T> &left, const _List_Const_Iterator<T> &right)
+	//{
+	//	return left.p_ == right.p_;
+	//}
+
+	//template<class T>
+	//bool operator != (const _List_Const_Iterator<T> &left, const _List_Const_Iterator<T> &right)
+	//{
+	//	return left.p_ != right.p_;
+	//}
 }
 
 #endif

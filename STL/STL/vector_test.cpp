@@ -192,14 +192,7 @@ void vector_test()
 		assert(12 == v2.capacity());
 		for(vector<A>::iterator iter = v2.begin(); iter != v2.end(); ++iter)
 		{
-			if(distance(v2.begin(), iter) < 2)
-			{
-				assert(iter->n == 11);
-			}
-			else
-			{
-				assert(iter->n == 1);
-			}
+			assert(iter->n == 11);
 		}
 
 		// reserve smaller
@@ -209,14 +202,7 @@ void vector_test()
 		assert(12 == v2.capacity());
 		for(vector<A>::iterator iter = v2.begin(); iter != v2.end(); ++iter)
 		{
-			if(distance(v2.begin(), iter) < 2)
-			{
-				assert(iter->n == 11);
-			}
-			else
-			{
-				assert(iter->n == 1);
-			}
+			assert(iter->n == 11);
 		}
 
 		// reserve larger
@@ -226,14 +212,7 @@ void vector_test()
 		assert(18 == v2.capacity());
 		for(vector<A>::iterator iter = v2.begin(); iter != v2.end(); ++iter)
 		{
-			if(distance(v2.begin(), iter) < 2)
-			{
-				assert(iter->n == 21);
-			}
-			else
-			{
-				assert(iter->n == 11);
-			}
+			assert(iter->n == 21);
 		}
 
 		// shrink to fit
@@ -243,14 +222,7 @@ void vector_test()
 		assert(12 == v2.capacity());
 		for(vector<A>::iterator iter = v2.begin(); iter != v2.end(); ++iter)
 		{
-			if(distance(v2.begin(), iter) < 2)
-			{
-				assert(iter->n == 31);
-			}
-			else
-			{
-				assert(iter->n == 21);
-			}
+			assert(iter->n == 31);
 		}
 		cout << endl;
 	}
@@ -264,14 +236,7 @@ void vector_test()
 		assert(12 == v3.capacity());
 		for(vector<A>::iterator iter = v3.begin(); iter != v3.end(); ++iter)
 		{
-			if(distance(v3.begin(), iter) < 2)
-			{
-				assert(iter->n == 41);
-			}
-			else
-			{
-				assert(iter->n == 31);
-			}
+			assert(iter->n == 41);
 		}
 
 		// operator = 
@@ -281,28 +246,14 @@ void vector_test()
 		assert(12 == v3.capacity());
 		for(vector<A>::iterator iter = v3.begin(); iter != v3.end(); ++iter)
 		{
-			if(distance(v3.begin(), iter) < 2)
-			{
-				assert(iter->n == 131);
-			}
-			else
-			{
-				assert(iter->n == 121);
-			}
+			assert(iter->n == 131);
 		}
 
 		// operator [] 
 		cout << "operator [] " << endl;
 		for(size_t i = 0; i < v3.size(); ++i)
 		{
-			if(i < 2)
-			{
-				assert(v3[i].n == 131);
-			}
-			else
-			{
-				assert(v3[i].n == 121);
-			}
+			assert(v3[i].n == 131);
 		}
 
 		// at 
@@ -310,14 +261,7 @@ void vector_test()
 		cout << '\t';
 		for(size_t i = 0; i < v3.size(); ++i)
 		{
-			if(i < 2)
-			{
-				assert(v3.at(i).n == 131);
-			}
-			else
-			{
-				assert(v3.at(i).n == 121);
-			}
+			assert(v3.at(i).n == 131);
 		}
 
 		// data
@@ -329,40 +273,19 @@ void vector_test()
 		const A *cpa = v4.data();
 		for(size_t i = 0; i < size; ++i)
 		{
-			if(i < 2)
-			{
-				assert(131 == pa[i].n);
-			}
-			else
-			{
-				assert(121 == pa[i].n);
-			}
+			assert(131 == pa[i].n);
 			pa[i].n -= 10;
 		}
 		for(size_t i = 0; i < size; ++i)
 		{
-			if(i < 2)
-			{
-				assert(121 == v3[i].n);
-			}
-			else
-			{
-				assert(111 == v3[i].n);
-			}
+			assert(121 == v3[i].n);	
 		}
 		// data const
 		cout << "data const" << endl;
 		cout << '\t';
 		for(size_t i = 0; i < size; ++i)
 		{
-			if(i < 2)
-			{
-				assert(141 == v4[i].n);
-			}
-			else
-			{
-				assert(131 == v4[i].n);
-			}
+			assert(141 == v4[i].n);
 		}
 		
 	}
