@@ -76,6 +76,7 @@
   <ItemGroup>
     <ClInclude Include="common_algorithm.hpp" />
     <ClInclude Include="deque.hpp" />
+    <ClInclude Include="memory.hpp" />
     <ClInclude Include="_Deque_Common.hpp" />
     <ClInclude Include="heap_sort.hpp" />
     <ClInclude Include="list.hpp" />

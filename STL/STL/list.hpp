@@ -10,7 +10,7 @@
 #include <cassert>
 #include <exception>
 #include <stdexcept>
-#include <memory>
+#include "memory.hpp"
 namespace xf
 {
 	
@@ -49,7 +49,7 @@ namespace xf
 			tail_->item_ptr_[next_index_] = new_item;
 			tail_ = new_item;
 		}
-		virtual ~list() throw();
+		virtual ~list();
 		void assign(size_t count, const T &val) throw(std::length_error, std::bad_alloc);
 		template<class _Iter> 
 		void assign(_Iter first, _Iter last) throw(std::length_error, std::bad_alloc);
@@ -59,18 +59,18 @@ namespace xf
 			assign_n(_Count, static_cast<T>(_Value));
 		}
 
-		size_t size() const throw();
-		bool empty() const throw();
-		void clear() throw();
+		size_t size() const;
+		bool empty() const;
+		void clear();
 
-		static size_t max_size()throw();
+		static size_t max_size();
 
 		void push_back(const T &item) throw(std::bad_alloc, std::length_error);
 		void pop_back() throw(std::length_error);
 
-		const T& front() const throw();
+		const T& front() const;
 		T& front();
-		const T& back() const throw();
+		const T& back() const;
 		T& back();
 
 		iterator insert(const const_iterator &_Where, const T &_Value) throw(std::bad_alloc, std::length_error, std::bad_cast);
@@ -82,26 +82,26 @@ namespace xf
 			return insert_n(_Where, _Count, _Value);
 		}
 		
-		iterator erase(const_iterator _First, const_iterator _Last) throw();
-		iterator erase(const const_iterator &_Where) throw();
+		iterator erase(const_iterator _First, const_iterator _Last);
+		iterator erase(const const_iterator &_Where);
 
-		void reverse() throw();
+		void reverse();
 
-		const_iterator cbegin() const throw();
-		const_iterator begin() const throw();
-		iterator begin() throw();
+		const_iterator cbegin() const;
+		const_iterator begin() const;
+		iterator begin();
 
-		const_iterator cend() const throw();
-		const_iterator end() const throw();
-		iterator end() throw();
+		const_iterator cend() const;
+		const_iterator end() const;
+		iterator end();
 
-		const_reverse_iterator crbegin() const throw();
-		const_reverse_iterator rbegin() const throw();
-		reverse_iterator rbegin() throw();
+		const_reverse_iterator crbegin() const;
+		const_reverse_iterator rbegin() const;
+		reverse_iterator rbegin();
 
-		const_reverse_iterator crend() const throw();
-		const_reverse_iterator rend() const throw();
-		reverse_iterator rend() throw();
+		const_reverse_iterator crend() const;
+		const_reverse_iterator rend() const;
+		reverse_iterator rend();
 
 		list<T>& operator = (const list<T> &right);
 
@@ -219,7 +219,7 @@ namespace xf
 	}
 
 	template<class T>
-	list<T>::~list() throw()
+	list<T>::~list()
 	{
 		// 循环销毁head_与tail_之间的所有节点
 		for(const list_item<T> *p = head_->item_ptr_[next_index_];
@@ -236,14 +236,14 @@ namespace xf
 	}
 
 	template<class T>
-	void list<T>::assign(size_t count, const T &val) throw()
+	void list<T>::assign(size_t count, const T &val)
 	{
 		assign_n(count, val);
 	}
 
 	template<class T>
 	template<class _Iter>
-	void list<T>::assign(_Iter _First, _Iter _Last) throw()
+	void list<T>::assign(_Iter _First, _Iter _Last)
 	{
 		size_ = 0;
 		// 先修改已有的节点
@@ -281,26 +281,26 @@ namespace xf
 	}
 
 	template<class T>
-	size_t list<T>::size() const throw()
+	size_t list<T>::size() const
 	{
 		return size_;
 	}
 
 	template<class T>
-	bool list<T>::empty() const throw()
+	bool list<T>::empty() const
 	{
 		return (size_ == 0);
 	}
 
 
 	template<class T>
-	size_t list<T>::max_size() throw()
+	size_t list<T>::max_size()
 	{
 		return static_cast<size_t>(-1) / sizeof(list_item<T>) - 1;	// 减1是减去头结点
 	}
 
 	template<class T>
-	void list<T>::clear() throw()
+	void list<T>::clear()
 	{
 		for(const list_item<T> *p = head_->item_ptr_[next_index_];
 			p != tail_; p = head_->item_ptr_[next_index_])
@@ -343,25 +343,25 @@ namespace xf
 	}
 
 	template<class T>
-	const T& list<T>::front() const throw()
+	const T& list<T>::front() const
 	{
 		assert(size_ > 0);
 		return head_->item_ptr_[next_index_]->val_;
 	}
 	template<class T>
-	T& list<T>::front() throw()
+	T& list<T>::front()
 	{
 		assert(size_ > 0);
 		return head_->item_ptr_[next_index_]->val_;
 	}
 	template<class T>
-	const T& list<T>::back() const throw()
+	const T& list<T>::back() const
 	{
 		assert(size_ > 0);
 		return tail_->item_ptr_[prev_index_]->val_;
 	}
 	template<class T>
-	T& list<T>::back() throw()
+	T& list<T>::back()
 	{
 		assert(size_ > 0);
 		return tail_->item_ptr_[prev_index_]->val_;
@@ -401,7 +401,7 @@ namespace xf
 	}
 
 	template<class T>
-	typename list<T>::iterator list<T>::erase(const_iterator _First, const_iterator _Last) throw()
+	typename list<T>::iterator list<T>::erase(const_iterator _First, const_iterator _Last)
 	{
 		_First.p_->item_ptr_[_First.prev_index_]->item_ptr_[_First.next_index_] = const_cast<list_item<T>*>(_Last.p_);
 		const_cast<list_item<T>*>(_Last.p_)->item_ptr_[_Last.prev_index_] = _First.p_->item_ptr_[_First.prev_index_];
@@ -416,7 +416,7 @@ namespace xf
 		return iterator(const_cast<list_item<T>*>(_Last.p_), _Last.prev_index_, _Last.next_index_);
 	}
 	template<class T>
-	typename list<T>::iterator list<T>::erase(const const_iterator &_Where) throw()
+	typename list<T>::iterator list<T>::erase(const const_iterator &_Where)
 	{
 		list_item<T> *next_ptr = _Where.p_->item_ptr_[_Where.next_index_];
 		_Where.p_->item_ptr_[_Where.prev_index_]->item_ptr_[_Where.next_index_] = next_ptr;
@@ -427,7 +427,7 @@ namespace xf
 	}
 
 	template<class T>
-	void list<T>::reverse() throw()
+	void list<T>::reverse()
 	{
 		// 交换head_和tail_
 		list_item<T> *tmp_ptr = head_;
@@ -440,65 +440,65 @@ namespace xf
 	}
 
 	template<class T>
-	typename list<T>::const_iterator list<T>::cbegin() const throw()
+	typename list<T>::const_iterator list<T>::cbegin() const
 	{
 		return const_iterator(head_->item_ptr_[next_index_], prev_index_, next_index_);
 	}
 	template<class T>
-	typename list<T>::const_iterator list<T>::begin() const throw()
+	typename list<T>::const_iterator list<T>::begin() const
 	{
 		return cbegin();
 	}
 	template<class T>
-	typename list<T>::iterator list<T>::begin() throw()
+	typename list<T>::iterator list<T>::begin()
 	{
 		return iterator(head_->item_ptr_[next_index_], prev_index_, next_index_);;
 	}
 
 	template<class T>
-	typename list<T>::const_iterator list<T>::cend() const throw()
+	typename list<T>::const_iterator list<T>::cend() const
 	{
 		return const_iterator(tail_, prev_index_, next_index_);
 	}
 	template<class T>
-	typename list<T>::const_iterator list<T>::end() const throw()
+	typename list<T>::const_iterator list<T>::end() const
 	{
 		return cend();
 	}
 	template<class T>
-	typename list<T>::iterator list<T>::end() throw()
+	typename list<T>::iterator list<T>::end()
 	{
 		return iterator(tail_, prev_index_, next_index_);
 	}
 
 	template<class T>
-	typename list<T>::const_reverse_iterator list<T>::crbegin() const throw()
+	typename list<T>::const_reverse_iterator list<T>::crbegin() const
 	{
 		return const_reverse_iterator(cend());
 	}
 	template<class T>
-	typename list<T>::const_reverse_iterator list<T>::rbegin() const throw()
+	typename list<T>::const_reverse_iterator list<T>::rbegin() const
 	{
 		return crbegin();
 	}
 	template<class T>
-	typename list<T>::reverse_iterator list<T>::rbegin() throw()
+	typename list<T>::reverse_iterator list<T>::rbegin()
 	{
 		return reverse_iterator(end());
 	}
 
 	template<class T>
-	typename list<T>::const_reverse_iterator list<T>::crend() const throw()
+	typename list<T>::const_reverse_iterator list<T>::crend() const
 	{
 		return const_reverse_iterator(cbegin());
 	}
 	template<class T>
-	typename list<T>::const_reverse_iterator list<T>::rend() const throw()
+	typename list<T>::const_reverse_iterator list<T>::rend() const
 	{
 		return crend();
 	}
 	template<class T>
-	typename list<T>::reverse_iterator list<T>::rend() throw()
+	typename list<T>::reverse_iterator list<T>::rend()
 	{
 		return reverse_iterator(begin());
 	}
@@ -550,7 +550,7 @@ namespace xf
 
 
 	template<class T>
-	void list<T>::assign_n(size_t _Count, const T &_Value) throw()
+	void list<T>::assign_n(size_t _Count, const T &_Value)
 	{
 		size_ = 0;
 		// 先修改已有的节点

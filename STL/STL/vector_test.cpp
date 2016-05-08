@@ -984,11 +984,13 @@ void vector_test()
 			vector<int> v5;
 			cout << "insert(_Where, _Value)" << endl;
 			vector<int>::iterator iter = v5.insert(v5.begin(), 1);
-			for(vector<int>::const_iterator c_iter = v5.begin(); c_iter != v5.end(); ++c_iter)
-			{
-				assert(1 == *c_iter);
-			}
 			assert(*iter == 1);
+			assert(1 == v5.size());
+			v5.clear();
+			iter = v5.insert(v5.end(), 1);
+			assert(*iter == 1);
+			assert(1 == v5.size());
+			
 
 			iter = v5.insert(v5.end(), 3);
 			int benchmark1[] = {1, 3};
@@ -1018,6 +1020,11 @@ void vector_test()
 				assert(*c_iter == benchmark3[distance(v5.cbegin(), c_iter)]);
 			}
 			assert(*iter == 123);
+
+			v5.clear();
+			std::list<int> l(a, a + 3);
+			//v5.insert(v5.begin(), l.begin(), l.end());
+			
 		}
 
 		// iterator assignment

@@ -5,7 +5,7 @@
 #include "_Deque_Iterator.hpp"
 #include "_Reverse_Iterator.hpp"
 #include "common_algorithm.hpp"
-#include <memory>
+#include "memory.hpp"
 
 namespace xf
 {
@@ -213,13 +213,13 @@ namespace xf
 		for(size_t i = 0; i < full_bins; ++i)
 		{
 			T* p = reinterpret_cast<T*>(operator new(SEGMENT_LENGTH * sizeof(T)));
-			std::uninitialized_fill(p, p + SEGMENT_LENGTH, _Value);
+			xf::uninitialized_fill(p, p + SEGMENT_LENGTH, _Value);
 			map_.push_back(p);
 		}
 		if(remain_num > 0)
 		{
 			T* p = reinterpret_cast<T*>(operator new(SEGMENT_LENGTH * sizeof(T)));
-			std::uninitialized_fill(p, p + remain_num, _Value);
+			xf::uninitialized_fill(p, p + remain_num, _Value);
 			map_.push_back(p);
 		}
 	}
@@ -391,7 +391,7 @@ namespace xf
 			{
 				T* p = reinterpret_cast<T*>(operator new(SEGMENT_LENGTH * sizeof(T)));
 				_Next = _First + SEGMENT_LENGTH;
-				std::uninitialized_copy(_First, _Next, p);
+				xf::uninitialized_copy(_First, _Next, p);
 				_First = _Next;
 				//std::uninitialized_fill(p, p + SEGMENT_LENGTH, _Value);
 				map_.push_back(p);
@@ -399,7 +399,7 @@ namespace xf
 			if(remain_num > 0)
 			{
 				T* p = reinterpret_cast<T*>(operator new(SEGMENT_LENGTH * sizeof(T)));
-				std::uninitialized_copy(_First, _Last, p);
+				xf::uninitialized_copy(_First, _Last, p);
 				//std::uninitialized_fill(p, p + remain_num, _Value);
 				map_.push_back(p);
 			}
@@ -635,12 +635,7 @@ namespace xf
 	template<class T>
 	typename deque<T>::const_iterator deque<T>::cbegin() const
 	{
-		return const_iterator(vector<T*>::const_iterator(map_.cbegin().p_), front_bin_index_);
-		//return const_iterator(vector<const T*>::const_iterator(map_.cbegin().p_), front_bin_index_);
-		// 上句为简写，隐去了类型转换，实际的类型转换见下句
-		//return const_iterator(vector<const T*>::const_iterator(const_cast<T const * const *>(map_.cbegin().p_)), front_bin_index_);
-		// 下句当_Deque_Const_Iterator中的构造函数改为vector<T*>时才有效，但那样改过后会有隐患，在编译层面上无法约束T对象不被更改
-		//return const_iterator(map_.cbegin(), front_bin_index_);
+		return const_iterator(map_.cbegin(), front_bin_index_);
 	}
 	template<class T>
 	typename deque<T>::const_iterator deque<T>::begin() const
@@ -657,11 +652,11 @@ namespace xf
 	{
 		if(empty())
 		{
-			return const_iterator(vector<T*>::const_iterator(map_.begin().p_), 0);
+			return const_iterator(map_.cbegin(), 0);
 		}
 		else
 		{
-			return ++const_iterator(vector<T*>::const_iterator(map_.cend().p_) - 1, back_bin_index_);
+			return ++const_iterator(map_.cend() - 1, back_bin_index_);
 		}
 	}
 	template<class T>
@@ -683,33 +678,33 @@ namespace xf
 	}
 
 	template<class T>
-	typename deque<T>::const_reverse_iterator deque<T>::crbegin() const throw()
+	typename deque<T>::const_reverse_iterator deque<T>::crbegin() const
 	{
 		return const_reverse_iterator(cend());
 	}
 	template<class T>
-	typename deque<T>::const_reverse_iterator deque<T>::rbegin() const throw()
+	typename deque<T>::const_reverse_iterator deque<T>::rbegin() const
 	{
 		return crbegin();
 	}
 	template<class T>
-	typename deque<T>::reverse_iterator deque<T>::rbegin() throw()
+	typename deque<T>::reverse_iterator deque<T>::rbegin()
 	{
 		return reverse_iterator(end());
 	}
 
 	template<class T>
-	typename deque<T>::const_reverse_iterator deque<T>::crend() const throw()
+	typename deque<T>::const_reverse_iterator deque<T>::crend() const
 	{
 		return const_reverse_iterator(cbegin());
 	}
 	template<class T>
-	typename deque<T>::const_reverse_iterator deque<T>::rend() const throw()
+	typename deque<T>::const_reverse_iterator deque<T>::rend() const
 	{
 		return crend();
 	}
 	template<class T>
-	typename deque<T>::reverse_iterator deque<T>::rend() throw()
+	typename deque<T>::reverse_iterator deque<T>::rend()
 	{
 		return reverse_iterator(begin());
 	}
@@ -776,13 +771,13 @@ namespace xf
 			for(size_t i = 0; i < full_bins; ++i)
 			{
 				T* p = reinterpret_cast<T*>(operator new(SEGMENT_LENGTH * sizeof(T)));
-				std::uninitialized_fill(p, p + SEGMENT_LENGTH, _Value);
+				xf::uninitialized_fill(p, p + SEGMENT_LENGTH, _Value);
 				map_.push_back(p);
 			}
 			if(remain_num > 0)
 			{
 				T* p = reinterpret_cast<T*>(operator new(SEGMENT_LENGTH * sizeof(T)));
-				std::uninitialized_fill(p, p + remain_num, _Value);
+				xf::uninitialized_fill(p, p + remain_num, _Value);
 				map_.push_back(p);
 			}
 			return begin();

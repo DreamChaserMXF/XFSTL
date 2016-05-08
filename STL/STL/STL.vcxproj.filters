@@ -105,6 +105,9 @@
     <ClInclude Include="_Deque_Common.hpp">
       <Filter>Header Files\Container\deque</Filter>
     </ClInclude>
+    <ClInclude Include="memory.hpp">
+      <Filter>Header Files\algorithm</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

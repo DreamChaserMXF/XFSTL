@@ -10,12 +10,12 @@ namespace xf
 	{
 	public:
 
-		list_item(enum PTR_POS prev_pos, list_item *prev, enum PTR_POS next_pos, list_item *next) throw(std::bad_alloc) : val_()
+		list_item(enum PTR_POS prev_pos, list_item *prev, enum PTR_POS next_pos, list_item *next) : val_()
 		{
 			item_ptr_[prev_pos] = prev;
 			item_ptr_[next_pos] = next;
 		}
-		list_item(const T &_Value, enum PTR_POS prev_pos, list_item *prev, enum PTR_POS next_pos, list_item *next) throw(std::bad_alloc) : val_(_Value)
+		list_item(const T &_Value, enum PTR_POS prev_pos, list_item *prev, enum PTR_POS next_pos, list_item *next) : val_(_Value)
 		{
 			item_ptr_[prev_pos] = prev;
 			item_ptr_[next_pos] = next;
