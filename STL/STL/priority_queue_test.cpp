@@ -1,7 +1,7 @@
 #include "priority_queue.hpp"
 #include "vector.hpp"
 
-// 这个在类模板中不能用
+// 这个在类模板中不能用，在这里作失败典例
 static bool largerthan_func(const int &lhs, const int &rhs)
 {
 	return lhs > rhs;

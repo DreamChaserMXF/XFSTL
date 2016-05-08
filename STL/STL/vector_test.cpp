@@ -10,8 +10,8 @@ using std::cout;
 using std::endl;
 using std::ends;
 
-#include <list>
-//#include "list.hpp"
+//#include <list>
+#include "list.hpp"
 //using std::list;
 
 
@@ -63,7 +63,7 @@ void vector_test()
 		vector<unsigned int> vui;
 		vui.assign(10, 100);
 
-		std::list<int> li;
+		xf::list<int> li;
 		li.push_back(1);
 		li.push_back(2);
 		li.push_back(3);
@@ -1022,7 +1022,7 @@ void vector_test()
 			assert(*iter == 123);
 
 			v5.clear();
-			std::list<int> l(a, a + 3);
+			xf::list<int> l(a, a + 3);
 			//v5.insert(v5.begin(), l.begin(), l.end());
 			
 		}

@@ -102,8 +102,8 @@ namespace xf
 		const_reverse_iterator rend() const;
 		reverse_iterator rend();
 
-		const T& at(size_t index) const;
-		T& at(size_t index);
+		const T& at(size_t index) const throw(std::out_of_range);
+		T& at(size_t index) throw(std::out_of_range);
 
 		const T& operator [](size_t index) const;
 		T& operator [](size_t index);
@@ -710,7 +710,7 @@ namespace xf
 	}
 
 	template<class T>
-	const T& deque<T>::at(size_t index) const
+	const T& deque<T>::at(size_t index) const throw(std::out_of_range)
 	{
 		if(index >= size())
 		{
@@ -725,7 +725,7 @@ namespace xf
 		}
 	}
 	template<class T>
-	T& deque<T>::at(size_t index)
+	T& deque<T>::at(size_t index) throw(std::out_of_range)
 	{
 		if(index >= size())
 		{

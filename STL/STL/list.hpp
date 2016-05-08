@@ -8,8 +8,6 @@
 #include "_Reverse_Iterator.hpp"
 #include "list_item.hpp"
 #include <cassert>
-#include <exception>
-#include <stdexcept>
 #include "memory.hpp"
 namespace xf
 {
@@ -23,18 +21,14 @@ namespace xf
 		typedef _Reverse_Iterator<iterator> reverse_iterator;
 		typedef _Reverse_Iterator<const_iterator> const_reverse_iterator;
 
-		list() throw(std::bad_alloc, std::bad_cast);
-		list(const list<T> &right) throw(std::bad_alloc, std::bad_cast);
-		list(size_t _Count) throw(std::bad_alloc, std::bad_cast, std::length_error);
-		list(size_t _Count, const T &_Value) throw(std::bad_alloc, std::bad_cast, std::length_error);
-		template<class _Iter> list(_Iter first, _Iter last) throw(std::bad_alloc, std::bad_cast, std::length_error);
-		template<> list(int _Count, int _Value) throw(std::bad_alloc, std::bad_cast, std::length_error) : 
+		list();
+		list(const list<T> &right);
+		list(size_t _Count);
+		list(size_t _Count, const T &_Value);
+		template<class _Iter> list(_Iter first, _Iter last);
+		template<> list(int _Count, int _Value) : 
 			head_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), tail_(head_), size_(count), prev_index_(PREV_POS), next_index_(NEXT_POS)
 		{
-			if(_Count > max_size())
-			{
-				throw std::length_error("too much memory to allocate");
-			}
 			head_->item_ptr_[prev_index_] = NULL;
 			for(size_t i = 0; i < size_; ++i)
 			{
@@ -50,11 +44,11 @@ namespace xf
 			tail_ = new_item;
 		}
 		virtual ~list();
-		void assign(size_t count, const T &val) throw(std::length_error, std::bad_alloc);
+		void assign(size_t count, const T &val);
 		template<class _Iter> 
-		void assign(_Iter first, _Iter last) throw(std::length_error, std::bad_alloc);
+		void assign(_Iter first, _Iter last);
 		// 这个模板的特化不能在类外定义，不知道为啥
-		template<> void assign<int>(int _Count, int _Value) throw(std::bad_cast, std::length_error, std::bad_alloc)
+		template<> void assign<int>(int _Count, int _Value)
 		{
 			assign_n(_Count, static_cast<T>(_Value));
 		}
@@ -65,19 +59,19 @@ namespace xf
 
 		static size_t max_size();
 
-		void push_back(const T &item) throw(std::bad_alloc, std::length_error);
-		void pop_back() throw(std::length_error);
+		void push_back(const T &item);
+		void pop_back();
 
 		const T& front() const;
 		T& front();
 		const T& back() const;
 		T& back();
 
-		iterator insert(const const_iterator &_Where, const T &_Value) throw(std::bad_alloc, std::length_error, std::bad_cast);
-		iterator insert(const const_iterator &_Where, size_t _Count, const T &_Value) throw(std::bad_alloc, std::length_error, std::bad_cast);
+		iterator insert(const const_iterator &_Where, const T &_Value);
+		iterator insert(const const_iterator &_Where, size_t _Count, const T &_Value);
 		template<class Iter>
-		iterator insert(const const_iterator &_Where, Iter _First, Iter _Last) throw(std::bad_alloc, std::length_error, std::bad_cast);
-		template<> iterator insert<int>(const const_iterator &_Where, int _Count, int _Value) throw(std::bad_alloc, std::length_error, std::bad_cast)
+		iterator insert(const const_iterator &_Where, Iter _First, Iter _Last);
+		template<> iterator insert<int>(const const_iterator &_Where, int _Count, int _Value)
 		{
 			return insert_n(_Where, _Count, _Value);
 		}
@@ -106,8 +100,8 @@ namespace xf
 		list<T>& operator = (const list<T> &right);
 
 	private:
-		void assign_n(size_t count, const T &val) throw(std::length_error, std::bad_alloc);
-		iterator insert_n(const const_iterator _Where, size_t _Count, const T &_Value) throw(std::bad_alloc, std::length_error, std::bad_cast);
+		void assign_n(size_t count, const T &val);
+		iterator insert_n(const const_iterator _Where, size_t _Count, const T &_Value);
 		T *p_;
 		size_t capacity_;
 
@@ -120,7 +114,7 @@ namespace xf
 
 
 	template<class T>
-	list<T>::list() throw(std::bad_alloc, std::bad_cast) :
+	list<T>::list() :
 		head_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), tail_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), size_(0), prev_index_(PREV_POS), next_index_(NEXT_POS)
 	{
 		head_->item_ptr_[prev_index_] = NULL;
@@ -130,7 +124,7 @@ namespace xf
 	}
 
 	template<class T>
-	list<T>::list(const list<T> &right) throw(std::bad_alloc, std::bad_cast) : 
+	list<T>::list(const list<T> &right) : 
 		head_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), tail_(head_), size_(right.size_), prev_index_(PREV_POS), next_index_(NEXT_POS)
 	{
 		head_->item_ptr_[prev_index_] = NULL;
@@ -152,13 +146,9 @@ namespace xf
 	}
 
 	template<class T>
-	list<T>::list(size_t _Count) throw(std::bad_alloc, std::bad_cast, std::length_error) : 
+	list<T>::list(size_t _Count) : 
 		head_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), tail_(head_), size_(_Count), prev_index_(PREV_POS), next_index_(NEXT_POS)
 	{
-		if(_Count > max_size())
-		{
-			throw std::length_error("too much memory to allocate");
-		}
 		head_->item_ptr_[prev_index_] = NULL;
 		for(size_t i = 0; i < size_; ++i)
 		{
@@ -176,13 +166,9 @@ namespace xf
 
 
 	template<class T>
-	list<T>::list(size_t _Count, const T &_Value) throw(std::bad_alloc, std::bad_cast, std::length_error) : 
+	list<T>::list(size_t _Count, const T &_Value) : 
 		head_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), tail_(head_), size_(_Count), prev_index_(PREV_POS), next_index_(NEXT_POS)
 	{
-		if(_Count > max_size())
-		{
-			throw std::length_error("too much memory to allocate");
-		}
 		head_->item_ptr_[prev_index_] = NULL;
 		for(size_t i = 0; i < size_; ++i)
 		{
@@ -199,7 +185,7 @@ namespace xf
 	}
 
 	template<class T>template<class _Iter>
-	list<T>::list(_Iter first, _Iter last) throw(std::bad_alloc, std::bad_cast, std::length_error) : 
+	list<T>::list(_Iter first, _Iter last) : 
 		head_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), tail_(head_), size_(0U), prev_index_(PREV_POS), next_index_(NEXT_POS)
 	{
 		head_->item_ptr_[prev_index_] = NULL;
@@ -315,7 +301,7 @@ namespace xf
 	
 
 	template<class T>
-	void list<T>::push_back(const T &_Value) throw(std::bad_alloc, std::length_error)
+	void list<T>::push_back(const T &_Value)
 	{
 		// 添加新元素
 		list_item<T> *p = tail_->item_ptr_[prev_index_];
@@ -326,20 +312,13 @@ namespace xf
 	}
 
 	template<class T>
-	void list<T>::pop_back() throw(std::length_error)
+	void list<T>::pop_back()
 	{
-		if(0 == size_)
-		{
-			throw std::length_error("invalid list<T> subscript");
-		}
-		else
-		{
-			--size_;
-			list_item<T> *p = tail_->item_ptr_[prev_index_]->item_ptr_[prev_index_];
-			delete tail_->item_ptr_[prev_index_];
-			p->item_ptr_[next_index_] = tail_;
-			tail_->item_ptr_[prev_index_] = p;
-		}
+		--size_;
+		list_item<T> *p = tail_->item_ptr_[prev_index_]->item_ptr_[prev_index_];
+		delete tail_->item_ptr_[prev_index_];
+		p->item_ptr_[next_index_] = tail_;
+		tail_->item_ptr_[prev_index_] = p;
 	}
 
 	template<class T>
@@ -368,7 +347,7 @@ namespace xf
 	}
 
 	template<class T>
-	typename list<T>::iterator list<T>::insert(const const_iterator &_Where, const T &_Value) throw(std::bad_alloc, std::length_error, std::bad_cast)
+	typename list<T>::iterator list<T>::insert(const const_iterator &_Where, const T &_Value)
 	{
 		list_item<T> *new_ptr = new list_item<T>(_Value, _Where.prev_index_, _Where.p_->item_ptr_[_Where.prev_index_], _Where.next_index_, const_cast<list_item<T>*>(_Where.p_));
 		_Where.p_->item_ptr_[_Where.prev_index_]->item_ptr_[_Where.next_index_] = new_ptr;
@@ -378,13 +357,13 @@ namespace xf
 	}
 
 	template<class T>
-	typename list<T>::iterator list<T>::insert(const const_iterator &_Where, size_t _Count, const T &_Value) throw(std::bad_alloc, std::length_error, std::bad_cast)
+	typename list<T>::iterator list<T>::insert(const const_iterator &_Where, size_t _Count, const T &_Value)
 	{
 		return insert_n(_Where, _Count, _Value);
 	}
 
 	template<class T>template<class Iter>
-	typename list<T>::iterator list<T>::insert(const const_iterator &_Where, Iter _First, Iter _Last) throw(std::bad_alloc, std::length_error, std::bad_cast)
+	typename list<T>::iterator list<T>::insert(const const_iterator &_Where, Iter _First, Iter _Last)
 	{
 		list_item<T> *last_ptr = _Where.p_->item_ptr_[_Where.prev_index_];
 		list_item<T> *ret_prev = last_ptr;
@@ -588,7 +567,7 @@ namespace xf
 	}
 
 	template<class T>
-	typename list<T>::iterator list<T>::insert_n(const const_iterator _Where, size_t _Count, const T &_Value) throw(std::bad_alloc, std::length_error, std::bad_cast)
+	typename list<T>::iterator list<T>::insert_n(const const_iterator _Where, size_t _Count, const T &_Value)
 	{
 		list_item<T> *last_ptr = _Where.p_->item_ptr_[_Where.prev_index_];
 		list_item<T> *ret_prev = last_ptr;

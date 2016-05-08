@@ -32,7 +32,7 @@ public:
 
 void sort_test()
 {
-	printf("\nsort test:\n");
+	printf("\nSort Test:\n");
 
 	int a[] = {1,3,5,7,9,2,4,6,8,10};
 	int b[] = {1,3,5,7,9,2,4,6,8,10};
@@ -42,81 +42,70 @@ void sort_test()
 
 	// vector sort
 	sort(va.begin(), va.end());
-	for(int i = 0; i < length; ++i)
+	for(int i = 1; i < length; ++i)
 	{
-		printf("%d ", va[i]);
+		assert(va[i] >= va[i-1]);
 	}
-	printf("\n");
 
 	sort(va.rbegin(), va.rend());
-	for(int i = 0; i < length; ++i)
+	for(int i = 1; i < length; ++i)
 	{
-		printf("%d ", va[i]);
+		assert(va[i] <= va[i-1]);
 	}
-	printf("\n");
 
 	sort(vb.begin(), vb.end(), lessthan_func);
-	for(int i = 0; i < length; ++i)
+	for(int i = 1; i < length; ++i)
 	{
-		printf("%d ", vb[i]);
+		assert(vb[i] >= vb[i-1]);
 	}
-	printf("\n");
 
 	sort(vb.begin(), vb.end(), largerthan_func);
-	for(int i = 0; i < length; ++i)
+	for(int i = 1; i < length; ++i)
 	{
-		printf("%d ", vb[i]);
+		assert(vb[i] <= vb[i-1]);
 	}
-	printf("\n");
 
 	sort(vb.begin(), vb.end(), less_than_class());
-	for(int i = 0; i < length; ++i)
+	for(int i = 1; i < length; ++i)
 	{
-		printf("%d ", vb[i]);
+		assert(vb[i] >= vb[i-1]);
 	}
-	printf("\n");
 
 	sort(vb.begin(), vb.end(), larger_than_class());
-	for(int i = 0; i < length; ++i)
+	for(int i = 1; i < length; ++i)
 	{
-		printf("%d ", vb[i]);
+		assert(vb[i] <= vb[i-1]);
 	}
-	printf("\n\n");
 
 
 	// array sort
 	xf::sort(a, a + length);
-	for(int i = 0; i < length; ++i)
+	for(int i = 1; i < length; ++i)
 	{
-		printf("%d ", a[i]);
+		assert(a[i] >= a[i-1]);
 	}
-	printf("\n");
 
 	xf::sort(b, b + length, lessthan_func);
-	for(int i = 0; i < length; ++i)
+	for(int i = 1; i < length; ++i)
 	{
-		printf("%d ", b[i]);
+		assert(b[i] >= b[i-1]);
 	}
-	printf("\n");
 
 	xf::sort(b, b + length, largerthan_func);
-	for(int i = 0; i < length; ++i)
+	for(int i = 1; i < length; ++i)
 	{
-		printf("%d ", b[i]);
+		assert(b[i] <= b[i-1]);
 	}
-	printf("\n");
 
 	xf::sort(b, b + length, less_than_class());
-	for(int i = 0; i < length; ++i)
+	for(int i = 1; i < length; ++i)
 	{
-		printf("%d ", b[i]);
+		assert(b[i] >= b[i-1]);
 	}
-	printf("\n");
 
 	xf::sort(b, b + length, larger_than_class());
-	for(int i = 0; i < length; ++i)
+	for(int i = 1; i < length; ++i)
 	{
-		printf("%d ", b[i]);
+		assert(b[i] <= b[i-1]);
 	}
-	printf("\n");
 }

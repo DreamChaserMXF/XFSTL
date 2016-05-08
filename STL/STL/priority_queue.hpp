@@ -2,6 +2,7 @@
 #define XF_PRIORITY_QUEUE_HPP
 
 #include "vector.hpp"
+#include "deque.hpp"
 
 namespace xf
 {
@@ -15,7 +16,7 @@ namespace xf
 		}
 	};
 
-	template<class T, class _Container = vector<T>, class _Comparer = _LessThan<T>>
+	template<class T, class _Container = deque<T>, class _Comparer = _LessThan<T>>
 	class priority_queue
 	{
 	public:

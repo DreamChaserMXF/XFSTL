@@ -14,7 +14,6 @@ int main()
 	list_test();
 	deque_test();
 	adapter_test();
-	return 0;
 	sort_test();
 	return 0;
 }

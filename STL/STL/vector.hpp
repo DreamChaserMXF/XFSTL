@@ -8,7 +8,6 @@
 #include "_Reverse_Iterator.hpp"
 #include "memory.hpp"
 #include <cassert>
-#include <exception>
 #include <stdexcept>
 namespace xf
 {
@@ -30,12 +29,8 @@ namespace xf
 		template<class _Iter> vector(_Iter first, _Iter last);
 		template<> vector(int count, int val) : p_(NULL), size_(count), capacity_(count) 
 		{
-			if(static_cast<size_t>(count) > max_size())
-			{
-				throw std::length_error("too much memory to allocate");
-			}
 			p_ = static_cast<T*>(operator new[](capacity_ * sizeof(T)));
-			std::uninitialized_fill(p_, p_ + size_, static_cast<T>(val));	// construct elements
+			xf::uninitialized_fill(p_, p_ + size_, static_cast<T>(val));	// construct elements
 		}
 		virtual ~vector();
 
@@ -59,7 +54,7 @@ namespace xf
 		}
 
 		void push_back(const T &item);
-		void pop_back() throw(std::length_error);
+		void pop_back();
 
 		const T& front() const;
 		T& front();
@@ -108,8 +103,8 @@ namespace xf
 		vector<T>& operator = (const vector<T> &right);
 
 	private:
-		size_t get_new_capacity() const throw(std::length_error);
-		size_t get_new_capacity(size_t min_request_size) const throw(std::length_error);
+		size_t get_new_capacity() const;
+		size_t get_new_capacity(size_t min_request_size) const;
 		void assign_n(size_t count, const T &val);
 		iterator insert_n(const const_iterator _Where, size_t _Count, const T &_Value);
 
@@ -134,10 +129,6 @@ namespace xf
 	template<class T>
 	vector<T>::vector(size_t count) : p_(NULL), size_(count), capacity_(count) 
 	{
-		if(count > max_size())
-		{
-			throw std::length_error("too much memory to allocate");
-		}
 		p_ = static_cast<T*>(operator new[](capacity_ * sizeof(T)));
 		for(size_t i = 0; i < size_; ++i)
 		{
@@ -149,31 +140,15 @@ namespace xf
 	template<class T>
 	vector<T>::vector(size_t count, const T &val) : p_(NULL), size_(count), capacity_(count) 
 	{
-		if(count > max_size())
-		{
-			throw std::length_error("too much memory to allocate");
-		}
-
 		p_ = static_cast<T*>(operator new[](capacity_ * sizeof(T)));
-		std::uninitialized_fill(p_, p_ + size_, val);	// construct elements
+		xf::uninitialized_fill(p_, p_ + size_, val);	// construct elements
 	}
 
 	template<class T>template<class _Iter>
 	vector<T>::vector(_Iter first, _Iter last) : p_(NULL), size_(0U), capacity_(0U) 
 	{
-		//_Iter tmp = first;
-		//while(tmp != last)
-		//{
-		//	++tmp;
-		//	++size_;
-		//}
-		// TODO 改！
-		size_ = std::distance(first, last);
+		size_ = xf::distance(first, last);
 		capacity_ = size_;
-		if(capacity_ > max_size())
-		{
-			throw std::length_error("too much memory to allocate");
-		}
 		p_ = static_cast<T*>(operator new[](capacity_ * sizeof(T)));
 		xf::uninitialized_copy(first, last, p_);	// construct elements
 	}
@@ -218,12 +193,6 @@ namespace xf
 		{
 			return;
 		}
-		// 判断是否太大了
-		if(new_capacity > max_size())
-		{
-			throw std::length_error("too much memory to allocate");
-		}
-
 		if(new_capacity > capacity_)
 		{
 			T *buf = static_cast<T*>(operator new[](new_capacity * sizeof(T)));
@@ -244,10 +213,6 @@ namespace xf
 	template<class T>
 	void vector<T>::resize(size_t new_size, const T &new_val)
 	{
-		if(new_size > max_size())
-		{
-			throw std::length_error("too much memory to allocate");
-		}
 		// 变小的话，要把多余的元素清除掉
 		if(new_size < size_)
 		{
@@ -278,7 +243,7 @@ namespace xf
 		if(size_ < capacity_)
 		{
 			T *new_ptr = static_cast<T*>(operator new [] (size_ * sizeof(T)));
-			std::uninitialized_copy(p_, p_ + size_, new_ptr);
+			xf::uninitialized_copy(p_, p_ + size_, new_ptr);
 			for(size_t i = 0; i < size_; ++i)
 			{
 				(p_ + i)->~T();
@@ -318,20 +283,13 @@ namespace xf
 	{
 		clear();
 		// 计算新的size_
-		//_Iter tmp = first;
-		//while(tmp != last)
-		//{
-		//	++tmp;
-		//	++size_;
-		//}
-		// TODO 改！
-		size_ = std::distance(first, last);
+		size_ = xf::distance(first, last);
 		if(size_ > capacity_)
 		{
 			reserve(size_);
 			capacity_ = size_;
 		}
-		std::uninitialized_copy(first, last, p_);
+		xf::uninitialized_copy(first, last, p_);
 	}
 
 	template<class T>
@@ -349,17 +307,10 @@ namespace xf
 	}
 
 	template<class T>
-	void vector<T>::pop_back() throw(std::length_error)
+	void vector<T>::pop_back()
 	{
-		if(0 == size_)
-		{
-			throw std::length_error("invalid vector<T> subscript");
-		}
-		else
-		{
-			--size_;
-			(p_ + size_)->~T();
-		}
+		--size_;
+		(p_ + size_)->~T();
 	}
 
 	template<class T>
@@ -442,8 +393,8 @@ namespace xf
 			// 新申请空间并分两段复制，空下需要插入的元素的位置
 			size_t new_capacity = get_new_capacity(size_ + count);
 			T * new_ptr = static_cast<T*>(operator new[] (new_capacity * sizeof(T)));
-			std::uninitialized_copy(p_, p_ + offset, new_ptr);
-			std::uninitialized_copy(p_ + offset, p_ + size_, new_ptr + offset + count);
+			xf::uninitialized_copy(p_, p_ + offset, new_ptr);
+			xf::uninitialized_copy(p_ + offset, p_ + size_, new_ptr + offset + count);
 			// 插入新的元素
 			for(size_t i = 0; i < count; ++i)
 			{
@@ -700,16 +651,12 @@ namespace xf
 	}
 
 	template<class T>
-	size_t vector<T>::get_new_capacity() const throw(std::length_error)
+	size_t vector<T>::get_new_capacity() const
 	{
 		size_t new_capacity;
 		if(0 == capacity_)
 		{
 			new_capacity = 1;
-		}
-		else if(capacity_ == max_size())
-		{
-			throw std::length_error("too much memory to allocte");
 		}
 		else if(2 * capacity_ <= max_size())
 		{
@@ -723,13 +670,9 @@ namespace xf
 	}
 
 	template<class T>
-	size_t vector<T>::get_new_capacity(size_t min_request_size) const throw(std::length_error)
+	size_t vector<T>::get_new_capacity(size_t min_request_size) const
 	{
 		size_t new_capacity = 0U;
-		if(min_request_size > max_size())	// 检查边界
-		{
-			throw std::length_error("too much memory to allocte");
-		}
 		if(2 * capacity_ > max_size())		// 尝试申请更多
 		{
 			new_capacity = max_size();
@@ -755,7 +698,7 @@ namespace xf
 			reserve(count);
 			capacity_ = count;
 		}
-		std::uninitialized_fill(p_, p_ + count, val);
+		xf::uninitialized_fill(p_, p_ + count, val);
 	}
 
 	// 公用函数，用于真正的count value型插入，以及迭代器插入的函数模板的特化版本
@@ -769,7 +712,7 @@ namespace xf
 			size_t new_capacity = get_new_capacity(size_ + _Count);
 			T * new_ptr = static_cast<T*>(operator new[] (new_capacity * sizeof(T)));
 			xf::uninitialized_copy(p_, p_ + offset, new_ptr);
-			std::uninitialized_copy(p_ + offset, p_ + size_, new_ptr + offset + _Count);
+			xf::uninitialized_copy(p_ + offset, p_ + size_, new_ptr + offset + _Count);
 			// 插入新的元素
 			for(size_t i = 0; i < _Count; ++i)
 			{
