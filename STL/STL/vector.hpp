@@ -43,7 +43,7 @@ namespace xf
 		size_t size() const throw();
 		bool empty() const throw();
 		void reserve(size_t capacity) throw(std::bad_alloc, std::length_error);
-		void resize(size_t size) throw(std::bad_alloc, std::length_error);
+		void resize(size_t size, const T &new_val = T()) throw(std::bad_alloc, std::length_error);
 		void shrink_to_fit() throw(std::bad_alloc);	// 释放多余的内存
 
 		static size_t max_size()throw();
@@ -242,7 +242,7 @@ namespace xf
 	}
 
 	template<class T>
-	void vector<T>::resize(size_t new_size) throw(std::bad_alloc, std::length_error)
+	void vector<T>::resize(size_t new_size, const T &new_val) throw(std::bad_alloc, std::length_error)
 	{
 		if(new_size > max_size())
 		{
@@ -265,7 +265,7 @@ namespace xf
 		// 对变大的地方进行初始化
 		for(size_t i = size_; i < new_size; ++i)
 		{
-			new (p_ + i) T();
+			new (p_ + i) T(new_val);
 		}
 		// 调整size_
 		size_ = new_size;

@@ -56,6 +56,7 @@ void vector_test()
 		assert(true == v.empty());
 		NoDefaultConstructorClass c(1);
 		v.push_back(c);
+		v.resize(10, c);	// important for default constructor
 
 		// constructur with iterator and assign function test
 		cout <<"constructur and assign function test" << endl;
@@ -79,9 +80,7 @@ void vector_test()
 		vector<string> vs;
 		vs.push_back("abc");
 		assert("abc" == vs[0]);
-		
-
-	
+			
 	}
 	// assign, front, back, push, pop, clear
 	vector<int> v1;
