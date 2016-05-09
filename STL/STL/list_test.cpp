@@ -22,7 +22,7 @@ void list_test()
 
 		void func() const
 		{
-			cout << "const member function" << endl;
+			cout << "\tconst member function" << endl;
 		}
 		A& operator = (const A &a)
 		{
@@ -38,35 +38,32 @@ void list_test()
 		B(int a){};
 	};
 
-	//void multi_file_test();
-	//multi_file_test();
 	cout << "\nList Test:\n";
-	
 
 	// assign, front, back, push, pop, clear
 	list<int> list1;
 	{
 		// default constructor
-		cout << "default constructor" << endl;
+		cout << "\tdefault constructor" << endl;
 		assert(0 == list1.size());
 		// empty test
-		cout << "empty test" << endl;
+		cout << "\tempty test" << endl;
 		assert(true == list1.empty());
 		// assign
-		cout << "assign" << endl;
+		cout << "\tassign" << endl;
 		list1.assign(10, 2);
 		assert(10 == list1.size());
 		for(list<int>::iterator iter = list1.begin(); iter != list1.end(); ++iter)
 		{
 			assert(2 == *iter);
 		}
-		cout << endl;
+		
 
 		// empty test
 		assert(false == list1.empty());
 
 		// re-assign
-		cout << "re-assign" << endl;
+		cout << "\tre-assign" << endl;
 		list1.assign(5, 7);
 		assert(5 == list1.size());
 		for(list<int>::iterator iter = list1.begin(); iter != list1.end(); ++iter)
@@ -75,7 +72,7 @@ void list_test()
 		}
 		
 		// front, back
-		cout << "front, back" << endl;
+		cout << "\tfront, back" << endl;
 		assert(7 == list1.front());
 		assert(7 == list1.back());
 		assert(2 == (list1.front() = 2));
@@ -86,8 +83,8 @@ void list_test()
 			assert(benchmark1[distance(list1.begin(), iter)] == *iter);
 		}
 
-		// pop
-		cout << "pop" << endl;
+		// pop_back
+		cout << "\tpop" << endl;
 		list1.pop_back();
 		list1.pop_back();
 		assert(3 == list1.size());
@@ -96,8 +93,8 @@ void list_test()
 			assert(benchmark1[distance(list1.begin(), iter)] == *iter);
 		}
 
-		// push
-		cout << "push" << endl;
+		// push_back
+		cout << "\tpush" << endl;
 		list1.push_back(1);
 		list1.push_back(2);
 		assert(5 == list1.size());
@@ -107,8 +104,30 @@ void list_test()
 			assert(benchmark2[distance(list1.begin(), iter)] == *iter);
 		}
 
+		// pop_front
+		cout << "\tpop_front" << endl;
+		list1.pop_front();
+		list1.pop_front();
+		assert(3 == list1.size());
+		int benchmark3[] = {7,1,2};
+		for(list<int>::iterator iter = list1.begin(); iter != list1.end(); ++iter)
+		{
+			assert(benchmark3[distance(list1.begin(), iter)] == *iter);
+		}
+
+		// push_front
+		cout << "\tpush_front" << endl;
+		list1.push_front(1);
+		list1.push_front(2);
+		assert(5 == list1.size());
+		int benchmark4[] = {2,1,7,1,2};
+		for(list<int>::iterator iter = list1.begin(); iter != list1.end(); ++iter)
+		{
+			assert(benchmark4[distance(list1.begin(), iter)] == *iter);
+		}
+
 		// clear
-		cout << "clear" << endl;
+		cout << "\tclear" << endl;
 		list1.clear();
 		assert(0 == list1.size());
 		for(list<int>::iterator iter = list1.begin(); iter != list1.end(); ++iter)
@@ -117,12 +136,12 @@ void list_test()
 		}
 
 		// empty test
-		cout << "empty test" << endl;
+		cout << "\tempty test" << endl;
 		assert(true == list1.empty());
 	}
 
 	{
-		cout << "default constructor with class wihtout default constructor:\n";
+		cout << "\tdefault constructor with class wihtout default constructor:\n";
 		list<B> listb;
 		listb.push_back(B(1));
 	}
@@ -132,7 +151,7 @@ void list_test()
 	list<A> list3(list2);
 	{
 		// _Count constructor
-		cout << "_Count constructor " << endl;
+		cout << "\t_Count constructor " << endl;
 		assert(3 == list2.size());
 		for(list<A>::iterator iter = list2.begin(); iter != list2.end(); ++iter)
 		{
@@ -140,7 +159,7 @@ void list_test()
 		}
 
 		// copy constructor 
-		cout << "copy constructor " << endl;
+		cout << "\tcopy constructor " << endl;
 		assert(3 == list3.size());
 		for(list<A>::iterator iter = list3.begin(); iter != list3.end(); ++iter)
 		{
@@ -148,7 +167,7 @@ void list_test()
 		}
 		
 		// operator = 
-		cout << "operator = " << endl;
+		cout << "\toperator = " << endl;
 		list3 = list2;
 		assert(3 == list3.size());
 		for(list<A>::iterator iter = list3.begin(); iter != list3.end(); ++iter)
@@ -162,7 +181,7 @@ void list_test()
 	list<int> list4(a, a + 10);
 	{
 		// iterator preorder ++
-		cout << "iterator preorder ++" << endl;
+		cout << "\titerator preorder ++" << endl;
 		assert(10 == list4.size());
 		for(list<int>::iterator iter = list4.begin(); iter != list4.end(); ++iter)
 		{
@@ -171,11 +190,11 @@ void list_test()
 			assert(a[distance(list4.begin(), next_iter)] == *next_iter);
 			//*iter = 1;	// no error
 		}
-		cout << endl;
+		
 
 		// iterator postorder ++
-		cout << "iterator postorder ++" << endl;
-		cout << '\t';
+		cout << "\titerator postorder ++" << endl;
+		
 		for(list<int>::iterator iter = list4.begin(); iter != list4.end(); iter++)
 		{
 			assert(a[distance(list4.begin(), iter)] == *iter);
@@ -183,63 +202,63 @@ void list_test()
 			assert(a[distance(list4.begin(), next_iter)] == *next_iter);
 			//*iter = 1;	// no error
 		}
-		cout << endl;
+		
 	
 
 		// iterator preorder --
-		cout << "iterator preorder --" << endl;
-		cout << '\t';
+		cout << "\titerator preorder --" << endl;
+		
 		for(list<int>::iterator iter = --list4.end(); iter != --list4.begin(); --iter)
 		{
 			assert(a[distance(list4.begin(), iter)] == *iter);
 			list<int>::iterator next_iter = --iter;
 			assert(a[distance(list4.begin(), next_iter)] == *next_iter);
 		}
-		cout << endl;
+		
 
 		// iterator postorder --
-		cout << "iterator postorder --" << endl;
-		cout << '\t';
+		cout << "\titerator postorder --" << endl;
+		
 		for(list<int>::iterator iter = --list4.end(); iter != --list4.begin(); iter--)
 		{
 			assert(a[distance(list4.begin(), iter)] == *iter);
 			list<int>::iterator next_iter = --(iter--);
 			assert(a[distance(list4.begin(), next_iter)] == *next_iter);
 		}
-		cout << endl;
+		
 
 		// const iterator preorder ++
-		cout << "const iterator preorder ++" << endl;
+		cout << "\tconst iterator preorder ++" << endl;
 		for(list<int>::const_iterator iter = list4.begin(); iter != list4.end(); ++iter)
 		{
 			assert(a[distance(list4.cbegin(), iter)] == *iter);
 			list<int>::const_iterator next_iter = ++iter;
 			assert(a[distance(list4.cbegin(), next_iter)] == *next_iter);
 		}
-		cout << endl;
+		
 
 		// const iterator postorder ++
-		cout << "const iterator postorder ++" << endl;
+		cout << "\tconst iterator postorder ++" << endl;
 		for(list<int>::const_iterator iter = list4.begin(); iter != list4.end(); iter++)
 		{
 			assert(a[distance(list4.cbegin(), iter)] == *iter);
 			list<int>::const_iterator next_iter = ++(iter++);
 			assert(a[distance(list4.cbegin(), next_iter)] == *next_iter);
 		}
-		cout << endl;
+		
 
 		// const iterator preorder --
-		cout << "const iterator preorder --" << endl;
+		cout << "\tconst iterator preorder --" << endl;
 		for(list<int>::const_iterator iter = --list4.end(); iter != --list4.begin(); --iter)
 		{
 			assert(a[distance(list4.cbegin(), iter)] == *iter);
 			list<int>::const_iterator next_iter = --iter;
 			assert(a[distance(list4.cbegin(), next_iter)] == *next_iter);
 		}
-		cout << endl;
+		
 
 		// const iterator postorder --
-		cout << "const iterator postorder --" << endl;
+		cout << "\tconst iterator postorder --" << endl;
 		for(list<int>::const_iterator iter = --list4.end(); iter != --list4.begin(); iter--)
 		{
 			assert(a[distance(list4.cbegin(), iter)] == *iter);
@@ -249,7 +268,7 @@ void list_test()
 		
 		// rbegin, rend
 		// reverse iterator preorder ++ 
-		cout << "reverse iterator preorder ++" << endl;
+		cout << "\treverse iterator preorder ++" << endl;
 		for(list<int>::reverse_iterator iter = list4.rbegin(); iter != list4.rend(); ++iter)
 		{
 			assert(a[9 - distance(list4.rbegin(), iter)] == *iter);
@@ -259,7 +278,7 @@ void list_test()
 		}
 
 		// reverse iterator postorder ++ 
-		cout << "reverse iterator postorder ++" << endl;
+		cout << "\treverse iterator postorder ++" << endl;
 		for(list<int>::reverse_iterator iter = list4.rbegin(); iter != list4.rend(); iter++)
 		{
 			assert(a[9 - distance(list4.rbegin(), iter)] == *iter);
@@ -268,7 +287,7 @@ void list_test()
 			assert(a[9 - distance(list4.rbegin(), next_iter)] == *next_iter);
 		}
 		// reverse iterator preorder --
-		cout << "reverse iterator preorder --" << endl;
+		cout << "\treverse iterator preorder --" << endl;
 		for(list<int>::reverse_iterator iter = --list4.rend(); iter != --list4.rbegin(); --iter)
 		{
 			assert(a[9 - distance(list4.rbegin(), iter)] == *iter);
@@ -276,7 +295,7 @@ void list_test()
 			assert(a[9 - distance(list4.rbegin(), next_iter)] == *next_iter);
 		}
 		// reverse iterator postorder --
-		cout << "reverse iterator postorder --" << endl;
+		cout << "\treverse iterator postorder --" << endl;
 		for(list<int>::reverse_iterator iter = --list4.rend(); iter != --list4.rbegin(); iter--)
 		{
 			assert(a[9 - distance(list4.rbegin(), iter)] == *iter);
@@ -286,7 +305,7 @@ void list_test()
 	
 		// crbegin, crend
 		// const reverse iterator preorder ++ 
-		cout << "const reverse iterator preorder ++" << endl;
+		cout << "\tconst reverse iterator preorder ++" << endl;
 		for(list<int>::const_reverse_iterator iter = list4.crbegin(); iter != list4.crend(); ++iter)
 		{
 			assert(a[9 - distance(list4.crbegin(), iter)] == *iter);
@@ -295,7 +314,7 @@ void list_test()
 			assert(a[9 - distance(list4.crbegin(), next_iter)] == *next_iter);
 		}
 		// const reverse iterator postorder ++ 
-		cout << "const reverse iterator postorder ++" << endl;
+		cout << "\tconst reverse iterator postorder ++" << endl;
 		for(list<int>::const_reverse_iterator iter = list4.crbegin(); iter != list4.crend(); iter++)
 		{
 			assert(a[9 - distance(list4.crbegin(), iter)] == *iter);
@@ -305,7 +324,7 @@ void list_test()
 		}
 
 		// const reverse iterator preorder --
-		cout << "const reverse preorder iterator --" << endl;
+		cout << "\tconst reverse preorder iterator --" << endl;
 		list<int>::reverse_iterator exp_iter = list4.rbegin();
 		--exp_iter;
 		static_cast<list<int>::const_reverse_iterator>(exp_iter);
@@ -316,7 +335,7 @@ void list_test()
 			assert(a[9 - distance(list4.crbegin(), next_iter)] == *next_iter);
 		}
 		// const reverse iterator postorder --
-		cout << "const reverse postorder iterator --" << endl;
+		cout << "\tconst reverse postorder iterator --" << endl;
 		for(list<int>::const_reverse_iterator iter = --list4.crend(); iter != --list4.crbegin(); iter--)
 		{
 			assert(a[9 - distance(list4.crbegin(), iter)] == *iter);
@@ -327,7 +346,7 @@ void list_test()
 
 		// transformation between reverse and forward iterator
 		{
-			cout << "transformation between reverse and normal iterator" << endl;
+			cout << "\ttransformation between reverse and normal iterator" << endl;
 			list<int>::reverse_iterator r_iter = list4.rbegin();
 			assert(10 == *r_iter);
 			++r_iter;
@@ -341,7 +360,7 @@ void list_test()
 
 		// transformation between const reverse and const forward const iterator
 		{
-			cout << "transformation between const reverse and const forward const iterator" << endl;
+			cout << "\ttransformation between const reverse and const forward const iterator" << endl;
 			list<int>::const_reverse_iterator cr_iter = list4.rbegin();
 			assert(10 == *cr_iter);
 			++cr_iter;
@@ -357,7 +376,7 @@ void list_test()
 		// erase
 		{
 			// erase(_Where)
-			cout << "erase(_Where)" << endl;
+			cout << "\terase(_Where)" << endl;
 			list<int>::iterator iter = list4.begin();
 			++iter;
 			iter = list4.erase(iter);
@@ -369,7 +388,7 @@ void list_test()
 			}
 
 			// erase(_First, _Last)
-			cout << "erase(_First, _Last)" << endl;
+			cout << "\terase(_First, _Last)" << endl;
 			iter = list4.begin();
 			list<int>::iterator iter2 = iter;
 			++iter2;
@@ -386,7 +405,7 @@ void list_test()
 		{
 			// insert(_Where, _Value)
 			list<int> list5;
-			cout << "insert(_Where, _Value)" << endl;
+			cout << "\tinsert(_Where, _Value)" << endl;
 			list<int>::iterator iter = list5.insert(list5.begin(), 1);
 			assert(1 == *iter);
 			for(list<int>::const_iterator c_iter = list5.begin(); c_iter != list5.end(); ++c_iter)
@@ -403,7 +422,7 @@ void list_test()
 			}
 			
 			// insert(_Where, _Count, _Value)
-			cout << "insert(_Where, _Count, _Value)" << endl;
+			cout << "\tinsert(_Where, _Count, _Value)" << endl;
 			iter = list5.insert(++list5.begin(), 3, 333);
 			assert(333 == *iter);
 			int benchmark2[] = {1, 333, 333, 333, 3};
@@ -413,7 +432,7 @@ void list_test()
 			}
 
 			// insert(_Where, _First, _Last)
-			cout << "insert(_Where, _First, _Last)" << endl;
+			cout << "\tinsert(_Where, _First, _Last)" << endl;
 			int a[] = {123, 321, 213};
 			iter = list5.insert(++list5.begin(), a, a + 3);
 			assert(123 == *iter);
@@ -425,8 +444,8 @@ void list_test()
 		}
 
 		// iterator assignment
-		cout << "iterator assignment" << endl;
-		cout << "iterator" << endl;
+		cout << "\titerator assignment" << endl;
+		cout << "\titerator" << endl;
 		for(list<int>::iterator iter = list4.begin(); iter != list4.end(); ++iter)
 		{
 			*iter = 123;
@@ -436,7 +455,7 @@ void list_test()
 			assert(123 == *iter);
 		}
 
-		cout << "reverse iterator" << endl;
+		cout << "\treverse iterator" << endl;
 		for(list<int>::reverse_iterator iter = list4.rbegin(); iter != list4.rend(); ++iter)
 		{
 			*iter = 321;
@@ -449,11 +468,11 @@ void list_test()
 
 	// reverse test
 	{
-		cout << endl;
-		cout << "reverse test" << endl;
+		
+		cout << "\treverse test" << endl;
 		int a[] = {1, 2, 3, 4, 5};
 		list<int> rev_list(a, a + 5);
-		cout << '\t';
+		
 		for(list<int>::iterator iter = rev_list.begin(); iter != rev_list.end(); ++iter)
 		{
 			assert(a[distance(rev_list.begin(), iter)] == *iter);
@@ -471,7 +490,7 @@ void list_test()
 	list<double> list5(10, 1.5);
 	{
 		// constructor with count and value
-		cout << "\nconstructor with count and value" << endl;
+		cout << "\tconstructor with count and value" << endl;
 		assert(10 == list5.size());
 		for(list<double>::iterator iter = list5.begin(); iter != list5.end(); ++iter)
 		{
@@ -481,7 +500,7 @@ void list_test()
 
 	// max_size
 	{
-		cout << "max size" << endl;
+		cout << "\tmax size" << endl;
 		assert(4294967295U / sizeof(list_item<int>) - 1 == list1.max_size());
 		assert(4294967295U / sizeof(list_item<A>) - 1 == list2.max_size());
 		assert(4294967295U / sizeof(list_item<A>) - 1 == list3.max_size());
@@ -495,7 +514,7 @@ void list_test()
 		vui.assign(10, 100);
 	}
 	
-	cout << "string as template parameter:\n";
+	cout << "\tstring as template parameter:\n";
 	list<string> vs;
 	vs.push_back("abc");
 	assert("abc" == vs.front());

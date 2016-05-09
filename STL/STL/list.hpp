@@ -59,6 +59,8 @@ namespace xf
 
 		static size_t max_size();
 
+		void push_front(const T &item);
+		void pop_front();
 		void push_back(const T &item);
 		void pop_back();
 
@@ -103,7 +105,6 @@ namespace xf
 		void assign_n(size_t count, const T &val);
 		iterator insert_n(const const_iterator _Where, size_t _Count, const T &_Value);
 		T *p_;
-		size_t capacity_;
 
 		list_item<T> *head_;
 		list_item<T> *tail_;
@@ -299,14 +300,34 @@ namespace xf
 	}
 
 	
+	template<class T>
+	void list<T>::push_front(const T &_Value)
+	{
+		// 添加新元素
+		list_item<T> *first_node = head_->item_ptr_[next_index_];
+		list_item<T> *new_item = new list_item<T>(_Value, prev_index_, head_, next_index_, first_node);
+		first_node->item_ptr_[prev_index_] = new_item;
+		head_->item_ptr_[next_index_] = new_item;
+		++size_;
+	}
+
+	template<class T>
+	void list<T>::pop_front()
+	{
+		--size_;
+		list_item<T> *second_node = head_->item_ptr_[next_index_]->item_ptr_[next_index_];
+		delete head_->item_ptr_[next_index_];
+		second_node->item_ptr_[prev_index_] = head_;
+		head_->item_ptr_[next_index_] = second_node;
+	}
 
 	template<class T>
 	void list<T>::push_back(const T &_Value)
 	{
 		// 添加新元素
-		list_item<T> *p = tail_->item_ptr_[prev_index_];
-		list_item<T> *new_item = new list_item<T>(_Value, prev_index_, p, next_index_, tail_);
-		p->item_ptr_[next_index_] = new_item;
+		list_item<T> *last_node = tail_->item_ptr_[prev_index_];
+		list_item<T> *new_item = new list_item<T>(_Value, prev_index_, last_node, next_index_, tail_);
+		last_node->item_ptr_[next_index_] = new_item;
 		tail_->item_ptr_[prev_index_] = new_item;
 		++size_;
 	}
@@ -315,10 +336,10 @@ namespace xf
 	void list<T>::pop_back()
 	{
 		--size_;
-		list_item<T> *p = tail_->item_ptr_[prev_index_]->item_ptr_[prev_index_];
+		list_item<T> *last_second_node = tail_->item_ptr_[prev_index_]->item_ptr_[prev_index_];
 		delete tail_->item_ptr_[prev_index_];
-		p->item_ptr_[next_index_] = tail_;
-		tail_->item_ptr_[prev_index_] = p;
+		last_second_node->item_ptr_[next_index_] = tail_;
+		tail_->item_ptr_[prev_index_] = last_second_node;
 	}
 
 	template<class T>

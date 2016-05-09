@@ -188,11 +188,6 @@ namespace xf
 	template<class T>
 	void vector<T>::reserve(size_t new_capacity)
 	{
-		// 小于0的情况可以不考虑，因为此时真正的capacity_不会改变
-		if(new_capacity < 0)
-		{
-			return;
-		}
 		if(new_capacity > capacity_)
 		{
 			T *buf = static_cast<T*>(operator new[](new_capacity * sizeof(T)));
@@ -385,23 +380,23 @@ namespace xf
 	{
 		//assert(_First < _Last);	// 这里要不要assert？万一_Iter没有定义小于号怎么办？
 		size_t where_offset = _Where - cbegin();
-		size_t count = xf::distance(_First, _Last);
-		//size_t count = _Last - _First;
-		if(size_ + count > capacity_)	// 须要扩容
+		size_t _Count = xf::distance(_First, _Last);
+		if(size_ + _Count > capacity_)	// 须要扩容
 		{
 			size_t offset = _Where.p_ - p_;	// 记录插入元素的偏移量
-			// 新申请空间并分两段复制，空下需要插入的元素的位置
-			size_t new_capacity = get_new_capacity(size_ + count);
+			// 新申请空间并分别复制插入点前半段、插入点、插入点后半段
+			size_t new_capacity = get_new_capacity(size_ + _Count);
 			T * new_ptr = static_cast<T*>(operator new[] (new_capacity * sizeof(T)));
 			xf::uninitialized_copy(p_, p_ + offset, new_ptr);
-			xf::uninitialized_copy(p_ + offset, p_ + size_, new_ptr + offset + count);
-			// 插入新的元素
-			for(size_t i = 0; i < count; ++i)
-			{
-				new (new_ptr + offset + i) T(*_First);
-				++_First;
-			}
-			assert(_First == _Last);
+			xf::uninitialized_copy(_First, _Last, new_ptr + offset);
+			xf::uninitialized_copy(p_ + offset, p_ + size_, new_ptr + offset + _Count);
+			//// 插入新的元素
+			//for(size_t i = 0; i < count; ++i)
+			//{
+			//	new (new_ptr + offset + i) T(*_First);
+			//	++_First;
+			//}
+			//assert(_First == _Last);
 			// 销毁原来的空间
 			for(size_t i = 0; i < size_; ++i)
 			{
@@ -411,35 +406,58 @@ namespace xf
 			// 更新vector的属性
 			p_ = new_ptr;
 			capacity_ = new_capacity;
-			size_ += count;
+			size_ += _Count;
 			return iterator(p_ + offset);
 		}
 		else	// 不须扩容
 		{
-			T *cur = const_cast<T*>(_Where.p_);
-			T *last = p_ + size_ + count - 1;
-			// 须要构造的部分
-			while(last >= p_ + size_)
+			// 插入点后半段的长度
+			size_t last_segment_length = cend() - _Where;
+			// 根据last_segment_length与_Count的大小，决定insert的具体步骤
+			if(_Count >= last_segment_length)
 			{
-				new (last) T(*(last - count));	
-				--last;
+				// 1. 步骤：移动；方式：构造
+				// 2. 步骤：插入；方式：赋值
+				// 3. 步骤：插入；方式：构造
+				T *old_end_element = p_ + size_ - 1;
+				T *new_end_element = p_ + size_ + _Count - 1;
+				for(size_t i = 0; i < last_segment_length; ++i)
+				{
+					new (new_end_element) T(*old_end_element);	// 1.
+					*old_end_element = *_First;					// 2.
+					++_First;
+					--new_end_element;
+					--old_end_element;
+				}
+				uninitialized_copy(_First, _Last, p_ + size_);	// 3.
 			}
-			// 须要复制的部分
-			while(last >= cur + count)
+			else
 			{
-				*last = *(last - count);
-				--last;
+				// 1. 步骤：移动；方式：构造
+				// 2. 步骤：移动；方式：赋值
+				// 3. 步骤：插入；方式：赋值
+				T *old_end_element = p_ + size_ - 1;
+				T *new_end_element = p_ + size_ + _Count - 1;
+				for(size_t i = 0; i < _Count; ++i)	// 1.
+				{
+					new (new_end_element) T(*old_end_element);	
+					--new_end_element;
+					--old_end_element;
+				}
+				while(old_end_element >= _Where.p_)	// 2.
+				{
+					*new_end_element = *old_end_element;
+					--new_end_element;
+					--old_end_element;
+				}
+				while(++old_end_element <= new_end_element)	// 3.
+				{
+					*old_end_element = *_First;
+					++_First;
+				}
+				
 			}
-			// 需要插入的部分
-			iterator ret_val = iterator(cur);
-			while(cur <= last)
-			{
-				*cur = *_First;
-				++cur;
-				++_First;
-			}
-			size_ += count;
-			return ret_val;
+			size_ += _Count;
 		}
 
 		return begin() + where_offset;
@@ -708,16 +726,17 @@ namespace xf
 		if(size_ + _Count > capacity_)	// 须要扩容
 		{
 			size_t offset = _Where.p_ - p_;	// 记录插入元素的偏移量
-			// 新申请空间并分两段复制，空下需要插入的元素的位置
+			// 新申请空间并分别复制插入点前半段、插入点、插入点后半段
 			size_t new_capacity = get_new_capacity(size_ + _Count);
 			T * new_ptr = static_cast<T*>(operator new[] (new_capacity * sizeof(T)));
 			xf::uninitialized_copy(p_, p_ + offset, new_ptr);
+			xf::uninitialized_fill(new_ptr + offset, new_ptr + offset + _Count, _Value);
 			xf::uninitialized_copy(p_ + offset, p_ + size_, new_ptr + offset + _Count);
-			// 插入新的元素
-			for(size_t i = 0; i < _Count; ++i)
-			{
-				new (new_ptr + offset + i) T(_Value);
-			}
+			//// 插入新的元素
+			//for(size_t i = 0; i < _Count; ++i)
+			//{
+			//	new (new_ptr + offset + i) T(_Value);
+			//}
 			// 销毁原来的空间
 			for(size_t i = 0; i < size_; ++i)
 			{
@@ -732,28 +751,53 @@ namespace xf
 		}
 		else	// 不须扩容
 		{
-			const T *cur = _Where.p_;
-			T *last = p_ + size_ + _Count - 1;
-			// 须要构造的部分
-			while(last >= p_ + size_)
+			// 插入点后半段的长度
+			size_t last_segment_length = cend() - _Where;
+			// 根据last_segment_length与_Count的大小，决定insert的具体步骤
+			if(_Count >= last_segment_length)
 			{
-				new (last) T(*(last - _Count));	
-				--last;
+				// 1. 步骤：移动；方式：构造
+				// 2. 步骤：插入；方式：赋值
+				// 3. 步骤：插入；方式：构造
+				T *old_end_element = p_ + size_ - 1;
+				T *new_end_element = p_ + size_ + _Count - 1;
+				for(size_t i = 0; i < last_segment_length; ++i)
+				{
+					new (new_end_element) T(*old_end_element);	// 1.
+					*old_end_element = _Value;					// 2.
+					--new_end_element;
+					--old_end_element;
+				}
+				// 3.
+				uninitialized_fill(p_ + size_, new_end_element + 1, _Value);
 			}
-			// 须要复制的部分
-			while(last >= cur + _Count)
+			else
 			{
-				*last = *(last - _Count);
-				--last;
-			}
-			// 需要插入的部分
-			while(last >= cur)
-			{
-				*last = _Value;
-				--last;
+				// 1. 步骤：移动；方式：构造
+				// 2. 步骤：移动；方式：赋值
+				// 3. 步骤：插入；方式：赋值
+				T *old_end_element = p_ + size_ - 1;
+				T *new_end_element = p_ + size_ + _Count - 1;
+				for(size_t i = 0; i < _Count; ++i)	// 1.
+				{
+					new (new_end_element) T(*old_end_element);	
+					--new_end_element;
+					--old_end_element;
+				}
+				while(old_end_element >= _Where.p_)	// 2.
+				{
+					*new_end_element = *old_end_element;
+					--new_end_element;
+					--old_end_element;
+				}
+				while(++old_end_element <= new_end_element)	// 3.
+				{
+					*old_end_element = _Value;
+				}
+				
 			}
 			size_ += _Count;
-			return iterator(const_cast<T*>(cur));
+			return iterator(_Where.p_);
 		}
 	}
 }

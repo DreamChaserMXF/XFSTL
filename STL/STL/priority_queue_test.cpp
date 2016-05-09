@@ -1,5 +1,10 @@
 #include "priority_queue.hpp"
 #include "vector.hpp"
+#include "deque.hpp"
+
+using xf::priority_queue;
+using xf::vector;
+using xf::deque;
 
 // 这个在类模板中不能用，在这里作失败典例
 static bool largerthan_func(const int &lhs, const int &rhs)
@@ -28,10 +33,10 @@ public:
 
 void priority_queue_test()
 {
-	printf("\nadapter_test:\n");
-
+	printf("Priority Queue Test:\n");
 	// default test
-	xf::priority_queue<int, xf::vector<int>> q1;
+	printf("\tconstructor test:\n");
+	priority_queue<int, vector<int>> q1;
 	// priority_queue<int, xf::list<int>> q1;	// error
 	assert(true == q1.empty());
 	assert(0 == q1.size());
@@ -45,6 +50,7 @@ void priority_queue_test()
 	q1.push(6);
 	q1.push(8);
 	q1.push(10);
+	printf("\tempty & size test:\n");
 	assert(false == q1.empty());
 	assert(10 == q1.size());
 	size_t len1 = q1.size();
@@ -56,9 +62,10 @@ void priority_queue_test()
 	assert(true == q1.empty());
 	assert(0 == q1.size());
 
+	printf("\tless_than_class test:\n");
 	// less_than_class test
 	int a[] = {1,3,5,7,9,2,4,6,8,10};
-	xf::priority_queue<int, xf::vector<int>, less_than_class> q2(xf::vector<int>(a, a + sizeof(a) / sizeof(a[0])));
+	priority_queue<int, vector<int>, less_than_class> q2(xf::vector<int>(a, a + sizeof(a) / sizeof(a[0])));
 	//xf::priority_queue<int, xf::list<int>> q2;
 	assert(false == q2.empty());
 	assert(10 == q2.size());
@@ -71,8 +78,9 @@ void priority_queue_test()
 	assert(true == q2.empty());
 	assert(0 == q2.size());
 
+	printf("\tlarger_than_class test:\n");
 	// larger_than_class test
-	xf::priority_queue<int, xf::vector<int>, larger_than_class> q3;
+	priority_queue<int, vector<int>, larger_than_class> q3;
 	// priority_queue<int, xf::list<int>> q3;
 	assert(true == q3.empty());
 	assert(0 == q3.size());
@@ -96,4 +104,30 @@ void priority_queue_test()
 	}
 	assert(true == q3.empty());
 	assert(0 == q3.size());
+
+	printf("\tpriority_queue implemented by deque:\n");
+	priority_queue<double, deque<double>> q4;
+	assert(true == q4.empty());
+	assert(0 == q4.size());
+	q4.push(1);
+	q4.push(3);
+	q4.push(5);
+	q4.push(7);
+	q4.push(9);
+	q4.push(2);
+	q4.push(4);
+	q4.push(6);
+	q4.push(8);
+	q4.push(10);
+	printf("\tempty & size test:\n");
+	assert(false == q4.empty());
+	assert(10 == q4.size());
+	size_t len4 = q4.size();
+	for(size_t i = 0; i < len4; ++i)
+	{
+		assert(10 - i == q4.top());
+		q4.pop();
+	}
+	assert(true == q4.empty());
+	assert(0 == q4.size());
 }
