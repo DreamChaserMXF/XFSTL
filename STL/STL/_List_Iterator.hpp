@@ -19,7 +19,9 @@ namespace xf
 		_List_Iterator();
 		_List_Iterator(list_item<T> *_Ptr, enum PTR_POS _Prev_Index, enum PTR_POS _Next_Index);
 
+		const T& operator *() const;
 		T& operator *();
+		const T* operator ->() const;
 		T* operator ->();
 		_List_Iterator<T>& operator ++();
 		_List_Iterator<T> operator ++(int);
@@ -43,11 +45,21 @@ namespace xf
 	}
 
 	template<class T>
+	const T& _List_Iterator<T>::operator *() const
+	{
+		return p_->val_;
+	}
+	template<class T>
 	T& _List_Iterator<T>::operator *()
 	{
 		return p_->val_;
 	}
 
+	template<class T>
+	const T* _List_Iterator<T>::operator ->() const
+	{
+		return &(p_->val_);
+	}
 	template<class T>
 	T* _List_Iterator<T>::operator ->()
 	{

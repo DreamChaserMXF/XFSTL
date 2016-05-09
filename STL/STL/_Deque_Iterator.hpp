@@ -18,7 +18,9 @@ namespace xf
 		_Deque_Iterator();
 		_Deque_Iterator(typename vector<pointer>::iterator map_iter, size_t item_index);
 
+		const T& operator *() const;
 		T& operator *();
+		const T* operator ->() const;
 		T* operator ->();
 		_Deque_Iterator<T>& operator ++();
 		_Deque_Iterator<T> operator ++(int);
@@ -45,11 +47,21 @@ namespace xf
 	}
 
 	template<class T>
+	const T& _Deque_Iterator<T>::operator *() const
+	{
+		return (*map_iter_)[item_index_];
+	}
+	template<class T>
 	T& _Deque_Iterator<T>::operator *()
 	{
 		return (*map_iter_)[item_index_];
 	}
-
+	
+	template<class T>
+	const T* _Deque_Iterator<T>::operator ->() const
+	{
+		return *map_iter_ + item_index_;
+	}
 	template<class T>
 	T* _Deque_Iterator<T>::operator ->()
 	{

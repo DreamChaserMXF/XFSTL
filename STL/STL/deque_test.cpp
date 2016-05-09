@@ -224,99 +224,179 @@ void deque_test()
 	}
 	{
 		cout << "\tinsert test:\n";
-		cout << "\tinsert into empty deque at begining:\n";
-		int a[] = {0,1,2,3,4,5,6,7,8,9};
 		deque<int> d;
-		d.insert(d.begin(), a, a + 2);
-		assert(2 == d.size());
-		assert(false == d.empty());
-		for(int i = 0; i < 2; ++i)
-		{
-			assert(i == d[i]);
-		}
-		cout << "\tinsert into empty deque at ending:\n";
+
+		cout << "\t\tinsert one element:\n";
+		cout << "\t\t\tinsert into empty deque at begining:\n";
+		assert(1 == *(d.insert(d.begin(), 1)));
+		assert(1 == d.size());
+		assert(1 == d[0]);
+		cout << "\t\t\tinsert into empty deque at ending:\n";
 		d.clear();
-		d.insert(d.end(), a, a + 2);
+		assert(1 == *(d.insert(d.end(), 1)));
+		assert(1 == d.size());
+		assert(1 == d[0]);
+		cout << "\t\t\tinsert into non-empty deque at begining:\n";
+		d.clear();
+		assert(2 == *(d.insert(d.begin(), 2)));
+		assert(1 == *(d.insert(d.begin(), 1)));
 		assert(2 == d.size());
-		assert(false == d.empty());
-		for(int i = 0; i < 2; ++i)
-		{
-			assert(i == d[i]);
-		}
-		cout << "\tinsert into non-empty deque at ending:\n";
-		d.insert(d.end(), a + 2, a + 5);
+		assert(1 == d[0] && 2 == d[1]);
+		cout << "\t\t\tinsert into non-empty deque at ending:\n";
+		assert(3 == *(d.insert(d.end(), 3)));
+		assert(3 == d.size());
+		assert(1 == d[0] && 2 == d[1] && 3 == d[2]);
+		cout << "\t\t\tinsert into non-empty deque at mid-position:\n";
+		assert(100 == *(d.insert(d.begin() + 1, 100)));
+		assert(4 == d.size());
+		assert(1 == d[0] && 100 == d[1] && 2 == d[2] && 3 == d[3]);
+
+		cout << "\t\tinsert n same element:\n";
+		cout << "\t\t\tinsert into empty deque at begining:\n";
+		d.clear();
+		assert(1 == *(d.insert(d.begin(), 5, 1)));
 		assert(5 == d.size());
-		for(int i = 0; i < 5; ++i)
-		{
-			assert(i == d[i]);
-		}
-		cout << "\tinsert into mid-position in deque:\n";
+		assert(1 == d[0] && 1 == d[1] && 1 == d[2] && 1 == d[3] && 1 == d[4]);
+		cout << "\t\t\tinsert into empty deque at ending:\n";
 		d.clear();
-		d.insert(d.begin(), a + 1, a + 3);
-		d.insert(d.end(), a + 5, a + 9);
-		d.insert(d.begin() + 2, a + 3, a + 5);
-		assert(8 == d.size());
-		for(int i = 0; i < 8; ++i)
-		{
-			assert(i + 1 == d[i]);
-		}
-		cout << "\tinsert one element at begining:\n";
-		d.insert(d.begin(), 0);
+		assert(1 == *(d.insert(d.end(), 5, 1)));
+		assert(5 == d.size());
+		assert(1 == d[0] && 1 == d[1] && 1 == d[2] && 1 == d[3] && 1 == d[4]);
+		cout << "\t\t\tinsert into non-empty deque at begining:\n";
+		d.clear();
+		assert(1 == *(d.insert(d.end(), 3, 1)));
+		assert(10 == *(d.insert(d.begin(), 2, 10)));
+		assert(5 == d.size());
+		assert(10 == d[0] && 10 == d[1] && 1 == d[2] && 1 == d[3] && 1 == d[4]);
+		cout << "\t\t\tinsert into non-empty deque at ending:\n";
+		d.clear();
+		assert(1 == *(d.insert(d.end(), 3, 1)));
+		assert(10 == *(d.insert(d.end(), 2, 10)));
+		assert(5 == d.size());
+		assert(1 == d[0] && 1 == d[1] && 1 == d[2] && 10 == d[3] && 10 == d[4]);
+		cout << "\t\t\tinsert into non-empty deque at mid-but-front-position:\n";
+		assert(100 == *(d.insert(d.begin() + 2, 2, 100)));
+		assert(7 == d.size());
+		assert(1 == d[0] && 1 == d[1] && 100 == d[2] && 100 == d[3] && 1 == d[4] && 10 == d[5] && 10 == d[6]);
+		cout << "\t\t\tinsert into non-empty deque at mid-but-back-position:\n";
+		assert(101 == *(d.insert(d.begin() + 4, 2, 101)));
 		assert(9 == d.size());
-		for(int i = 0; i < 9; ++i)
-		{
-			assert(i == d[i]);
-		}
-		cout << "\tinsert one element at ending:\n";
-		d.insert(d.end(), 9);
-		assert(10 == d.size());
-		for(int i = 0; i < 10; ++i)
-		{
-			assert(i == d[i]);
-		}
-		cout << "\tinsert one element at mid-position:\n";
-		d.insert(d.begin() + 5, 100);
-		assert(11 == d.size());
-		for(int i = 0; i < 5; ++i)
-		{
-			assert(i == d[i]);
-		}
-		assert(100 == d[5]);
-		for(int i = 6; i < 11; ++i)
-		{
-			assert(i - 1 == d[i]);
-		}
-		cout << "\tinsert a number of elements of the same value:\n";
-		// begining inserting
+		assert(1 == d[0] && 1 == d[1] && 100 == d[2] && 100 == d[3] && 101 == d[4] && 101 == d[5] && 1 == d[6] && 10 == d[7] && 10 == d[8]);
+
+		cout << "\t\tinsert a range of elements represented by iterator:\n";
+		int a[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+		cout << "\t\t\tinsert into empty deque at begining:\n";
 		d.clear();
-		d.insert(d.begin(), 5, 1);
+		assert(1 == *(d.insert(d.begin(), a, a + 5)));
 		assert(5 == d.size());
-		assert(false == d.empty());
-		for(int i = 0; i < 5; ++i)
-		{
-			assert(1 == d[i]);
-		}
-		// ending inserting
+		assert(1 == d[0] && 2 == d[1] && 3 == d[2] && 4 == d[3] && 5 == d[4]);
+		cout << "\t\t\tinsert into empty deque at ending:\n";
 		d.clear();
-		d.insert(d.end(), 5, 1);
+		assert(1 == *(d.insert(d.end(), a, a + 5)));
 		assert(5 == d.size());
-		assert(false == d.empty());
-		for(int i = 0; i < 5; ++i)
-		{
-			assert(1 == d[i]);
-		}
-		// mid-position inserting
+		assert(1 == d[0] && 2 == d[1] && 3 == d[2] && 4 == d[3] && 5 == d[4]);
+		cout << "\t\t\tinsert into non-empty deque at begining:\n";
 		d.clear();
-		d.insert(d.begin(), 2, 1);
-		d.insert(d.end(), 2, 3);
-		d.insert(d.begin() + 2, 2, 2);
-		assert(6 == d.size());
-		assert(false == d.empty());
-		int benchmark[] = {1,1,2,2,3,3};
-		for(int i = 0; i < 6; ++i)
+		assert(5 == *(d.insert(d.begin(), 5)));
+		assert(1 == *(d.insert(d.begin(), a, a + 4)));
+		assert(5 == d.size());
+		assert(1 == d[0] && 2 == d[1] && 3 == d[2] && 4 == d[3] && 5 == d[4]);
+		cout << "\t\t\tinsert into non-empty deque at ending:\n";
+		d.clear();
+		assert(1 == *(d.insert(d.begin(), 1)));
+		assert(2 == *(d.insert(d.end(), a + 1, a + 5)));
+		assert(5 == d.size());
+		assert(1 == d[0] && 2 == d[1] && 3 == d[2] && 4 == d[3] && 5 == d[4]);
+		cout << "\t\t\tinsert into non-empty deque at mid-but-front-position:\n";
+		assert(1 == *(d.insert(d.begin() + 2, a, a + 2)));
+		assert(7 == d.size());
+		assert(1 == d[0] && 2 == d[1] && 1 == d[2] && 2 == d[3] && 3 == d[4] && 4 == d[5] && 5 == d[6]);
+		cout << "\t\t\tinsert into non-empty deque at mid-but-back-position:\n";
+		assert(3 == *(d.insert(d.begin() + 4, a + 2, a + 4)));
+		assert(9 == d.size());
+		assert(1 == d[0] && 2 == d[1] && 1 == d[2] && 2 == d[3] && 3 == d[4] && 4 == d[5] && 3 == d[6] && 4 == d[7] && 5 == d[8]);
+
+		cout << "\tinsert into deque with large size element:\n";
+		assert(101 == *(d.insert(d.begin(), 1000, 101)));
+		assert(1009 == d.size());
+		for(int i = 0; i < 1000; ++i)
 		{
-			assert(benchmark[i] == d[i]);
+			assert(101 == d[i]);
 		}
+		assert(1 == d[1000] && 2 == d[1001] && 1 == d[1002] && 2 == d[1003] && 3 == d[1004] && 4 == d[1005] && 3 == d[1006] && 4 == d[1007] && 5 == d[1008]);
+
+		cout << "\terase test:\n";
+		cout << "\t\terase one element:\n";
+		cout << "\t\t\terase from ending:\n";
+		deque<int>::iterator tmp_end = d.erase(d.begin() + 1008);
+		assert(tmp_end == d.end());
+		assert(1008 == d.size());
+		for(int i = 0; i < 1000; ++i)
+		{
+			assert(101 == d[i]);
+		}
+		assert(1 == d[1000] && 2 == d[1001] && 1 == d[1002] && 2 == d[1003] && 3 == d[1004] && 4 == d[1005] && 3 == d[1006] && 4 == d[1007]);
+		cout << "\t\t\terase from begining:\n";
+		deque<int>::iterator tmp_begin = d.erase(d.begin());
+		assert(tmp_begin == d.begin());
+		assert(1007 == d.size());
+		for(int i = 0; i < 999; ++i)
+		{
+			assert(101 == d[i]);
+		}
+		assert(1 == d[999] && 2 == d[1000] && 1 == d[1001] && 2 == d[1002] && 3 == d[1003] && 4 == d[1004] && 3 == d[1005] && 4 == d[1006]);
+		cout << "\t\t\terase from mid-position but near ending:\n";
+		assert(2 == *(d.erase(d.begin() + 999)));
+		assert(1006 == d.size());
+		for(int i = 0; i < 999; ++i)
+		{
+			assert(101 == d[i]);
+		}
+		assert(2 == d[999] && 1 == d[1000] && 2 == d[1001] && 3 == d[1002] && 4 == d[1003] && 3 == d[1004] && 4 == d[1005]);
+		cout << "\t\t\terase from mid-position but near begining:\n";
+		assert(101 == *(d.erase(d.begin() + 1)));
+		assert(1005 == d.size());
+		for(int i = 0; i < 998; ++i)
+		{
+			assert(101 == d[i]);
+		}
+		assert(2 == d[998] && 1 == d[999] && 2 == d[1000] && 3 == d[1001] && 4 == d[1002] && 3 == d[1003] && 4 == d[1004]);
+
+		cout << "\t\terase a range of elements:\n";
+		cout << "\t\t\terase from ending:\n";
+		tmp_end = d.erase(d.begin() + 1003, d.end());
+		assert(tmp_end == d.end());
+		assert(1003 == d.size());
+		for(int i = 0; i < 998; ++i)
+		{
+			assert(101 == d[i]);
+		}
+		assert(2 == d[998] && 1 == d[999] && 2 == d[1000] && 3 == d[1001] && 4 == d[1002]);
+		cout << "\t\t\terase from begining:\n";
+		tmp_begin = d.erase(d.begin(), d.begin() + 100);
+		assert(tmp_begin == d.begin());
+		assert(903 == d.size());
+		for(int i = 0; i < 898; ++i)
+		{
+			assert(101 == d[i]);
+		}
+		assert(2 == d[898] && 1 == d[899] && 2 == d[900] && 3 == d[901] && 4 == d[902]);
+		cout << "\t\t\terase from mid-position but near ending:\n";
+		assert(1 == *(d.erase(d.begin() + 799, d.begin() + 899)));
+		assert(803 == d.size());
+		for(int i = 0; i < 799; ++i)
+		{
+			assert(101 == d[i]);
+		}
+		assert(1 == d[799] && 2 == d[800] && 3 == d[801] && 4 == d[802]);
+		cout << "\t\t\terase from mid-position but near begining:\n";
+		assert(101 == *(d.erase(d.begin() + 100, d.begin() + 300)));
+		assert(603 == d.size());
+		for(int i = 0; i < 599; ++i)
+		{
+			assert(101 == d[i]);
+		}
+		assert(1 == d[599] && 2 == d[600] && 3 == d[601] && 4 == d[602]);
 	}
 	{
 		cout << "\tassign test:\n";

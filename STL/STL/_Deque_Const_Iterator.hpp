@@ -36,7 +36,7 @@ namespace xf
 
 		//friend int operator -(const _Deque_Const_Iterator<T> &lhs, const _Deque_Const_Iterator<T> &rhs);
 
-		typename vector<T*>::const_iterator map_iter_;
+		typename vector<T*>::iterator map_iter_;
 		size_t item_index_;
 	protected:
 		static size_t SEGMENT_LENGTH;
@@ -52,7 +52,7 @@ namespace xf
 	}
 
 	template<class T>
-	_Deque_Const_Iterator<T>::_Deque_Const_Iterator(typename vector<T*>::const_iterator map_iter, size_t item_index) : map_iter_(map_iter), item_index_(item_index)
+	_Deque_Const_Iterator<T>::_Deque_Const_Iterator(typename vector<T*>::const_iterator map_iter, size_t item_index) : map_iter_(map_iter.p_), item_index_(item_index)
 	{
 		;
 	}

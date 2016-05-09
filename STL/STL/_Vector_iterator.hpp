@@ -19,7 +19,9 @@ namespace xf
 		_Vector_Iterator();
 		explicit _Vector_Iterator(T *p);	// 如果不加explicit，则_Vector_Iterator就可以直接和指针对象相比较了
 
+		const T& operator *() const;	// 由于非const的*会把_Vector_Const_Iterator的cosnt类型的*覆盖，故这里还要重新定义
 		T& operator *();
+		const T* operator ->() const;
 		T* operator ->();
 		_Vector_Iterator<T>& operator ++();
 		_Vector_Iterator<T> operator ++(int);
@@ -43,9 +45,21 @@ namespace xf
 	}
 
 	template<class T>
+	const T& _Vector_Iterator<T>::operator *() const
+	{
+		return (*p_);
+	}
+
+	template<class T>
 	T& _Vector_Iterator<T>::operator *()
 	{
 		return (*p_);
+	}
+
+	template<class T>
+	const T* _Vector_Iterator<T>::operator ->() const
+	{
+		return p_;
 	}
 
 	template<class T>

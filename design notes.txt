@@ -1,6 +1,8 @@
 一、迭代器相关类的继承关系
 迭代器类的
 normal vector继承const vector
+但在normal vector中还要重新实现const类型的*与->操作符，因为非const的*与->会把const vector中的const类型的*与->覆盖掉。
+operator -(int n) 同理，normal vector中的
 迭代器的标签的继承关系：
 input_iterator(write only) output_iterator(read only) 共同派生出 forward_iterator
 forward_iterator 派生出 bi_directional_iterator
