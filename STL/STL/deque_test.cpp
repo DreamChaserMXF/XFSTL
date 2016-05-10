@@ -316,7 +316,7 @@ void deque_test()
 		assert(9 == d.size());
 		assert(1 == d[0] && 2 == d[1] && 1 == d[2] && 2 == d[3] && 3 == d[4] && 4 == d[5] && 3 == d[6] && 4 == d[7] && 5 == d[8]);
 
-		cout << "\tinsert into deque with large size element:\n";
+		cout << "\t\tinsert into deque with large size element:\n";
 		assert(101 == *(d.insert(d.begin(), 1000, 101)));
 		assert(1009 == d.size());
 		for(int i = 0; i < 1000; ++i)

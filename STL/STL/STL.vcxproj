@@ -77,6 +77,7 @@
     <ClInclude Include="common_algorithm.hpp" />
     <ClInclude Include="deque.hpp" />
     <ClInclude Include="memory.hpp" />
+    <ClInclude Include="string.hpp" />
     <ClInclude Include="_Deque_Common.hpp" />
     <ClInclude Include="heap_sort.hpp" />
     <ClInclude Include="list.hpp" />
@@ -106,6 +107,7 @@
     <ClCompile Include="queue_test.cpp" />
     <ClCompile Include="sort_test.cpp" />
     <ClCompile Include="stack_test.cpp" />
+    <ClCompile Include="string_test.cpp" />
     <ClCompile Include="vector_test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

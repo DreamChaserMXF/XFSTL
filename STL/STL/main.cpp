@@ -5,6 +5,7 @@ void deque_test();
 void adapter_test();
 void multi_file_test();
 void sort_test();
+void string_test();
 
 int main()
 {
@@ -15,5 +16,6 @@ int main()
 	deque_test();
 	adapter_test();
 	sort_test();
+	string_test();
 	return 0;
 }

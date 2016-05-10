@@ -18,11 +18,11 @@ namespace xf
 	}
 
 	template<class _Fwd_Iter, class _ValType>
-	void uninitialized_fill(_Fwd_Iter _First, _Fwd_Iter _Last, _ValType Value)
+	void uninitialized_fill(_Fwd_Iter _First, _Fwd_Iter _Last, _ValType _Value)
 	{
 		while(_First != _Last)
 		{
-			new (&*_First) _ValType(Value);
+			new (&*_First) _ValType(_Value);
 			++_First;
 		}
 	}

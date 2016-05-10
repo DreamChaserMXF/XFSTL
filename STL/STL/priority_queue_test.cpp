@@ -33,9 +33,9 @@ public:
 
 void priority_queue_test()
 {
-	printf("Priority Queue Test:\n");
+	printf("\tPriority Queue Test:\n");
 	// default test
-	printf("\tconstructor test:\n");
+	printf("\t\tdefault constructor test:\n");
 	priority_queue<int, vector<int>> q1;
 	// priority_queue<int, xf::list<int>> q1;	// error
 	assert(true == q1.empty());
@@ -50,7 +50,7 @@ void priority_queue_test()
 	q1.push(6);
 	q1.push(8);
 	q1.push(10);
-	printf("\tempty & size test:\n");
+	printf("\t\tempty & size test:\n");
 	assert(false == q1.empty());
 	assert(10 == q1.size());
 	size_t len1 = q1.size();
@@ -62,7 +62,7 @@ void priority_queue_test()
 	assert(true == q1.empty());
 	assert(0 == q1.size());
 
-	printf("\tless_than_class test:\n");
+	printf("\t\tless_than_class test:\n");
 	// less_than_class test
 	int a[] = {1,3,5,7,9,2,4,6,8,10};
 	priority_queue<int, vector<int>, less_than_class> q2(xf::vector<int>(a, a + sizeof(a) / sizeof(a[0])));
@@ -78,7 +78,7 @@ void priority_queue_test()
 	assert(true == q2.empty());
 	assert(0 == q2.size());
 
-	printf("\tlarger_than_class test:\n");
+	printf("\t\tlarger_than_class test:\n");
 	// larger_than_class test
 	priority_queue<int, vector<int>, larger_than_class> q3;
 	// priority_queue<int, xf::list<int>> q3;
@@ -105,7 +105,7 @@ void priority_queue_test()
 	assert(true == q3.empty());
 	assert(0 == q3.size());
 
-	printf("\tpriority_queue implemented by deque:\n");
+	printf("\t\tpriority_queue implemented by deque:\n");
 	priority_queue<double, deque<double>> q4;
 	assert(true == q4.empty());
 	assert(0 == q4.size());
@@ -119,7 +119,7 @@ void priority_queue_test()
 	q4.push(6);
 	q4.push(8);
 	q4.push(10);
-	printf("\tempty & size test:\n");
+	printf("\t\tempty & size test:\n");
 	assert(false == q4.empty());
 	assert(10 == q4.size());
 	size_t len4 = q4.size();

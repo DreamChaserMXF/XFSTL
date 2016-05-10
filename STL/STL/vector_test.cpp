@@ -30,7 +30,7 @@ void vector_test()
 
 		void func() const
 		{
-			cout << "\tconst member function" << endl;
+			cout << "\tconst member function\n";
 		}
 		A& operator = (const A &a)
 		{
@@ -59,7 +59,7 @@ void vector_test()
 		v.resize(10, c);	// important for default constructor
 
 		// constructur with iterator and assign function test
-		cout <<"\tconstructur and assign function test" << endl;
+		cout <<"\tconstructur and assign function test\n";
 		vector<unsigned int> vui;
 		vui.assign(10, 100);
 
@@ -86,16 +86,16 @@ void vector_test()
 	vector<int> v1;
 	{
 		// default constructor
-		cout << "\tdefault constructor" << endl;
+		cout << "\tdefault constructor\n";
 		assert(0 == v1.size());
 		assert(0 == v1.capacity());
 		
 		// empty test
-		cout << "\tempty test" << endl;
+		cout << "\tempty test\n";
 		assert(true == v1.empty());
 
 		// assign
-		cout << "\tassign" << endl;
+		cout << "\tassign\n";
 		v1.assign(10, 2);
 		assert(10 == v1.size());
 		assert(10 == v1.capacity());
@@ -105,11 +105,11 @@ void vector_test()
 		}
 
 		// empty test
-		cout << "\tempty test" << endl;
+		cout << "\tempty test\n";
 		assert(false == v1.empty());
 
 		// re-assign
-		cout << "\tre-assign" << endl;
+		cout << "\tre-assign\n";
 		v1.assign(5, 7);
 		assert(5 == v1.size());
 		assert(10 == v1.capacity());
@@ -119,14 +119,14 @@ void vector_test()
 		}
 		
 		// front, back
-		cout << "\tfront, back\n" << endl;
+		cout << "\tfront, back\n";
 		assert(7 == v1.front());
 		assert(7 == v1.back());
 		assert(2 == (v1.front() = 2));
 		assert(3 == (v1.front() = 3));
 
 		// pop
-		cout << "\tpop" << endl;
+		cout << "\tpop\n";
 		v1.pop_back();
 		v1.pop_back();
 		assert(3 == v1.size());
@@ -138,7 +138,7 @@ void vector_test()
 		}
 
 		// push
-		cout << "\tpush" << endl;
+		cout << "\tpush\n";
 		v1.push_back(1);
 		v1.push_back(2);
 		assert(5 == v1.size());
@@ -150,7 +150,7 @@ void vector_test()
 		}
 
 		// clear
-		cout << "\tclear" << endl;
+		cout << "\tclear\n";
 		v1.clear();
 		assert(0 == v1.size());
 		assert(10 == v1.capacity());
@@ -160,14 +160,14 @@ void vector_test()
 		}
 
 		// empty test
-		cout << "\tempty test" << endl;
+		cout << "\tempty test\n";
 		assert(true == v1.empty());
 	}
 
 	// resize and reserve
 	vector<A> v2(10);
 	{
-		cout << "\tconstructor with count 10" << endl;
+		cout << "\tconstructor with count 10\n";
 		assert(10 == v2.size());
 		assert(10 == v2.capacity());
 		for(vector<A>::iterator iter = v2.begin(); iter != v2.end(); ++iter)
@@ -176,7 +176,7 @@ void vector_test()
 		}
 
 		// resize smaller
-		cout << "\tresize smaller" << endl;
+		cout << "\tresize smaller\n";
 		v2.resize(2);
 		assert(2 == v2.size());
 		assert(10 == v2.capacity());
@@ -186,7 +186,7 @@ void vector_test()
 		}
 
 		// resize larger
-		cout << "\tresize larger" << endl;
+		cout << "\tresize larger\n";
 		v2.resize(12);
 		assert(12 == v2.size());
 		assert(12 == v2.capacity());
@@ -196,7 +196,7 @@ void vector_test()
 		}
 
 		// reserve smaller
-		cout << "\treserve smaller" << endl;
+		cout << "\treserve smaller\n";
 		v2.reserve(8);
 		assert(12 == v2.size());
 		assert(12 == v2.capacity());
@@ -206,7 +206,7 @@ void vector_test()
 		}
 
 		// reserve larger
-		cout << "\treserve larger" << endl;
+		cout << "\treserve larger\n";
 		v2.reserve(18);
 		assert(12 == v2.size());
 		assert(18 == v2.capacity());
@@ -216,7 +216,7 @@ void vector_test()
 		}
 
 		// shrink to fit
-		cout << "\tshrink to fit" << endl;
+		cout << "\tshrink to fit\n";
 		v2.shrink_to_fit();
 		assert(12 == v2.size());
 		assert(12 == v2.capacity());
@@ -231,7 +231,7 @@ void vector_test()
 	vector<A> v3(v2);
 	{
 		// copy constructor 
-		cout << "\tcopy constructor " << endl;
+		cout << "\tcopy constructor \n";
 		assert(12 == v3.size());
 		assert(12 == v3.capacity());
 		for(vector<A>::iterator iter = v3.begin(); iter != v3.end(); ++iter)
@@ -240,7 +240,7 @@ void vector_test()
 		}
 
 		// operator = 
-		cout << "\toperator = " << endl;
+		cout << "\toperator = \n";
 		v3 = v2;
 		assert(12 == v3.size());
 		assert(12 == v3.capacity());
@@ -250,14 +250,14 @@ void vector_test()
 		}
 
 		// operator [] 
-		cout << "\toperator [] " << endl;
+		cout << "\toperator [] \n";
 		for(size_t i = 0; i < v3.size(); ++i)
 		{
 			assert(v3[i].n == 131);
 		}
 
 		// at 
-		cout << "\toperator at " << endl;
+		cout << "\toperator at \n";
 		
 		for(size_t i = 0; i < v3.size(); ++i)
 		{
@@ -265,7 +265,7 @@ void vector_test()
 		}
 
 		// data
-		cout << "\tdata" << endl;
+		cout << "\tdata\n";
 		const vector<A> v4(v3);
 		A *pa = v3.data();
 		size_t size = v3.size();
@@ -280,7 +280,7 @@ void vector_test()
 			assert(121 == v3[i].n);	
 		}
 		// data const
-		cout << "\tdata const" << endl;
+		cout << "\tdata const\n";
 		for(size_t i = 0; i < size; ++i)
 		{
 			assert(141 == v4[i].n);
@@ -297,7 +297,7 @@ void vector_test()
 		//v4.begin() == v4.cbegin();	// TODO friend comparer outside class definition
 
 		// iterator preorder ++
-		cout << "\titerator preorder ++" << endl;
+		cout << "\titerator preorder ++\n";
 		assert(10 == v4.size());
 		assert(10 == v4.capacity());
 		for(vector<int>::iterator iter = v4.begin(); iter != v4.end(); ++iter)
@@ -325,7 +325,7 @@ void vector_test()
 		//
 
 		// iterator postorder ++
-		cout << "\titerator postorder ++" << endl;
+		cout << "\titerator postorder ++\n";
 		for(vector<int>::iterator iter = v4.begin(); iter != v4.end(); iter++)
 		{
 			int i = distance(v4.begin(), iter);
@@ -352,7 +352,7 @@ void vector_test()
 		
 
 		// iterator +
-		cout << "\titerator +" << endl;
+		cout << "\titerator +\n";
 		for(vector<int>::iterator iter = v4.begin(); iter != v4.end(); iter += 2)
 		{
 			int i = distance(v4.begin(), iter);
@@ -377,7 +377,7 @@ void vector_test()
 
 
 		// iterator preorder --
-		cout << "\titerator preorder --" << endl;
+		cout << "\titerator preorder --\n";
 		
 		for(vector<int>::iterator iter = v4.end() - 1; iter != v4.begin() - 1; --iter)
 		{
@@ -402,7 +402,7 @@ void vector_test()
 		}
 
 		// iterator postorder --
-		cout << "\titerator postorder --" << endl;
+		cout << "\titerator postorder --\n";
 		for(vector<int>::iterator iter = v4.end() - 1; iter != v4.begin() - 1; iter--)
 		{
 			int i = distance(v4.begin(), iter);
@@ -426,7 +426,7 @@ void vector_test()
 		}
 
 		// iterator -
-		cout << "\titerator -" << endl;
+		cout << "\titerator -\n";
 		for(vector<int>::iterator iter = v4.end() - 1; iter != v4.begin() - 1; iter -= 2)
 		{
 			int i = distance(v4.begin(), iter);
@@ -450,7 +450,7 @@ void vector_test()
 		}
 
 		// const iterator preorder ++
-		cout << "\tconst iterator preorder ++" << endl;
+		cout << "\tconst iterator preorder ++\n";
 		for(vector<int>::const_iterator iter = v4.begin(); iter != v4.end(); ++iter)
 		{
 			int i = distance(v4.cbegin(), iter);
@@ -474,7 +474,7 @@ void vector_test()
 		}
 
 		// const iterator postorder ++
-		cout << "\tconst iterator postorder ++" << endl;
+		cout << "\tconst iterator postorder ++\n";
 		for(vector<int>::const_iterator iter = v4.begin(); iter != v4.end(); iter++)
 		{
 			int i = distance(v4.cbegin(), iter);
@@ -498,7 +498,7 @@ void vector_test()
 		}
 
 		// const iterator +
-		cout << "\tconst iterator +" << endl;
+		cout << "\tconst iterator +\n";
 		
 		for(vector<int>::const_iterator iter = v4.begin(); iter != v4.end(); iter += 2)
 		{
@@ -523,7 +523,7 @@ void vector_test()
 		}
 
 		// const iterator preorder --
-		cout << "\tconst iterator preorder --" << endl;
+		cout << "\tconst iterator preorder --\n";
 		for(vector<int>::const_iterator iter = v4.end() - 1; iter >= v4.begin(); --iter)
 		{
 			int i = distance(v4.cbegin(), iter);
@@ -547,7 +547,7 @@ void vector_test()
 		}
 
 		// const iterator postorder --
-		cout << "\tconst iterator postorder --" << endl;
+		cout << "\tconst iterator postorder --\n";
 		for(vector<int>::const_iterator iter = v4.end() - 1; iter >= v4.begin(); iter--)
 		{
 			int i = distance(v4.cbegin(), iter);
@@ -571,7 +571,7 @@ void vector_test()
 		}
 
 		// const iterator -
-		cout << "\tconst iterator -" << endl;
+		cout << "\tconst iterator -\n";
 		for(vector<int>::const_iterator iter = v4.end() - 1; iter >= v4.begin(); iter -= 2)
 		{
 			int i = distance(v4.cbegin(), iter);
@@ -595,7 +595,7 @@ void vector_test()
 		}
 
 		// reverse iterator preorder ++ 
-		cout << "\treverse iterator preorder ++" << endl;
+		cout << "\treverse iterator preorder ++\n";
 		for(vector<int>::reverse_iterator iter = v4.rbegin(); iter < v4.rend() - 1; ++iter)
 		{
 			int i = distance(v4.rbegin(), iter);
@@ -620,7 +620,7 @@ void vector_test()
 		}
 
 		// reverse iterator postorder ++ 
-		cout << "\treverse iterator postorder ++" << endl;
+		cout << "\treverse iterator postorder ++\n";
 		
 		for(vector<int>::reverse_iterator iter = v4.rbegin(); iter < v4.rend(); iter++)
 		{
@@ -646,7 +646,7 @@ void vector_test()
 		}
 		
 		// reverse iterator +
-		cout << "\treverse iterator +" << endl;
+		cout << "\treverse iterator +\n";
 		
 		for(vector<int>::reverse_iterator iter = v4.rbegin(); iter != v4.rend(); iter += 2)
 		{
@@ -671,7 +671,7 @@ void vector_test()
 		}
 
 		// reverse iterator preorder --
-		cout << "\treverse iterator preorder --" << endl;
+		cout << "\treverse iterator preorder --\n";
 		for(vector<int>::reverse_iterator iter = v4.rend() - 1; iter >= v4.rbegin(); --iter)
 		{
 			int i = distance(v4.rbegin(), iter);
@@ -694,7 +694,7 @@ void vector_test()
 			}
 		}
 		// reverse iterator postorder --
-		cout << "\treverse iterator postorder --" << endl;
+		cout << "\treverse iterator postorder --\n";
 		for(vector<int>::reverse_iterator iter = v4.rend() - 1; iter != v4.rbegin() - 1; iter--)
 		{
 			int i = distance(v4.rbegin(), iter);
@@ -718,7 +718,7 @@ void vector_test()
 		}
 
 		// reverse iterator -
-		cout << "\treverse iterator -" << endl;
+		cout << "\treverse iterator -\n";
 		for(vector<int>::reverse_iterator iter = v4.rend() - 1; iter >= v4.rbegin(); iter -= 2)
 		{
 			int i = distance(v4.rbegin(), iter);
@@ -742,7 +742,7 @@ void vector_test()
 		}
 
 		// const reverse iterator preorder ++ 
-		cout << "\tconst reverse iterator preorder ++" << endl;
+		cout << "\tconst reverse iterator preorder ++\n";
 		for(vector<int>::const_reverse_iterator iter = v4.rbegin(); iter != v4.rend(); ++iter)
 		{
 			int i = distance(v4.crbegin(), iter);
@@ -766,7 +766,7 @@ void vector_test()
 			//*iter = 1;	// error
 		}
 		// const reverse iterator postorder ++ 
-		cout << "\tconst reverse iterator postorder ++" << endl;
+		cout << "\tconst reverse iterator postorder ++\n";
 		for(vector<int>::const_reverse_iterator iter = v4.rbegin(); iter != v4.rend(); iter++)
 		{
 			int i = distance(v4.crbegin(), iter);
@@ -791,7 +791,7 @@ void vector_test()
 		}
 
 		// const reverse iterator +
-		cout << "\tconst reverse iterator +" << endl;
+		cout << "\tconst reverse iterator +\n";
 		for(vector<int>::const_reverse_iterator iter = v4.rbegin(); iter != v4.rend(); iter += 2)
 		{
 			int i = distance(v4.crbegin(), iter);
@@ -815,7 +815,7 @@ void vector_test()
 		}
 
 		// const reverse iterator preorder --
-		cout << "\tconst reverse iterator preorder iterator --" << endl;
+		cout << "\tconst reverse iterator preorder iterator --\n";
 		for(vector<int>::const_reverse_iterator iter = v4.rend() - 1; iter != v4.rbegin() - 1; --iter)
 		{
 			int i = distance(v4.crbegin(), iter);
@@ -839,7 +839,7 @@ void vector_test()
 		}
 		
 		// const reverse iterator postorder --
-		cout << "\tconst reverse iterator postorder iterator --" << endl;
+		cout << "\tconst reverse iterator postorder iterator --\n";
 		for(vector<int>::const_reverse_iterator iter = v4.rend() - 1; iter != v4.rbegin() - 1; iter--)
 		{
 			int i = distance(v4.crbegin(), iter);
@@ -863,7 +863,7 @@ void vector_test()
 		}
 
 		// const reverse iterator -
-		cout << "\tconst reverse iterator -" << endl;
+		cout << "\tconst reverse iterator -\n";
 		for(vector<int>::const_reverse_iterator iter = v4.rend() - 1; iter != v4.rbegin() - 1; iter -= 2)
 		{
 			int i = distance(v4.crbegin(), iter);
@@ -889,7 +889,7 @@ void vector_test()
 
 		// transformation between reverse and forward iterator
 		{
-			cout << "\ttransformation between reverse and forward iterator" << endl;
+			cout << "\ttransformation between reverse and forward iterator\n";
 			vector<int>::reverse_iterator r_iter = v4.rbegin();
 			assert(*r_iter == 10);
 			++r_iter;
@@ -903,7 +903,7 @@ void vector_test()
 
 		// transformation between const reverse and const forward const iterator
 		{
-			cout << "\ttransformation between const reverse and const forward const iterator" << endl;
+			cout << "\ttransformation between const reverse and const forward const iterator\n";
 			vector<int>::const_reverse_iterator cr_iter = v4.rbegin();
 			assert(*cr_iter == 10);
 			++cr_iter;
@@ -918,7 +918,7 @@ void vector_test()
 		// erase
 		{
 			// erase(_Where)
-			cout << "\terase(_Where)" << endl;
+			cout << "\terase(_Where)\n";
 			vector<int>::iterator iter = v4.begin();
 			++iter;
 			iter = v4.erase(iter);
@@ -958,7 +958,7 @@ void vector_test()
 			}
 
 			// erase(_First, _Last)
-			cout << "\terase(_First, _Last)" << endl;
+			cout << "\terase(_First, _Last)\n";
 			iter = v4.begin();
 			vector<int>::iterator iter2 = iter + 2;
 			iter = v4.erase(iter, iter2);
@@ -978,7 +978,7 @@ void vector_test()
 		{
 			// insert(_Where, _Value)
 			vector<int> v5;
-			cout << "\tinsert(_Where, _Value)" << endl;
+			cout << "\tinsert(_Where, _Value)\n";
 			vector<int>::iterator iter = v5.insert(v5.begin(), 1);
 			assert(*iter == 1);
 			assert(1 == v5.size());
@@ -997,7 +997,7 @@ void vector_test()
 			assert(*iter == 3);
 
 			// insert(_Where, _Count, _Value)
-			cout << "\tinsert(_Where, _Count, _Value)" << endl;
+			cout << "\tinsert(_Where, _Count, _Value)\n";
 			iter = v5.insert(v5.begin() + 1, 3, 333);
 			int benchmark2[] = {1, 333, 333, 333, 3};
 			for(vector<int>::const_iterator c_iter = v5.begin(); c_iter != v5.end(); ++c_iter)
@@ -1007,7 +1007,7 @@ void vector_test()
 			assert(*iter == 333);
 
 			// insert(_Where, _First, _Last)
-			cout << "\tinsert(_Where, _First, _Last)" << endl;
+			cout << "\tinsert(_Where, _First, _Last)\n";
 			int a[] = {123, 321, 213};
 			iter = v5.insert(v5.begin() + 1, a, a + 3);
 			int benchmark3[] = {1, 123, 321, 213, 333, 333, 333, 3};
@@ -1030,8 +1030,8 @@ void vector_test()
 		}
 
 		// iterator assignment
-		cout << "\titerator assignment" << endl;
-		cout << "\titerator" << endl;
+		cout << "\titerator assignment\n";
+		cout << "\titerator\n";
 		for(vector<int>::iterator iter = v4.begin(); iter != v4.end(); ++iter)
 		{
 			*iter = 123;
@@ -1041,7 +1041,7 @@ void vector_test()
 			assert(123 == *iter);
 		}
 
-		cout << "\treverse iterator" << endl;
+		cout << "\treverse iterator\n";
 		for(vector<int>::reverse_iterator iter = v4.rbegin(); iter != v4.rend(); ++iter)
 		{
 			*iter = 321;
@@ -1056,7 +1056,7 @@ void vector_test()
 	vector<double> v5(10, 1.5);
 	{
 		// constructor with count and value
-		cout << "\tconstructor with count and value" << endl;
+		cout << "\tconstructor with count and value\n";
 		assert(10 == v5.size());
 		assert(10 == v5.capacity());
 		for(vector<double>::iterator iter = v5.begin(); iter != v5.end(); ++iter)
@@ -1069,7 +1069,7 @@ void vector_test()
 	vector<int> v6(10, 15);
 	{
 		// constructor with count and value to test the template specialization
-		cout << "\tconstructor with count and value, to test the template specialization" << endl;
+		cout << "\tconstructor with count and value, to test the template specialization\n";
 		assert(10 == v6.size());
 		assert(10 == v6.capacity());
 		for(vector<int>::iterator iter = v6.begin(); iter != v6.end(); ++iter)
@@ -1080,7 +1080,7 @@ void vector_test()
 
 	// max_size
 	{
-		cout << "\tmax size" << endl;
+		cout << "\tmax size\n";
 		assert(4294967295U / sizeof(int) == v1.max_size());
 		assert(4294967295U / sizeof(int) == v2.max_size());
 		assert(4294967295U / sizeof(int) == v3.max_size());

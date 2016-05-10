@@ -21,7 +21,7 @@ namespace xf
 	public:
 		//typedef T value_type;
 		priority_queue();
-		priority_queue(const _Container container);
+		priority_queue(const _Container &container);
 		bool empty() const;
 		size_t size() const;
 		void push(const T &val);
@@ -34,17 +34,17 @@ namespace xf
 		void max_heapify();
 		void max_heapify_descending(int index);
 		void max_heapify_ascending(int index);
-		_Container arr_;
+		_Container heap_;
 		_Comparer comparer_;
 	};
 
 	template<class T, class _Container, class _Comparer>
-	priority_queue<T, _Container, _Comparer>::priority_queue() : arr_(), comparer_()
+	priority_queue<T, _Container, _Comparer>::priority_queue() : heap_(), comparer_()
 	{
 		;
 	}
 	template<class T, class _Container, class _Comparer>
-	priority_queue<T, _Container, _Comparer>::priority_queue(const _Container container) : arr_(container), comparer_()
+	priority_queue<T, _Container, _Comparer>::priority_queue(const _Container &container) : heap_(container), comparer_()
 	{
 		max_heapify();
 	}
@@ -52,46 +52,46 @@ namespace xf
 	template<class T, class _Container, class _Comparer>
 	bool priority_queue<T, _Container, _Comparer>::empty() const
 	{
-		return arr_.empty();
+		return heap_.empty();
 	}
 
 	template<class T, class _Container, class _Comparer>
 	size_t priority_queue<T, _Container, _Comparer>::size() const
 	{
-		return arr_.size();
+		return heap_.size();
 	}
 
 	template<class T, class _Container, class _Comparer>
 	void priority_queue<T, _Container, _Comparer>::push(const T &val)
 	{
-		arr_.push_back(val);
-		max_heapify_ascending(arr_.size() - 1);
+		heap_.push_back(val);
+		max_heapify_ascending(heap_.size() - 1);
 	}
 
 	template<class T, class _Container, class _Comparer>
 	void priority_queue<T, _Container, _Comparer>::pop()
 	{
-		arr_.front() = arr_.back();
-		arr_.pop_back();
+		heap_.front() = heap_.back();
+		heap_.pop_back();
 		max_heapify_descending(0);
 	}
 
 	template<class T, class _Container, class _Comparer>
 	const T& priority_queue<T, _Container, _Comparer>::top() const
 	{
-		return arr_.front();
+		return heap_.front();
 	}
 
 	template<class T, class _Container, class _Comparer>
 	T& priority_queue<T, _Container, _Comparer>::top()
 	{
-		return arr_.front();
+		return heap_.front();
 	}
 
 	template<class T, class _Container, class _Comparer>
 	void priority_queue<T, _Container, _Comparer>::max_heapify()
 	{
-		for(int i = static_cast<int>(arr_.size() / 2) - 1; i >= 0; --i)	// last node's index = length-1£¬its parent's index = (length-1-1)/2
+		for(int i = static_cast<int>(heap_.size() / 2) - 1; i >= 0; --i)	// last node's index = length-1£¬its parent's index = (length-1-1)/2
 		{
 			max_heapify_descending(i);
 		}
@@ -104,16 +104,16 @@ namespace xf
 		{
 			size_t left_child = index * 2 + 1;
 			size_t right_child = (index + 1) * 2;
-			if(right_child < arr_.size() && comparer_(arr_[left_child], arr_[right_child]))
+			if(right_child < heap_.size() && comparer_(heap_[left_child], heap_[right_child]))
 			{
 				// right is larger than left
 				// test if right is larger than index
-				if(comparer_(arr_[index], arr_[right_child]))
+				if(comparer_(heap_[index], heap_[right_child]))
 				{
 					// exchange the object pointed by index and right_child
-					T tmp(arr_[index]);
-					arr_[index] = arr_[right_child];
-					arr_[right_child] = tmp;
+					T tmp(heap_[index]);
+					heap_[index] = heap_[right_child];
+					heap_[right_child] = tmp;
 					
 					//max_heapify_descending(right_child);
 					index = right_child;
@@ -123,12 +123,12 @@ namespace xf
 					index = -1;
 				}
 			}
-			else if(left_child < arr_.size() && comparer_(arr_[index], arr_[left_child]))
+			else if(left_child < heap_.size() && comparer_(heap_[index], heap_[left_child]))
 			{
 				// exchange the object pointed by index and left_child
-				T tmp(arr_[index]);
-				arr_[index] = arr_[left_child];
-				arr_[left_child] = tmp;
+				T tmp(heap_[index]);
+				heap_[index] = heap_[left_child];
+				heap_[left_child] = tmp;
 				
 				//max_heapify_descending(left_child);
 				index = left_child;
@@ -146,11 +146,11 @@ namespace xf
 		while(index > 0)
 		{
 			int parent = (index - 1) / 2;
-			if(comparer_(arr_[parent], arr_[index]))
+			if(comparer_(heap_[parent], heap_[index]))
 			{
-				T tmp(arr_[index]);
-				arr_[index] = arr_[parent];
-				arr_[parent] = tmp;
+				T tmp(heap_[index]);
+				heap_[index] = heap_[parent];
+				heap_[parent] = tmp;
 
 				index = parent;
 			}

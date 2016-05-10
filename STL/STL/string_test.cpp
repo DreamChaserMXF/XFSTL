@@ -1,0 +1,4 @@
+void string_test()
+{
+
+}
