@@ -99,12 +99,19 @@ namespace xf
 		const_reverse_iterator rend() const;
 		reverse_iterator rend();
 
+		void sort();
+		template<class _Comparer>
+		void sort(const _Comparer &comparer);
+
 		list<T>& operator = (const list<T> &right);
 
 	private:
 		void assign_n(size_t count, const T &val);
 		iterator insert_n(const const_iterator _Where, size_t _Count, const T &_Value);
-		T *p_;
+
+		void merge_sort(list_item<T> *head, list_item<T> *tail, size_t length);
+		template<class _Comparer>
+		void merge_sort(list_item<T> *head, list_item<T> *tail, size_t length, const _Comparer &comparer);
 
 		list_item<T> *head_;
 		list_item<T> *tail_;
@@ -503,6 +510,21 @@ namespace xf
 		return reverse_iterator(begin());
 	}
 
+	template<class T>
+	void list<T>::sort()
+	{
+		// 这里采用归并排序
+		merge_sort(head_, tail_, size_);
+	}
+
+	template<class T>template<class _Comparer>
+	void list<T>::sort(const _Comparer &comparer)
+	{
+		// 这里采用归并排序
+		merge_sort(head_, tail_, size_, comparer);
+	}
+
+
 	// STL中的=运算符中，对每个元素的复制，不一定用每个元素的=还是拷贝构造函数
 	// 视right与*this的size大小而定
 	template<class T>
@@ -603,6 +625,106 @@ namespace xf
 		const_cast<list_item<T>*>(_Where.p_)->item_ptr_[_Where.prev_index_] = last_ptr;
 		return iterator(ret_prev->item_ptr_[_Where.next_index_], _Where.prev_index_, _Where.next_index_);
 	}
+
+	template<class T>
+	void list<T>::merge_sort(list_item<T> *head, list_item<T> *tail, size_t length)
+	{
+		// 要合并的链表只有0个或1个元素
+		//if(head->item_ptr_[next_index_] == tail || head->item_ptr_[next_index_] == tail->item_ptr_[prev_index_])
+		if(length <= 1)
+		{
+			return;
+		}
+		size_t half_length = length / 2;
+		list_item<T> *p = head;
+		for(size_t i = 0; i < half_length; ++i)
+		{
+			p = p->item_ptr_[next_index_];
+		}
+		// 把(head, tail)分为(head, p]和[q, tail)两段，进行归并排序
+		// 1. 拆分
+		merge_sort(p, tail, length - half_length);
+		list_item<T> *q = p->item_ptr_[next_index_];
+		merge_sort(head, q, half_length);
+		// 2. 合并
+		// 此时q已经指向了后半区间的第一个元素，先令p指向左半区间的第一个元素
+		const list_item<T> *left_tail = q;
+		p = head->item_ptr_[next_index_];
+		list_item<T> *last = head;
+		// 找出较小的，往head后面挂
+		while(p != left_tail || q != tail)
+		{
+			if(q == tail || (p != left_tail &&  p->val_ < q->val_))
+			{
+				// 把p节点挂在last后面
+				last->item_ptr_[next_index_] = p;
+				p->item_ptr_[prev_index_] = last;
+				last = p;
+				p = p->item_ptr_[next_index_];
+			}
+			else
+			{
+				// 把q节点挂在last后面
+				last->item_ptr_[next_index_] = q;
+				q->item_ptr_[prev_index_] = last;
+				last = q;
+				q = q->item_ptr_[next_index_];
+			}
+		}
+		// 把last和tail接起来
+		last->item_ptr_[next_index_] = tail;
+		tail->item_ptr_[prev_index_] = last;
+	}
+
+	template<class T>template<class _Comparer>
+	void list<T>::merge_sort(list_item<T> *head, list_item<T> *tail, size_t length, const _Comparer &comparer)
+	{
+		// 要合并的链表只有0个或1个元素
+		if(length <= 1)
+		{
+			return;
+		}
+		size_t half_length = length / 2;
+		list_item<T> *p = head;
+		for(size_t i = 0; i < half_length; ++i)
+		{
+			p = p->item_ptr_[next_index_];
+		}
+		// 把(head, tail)分为(head, p]和[q, tail)两段，进行归并排序
+		// 1. 拆分
+		merge_sort(p, tail, length - half_length, comparer);
+		list_item<T> *q = p->item_ptr_[next_index_];
+		merge_sort(head, q, half_length, comparer);
+		// 2. 合并
+		// 此时q已经指向了后半区间的第一个元素，先令p指向左半区间的第一个元素
+		const list_item<T> *left_tail = q;
+		p = head->item_ptr_[next_index_];
+		list_item<T> *last = head;
+		// 找出较小的，往head后面挂
+		while(p != left_tail || q != tail)
+		{
+			if(q == tail || (p != left_tail &&  comparer(p->val_, q->val_)))
+			{
+				// 把p节点挂在last后面
+				last->item_ptr_[next_index_] = p;
+				p->item_ptr_[prev_index_] = last;
+				last = p;
+				p = p->item_ptr_[next_index_];
+			}
+			else
+			{
+				// 把q节点挂在last后面
+				last->item_ptr_[next_index_] = q;
+				q->item_ptr_[prev_index_] = last;
+				last = q;
+				q = q->item_ptr_[next_index_];
+			}
+		}
+		// 把last和tail接起来
+		last->item_ptr_[next_index_] = tail;
+		tail->item_ptr_[prev_index_] = last;
+	}
+
 }
 
 #endif

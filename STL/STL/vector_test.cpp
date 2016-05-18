@@ -2,19 +2,12 @@
 #include <string>
 
 #include "vector.hpp"
-#include "_Iterator_Traits.hpp"
+#include "list.hpp"
+#include "test.hpp"
 
 using namespace xf;
 using std::string;
 using std::cout;
-using std::endl;
-using std::ends;
-
-//#include <list>
-#include "list.hpp"
-//using std::list;
-
-
 
 
 void vector_test()
@@ -38,12 +31,6 @@ void vector_test()
 			return *this;
 		}
 		int n;
-	};
-
-	class NoDefaultConstructorClass
-	{
-	public:
-		NoDefaultConstructorClass(int n){}
 	};
 
 	//void multi_file_test();

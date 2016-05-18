@@ -40,7 +40,7 @@ void queue_test()
 		q2.pop();
 	}
 
-	printf("\t\tconstructor with container");
+	printf("\t\tconstructor with container:\n");
 	xf::deque<int> d;
 	d.push_back(1);
 	d.push_back(2);

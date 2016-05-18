@@ -14,7 +14,7 @@ namespace xf
 	}
 
 	template<class _Iter, class _Comparer>
-	void sort(_Iter first, _Iter last, const _Comparer &comparer = _LessThan<typename _Iter::value_type>())
+	void sort(_Iter first, _Iter last, const _Comparer &comparer)
 	{
 		_sort(first, last, comparer, *(static_cast<_Iterator_Traits<_Iter>::pointer>(NULL)));
 	}
@@ -23,7 +23,6 @@ namespace xf
 	void _sort(_Iter first, _Iter last, const value_type &null_val)
 	{
 		//heapsort(first, last, null_val);
-		
 		quicksort(first, last, null_val);
 	}
 

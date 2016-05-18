@@ -1,4 +1,5 @@
 #include "deque.hpp"
+#include "test.hpp"
 #include <iostream>
 
 using xf::deque;
@@ -6,11 +7,7 @@ using std::cout;
 using std::endl;
 
 
-class NoDefaultConstructorClass
-{
-public:
-	NoDefaultConstructorClass(int n){}
-};
+
 
 void deque_test()
 {

@@ -1,34 +1,11 @@
 #include "priority_queue.hpp"
 #include "vector.hpp"
 #include "deque.hpp"
+#include "test.hpp"
 
 using xf::priority_queue;
 using xf::vector;
 using xf::deque;
-
-// 这个在类模板中不能用，在这里作失败典例
-static bool largerthan_func(const int &lhs, const int &rhs)
-{
-	return lhs > rhs;
-}
-
-class less_than_class
-{
-public:
-	bool operator () (int a, int b) const
-	{
-		return a < b;
-	}
-};
-
-class larger_than_class
-{
-public:
-	bool operator () (int a, int b) const
-	{
-		return a > b;
-	}
-};
 
 
 void priority_queue_test()
