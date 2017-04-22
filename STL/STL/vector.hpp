@@ -680,6 +680,10 @@ namespace xf
 		{
 			new_capacity = 2 * capacity_;
 		}
+		else if(capacity_ == max_size())
+		{
+			throw std::length_error("already reached max size of vector");
+		}
 		else
 		{
 			new_capacity = max_size();

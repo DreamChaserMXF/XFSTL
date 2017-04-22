@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <ctime>
+#include <vector>
 
 #include "vector.hpp"
 #include "list.hpp"
@@ -1075,5 +1077,66 @@ void vector_test()
 		assert(4294967295U / sizeof(double) == v5.max_size());
 	}
 
+
+
+	//struct Node
+	//{
+	//	//Node() = default;
+	//	Node(int _depth) : idx(0), depth(_depth), parent(-1), is_parent_known(false), is_measured(false)
+	//	{};
+
+	//	int idx;
+	//	int depth;
+	//	int parent;
+	//	bool is_parent_known;
+	//	bool is_measured;
+	//};
+	//int M = 3, N = 5;
+	//vector<vector<Node>> tree(M);
+	//vector<Node> nodes(N);
+	//for (int i = 0; i < M; i++)
+	//{
+	//	nodes.insert(nodes.end(), tree[i].begin(), tree[i].end());
+	//}
+
+	// time test
+	//clock_t t0 = clock();
+	//const int len = 1e7;
+	//xf::vector<int> content1(len);
+	//for(int i = 0; i < len; ++i)
+	//{
+	//	content1[i] = rand();
+	//}
+	//clock_t t1 = clock();
+	//std::cout << (t1 - t0) << std::endl;
+	//t0 = clock();
+
+	//std::vector<int> content2(len);
+	//for(int i = 0; i < len; ++i)
+	//{
+	//	content2[i] = rand();
+	//}
+	//t1 = clock();
+	//std::cout << (t1 - t0) << std::endl;
+
+	//t0 = clock();
+	//content1.clear();
+	//content1.shrink_to_fit();
+	//for(int i = 0; i < len; ++i)
+	//{
+	//	content1.push_back(rand());
+	//}
+	//t1 = clock();
+	//std::cout << (t1 - t0) << std::endl;
+
+	//t0 = clock();
+	//content2.clear();
+	//content2.shrink_to_fit();
+	//for(int i = 0; i < len; ++i)
+	//{
+	//	content2.push_back(rand());
+	//}
+	//t1 = clock();
+	//std::cout << (t1 - t0) << std::endl;
 	
 }

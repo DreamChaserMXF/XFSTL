@@ -7,6 +7,10 @@
 #include "common_algorithm.hpp"
 #include "memory.hpp"
 
+#include <iostream>
+
+#include <crtdbg.h>
+
 namespace xf
 {
 
@@ -1126,6 +1130,7 @@ namespace xf
 		size_t move_length = size() - where_offset - 1;
 		for(size_t i = 0; i < move_length; ++i)
 		{
+			std::cout << i << std::endl;
 			++next_iter;
 			*iter = *next_iter;
 			iter = next_iter;
