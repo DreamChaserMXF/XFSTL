@@ -11,7 +11,7 @@ namespace xf
 	{
 		while(_First != _Last)
 		{
-			new (&*_Dst) _Iterator_Traits<_Fwd_Iter>::value_type(*_First);
+			new (&*_Dst) typename _Iterator_Traits<_Fwd_Iter>::value_type(*_First);
 			++_First;
 			++_Dst;
 		}

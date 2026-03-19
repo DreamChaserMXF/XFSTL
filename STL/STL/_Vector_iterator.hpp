@@ -1,7 +1,7 @@
 #ifndef XF_VECTOR_ITERATOR_HPP
 #define XF_VECTOR_ITERATOR_HPP
 #include <stdio.h>	// for NULL
-#include "_Vector_Const_Iterator.hpp"
+#include "_Vector_const_iterator.hpp"
 #include "_Iterator_Traits.hpp"
 
 namespace xf
@@ -17,9 +17,9 @@ namespace xf
 		typedef random_access_iterator_tag iterator_category;
 
 		_Vector_Iterator();
-		explicit _Vector_Iterator(T *p);	// Èç¹û²»¼Óexplicit£¬Ôò_Vector_Iterator¾Í¿ÉÒÔÖ±½ÓºÍÖ¸Õë¶ÔÏóÏà±È½ÏÁË
+		explicit _Vector_Iterator(T *p);	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½explicitï¿½ï¿½ï¿½ï¿½_Vector_Iteratorï¿½Í¿ï¿½ï¿½ï¿½Ö±ï¿½Óºï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È½ï¿½ï¿½ï¿½
 
-		const T& operator *() const;	// ÓÉÓÚ·ÇconstµÄ*»á°Ñ_Vector_Const_IteratorµÄcosntÀàÐÍµÄ*¸²¸Ç£¬¹ÊÕâÀï»¹ÒªÖØÐÂ¶¨Òå
+		const T& operator *() const;	// ï¿½ï¿½ï¿½Ú·ï¿½constï¿½ï¿½*ï¿½ï¿½ï¿½_Vector_Const_Iteratorï¿½ï¿½cosntï¿½ï¿½ï¿½Íµï¿½*ï¿½ï¿½ï¿½Ç£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï»¹Òªï¿½ï¿½ï¿½Â¶ï¿½ï¿½ï¿½
 		T& operator *();
 		const T* operator ->() const;
 		T* operator ->();
@@ -35,7 +35,7 @@ namespace xf
 	};
 
 	template<class T>
-	_Vector_Iterator<T>::_Vector_Iterator() : p_(NULL)
+	_Vector_Iterator<T>::_Vector_Iterator() : _Vector_Const_Iterator<T>(NULL)
 	{
 	}
 
@@ -47,79 +47,79 @@ namespace xf
 	template<class T>
 	const T& _Vector_Iterator<T>::operator *() const
 	{
-		return (*p_);
+		return (*this->p_);
 	}
 
 	template<class T>
 	T& _Vector_Iterator<T>::operator *()
 	{
-		return (*p_);
+		return (*this->p_);
 	}
 
 	template<class T>
 	const T* _Vector_Iterator<T>::operator ->() const
 	{
-		return p_;
+		return this->p_;
 	}
 
 	template<class T>
 	T* _Vector_Iterator<T>::operator ->()
 	{
-		return p_;
+		return this->p_;
 	}
 
 	template<class T>
 	_Vector_Iterator<T>& _Vector_Iterator<T>::operator ++()
 	{
-		++p_;
+		++this->p_;
 		return *this;
 	}
 
 	template<class T>
 	_Vector_Iterator<T> _Vector_Iterator<T>::operator ++(int)
 	{
-		T *tmp = p_++;
+		T *tmp = this->p_++;
 		return _Vector_Iterator<T>(tmp);
 	}
 
 	template<class T>
 	_Vector_Iterator<T>& _Vector_Iterator<T>::operator --()
 	{
-		--p_;
+		--this->p_;
 		return *this;
 	}
 
 	template<class T>
 	_Vector_Iterator<T> _Vector_Iterator<T>::operator --(int)
 	{
-		T *tmp = p_--;
+		T *tmp = this->p_--;
 		return _Vector_Iterator<T>(tmp);
 	}
 
 	template<class T>
 	_Vector_Iterator<T>& _Vector_Iterator<T>::operator +=(int n)
 	{
-		p_ += n;
+		this->p_ += n;
 		return *this;
 	}
 
 	template<class T>
 	_Vector_Iterator<T> _Vector_Iterator<T>::operator +(int n) const
 	{
-		return _Vector_Iterator<T>((p_ + n));
+		return _Vector_Iterator<T>((this->p_ + n));
 	}
 
 	template<class T>
 	_Vector_Iterator<T>& _Vector_Iterator<T>::operator -=(int n)
 	{
-		p_ -= n;
+		this->p_ -= n;
 		return *this;
 	}
 
 	template<class T>
 	_Vector_Iterator<T> _Vector_Iterator<T>::operator -(int n) const
 	{
-		return _Vector_Iterator<T>(p_ - n);
+		return _Vector_Iterator<T>(this->p_ - n);
 	}
 
 	template<class T>

@@ -15,7 +15,7 @@ namespace xf
 		}
 	};
 
-	template<class T, class _Container = vector<T>, class _Comparer = _LessThan<T>>
+	template<class T, class _Container = vector<T>, class _Comparer = _LessThan<T> >
 	class priority_queue
 	{
 	public:
@@ -91,7 +91,7 @@ namespace xf
 	template<class T, class _Container, class _Comparer>
 	void priority_queue<T, _Container, _Comparer>::max_heapify()
 	{
-		for(int i = static_cast<int>(heap_.size() / 2) - 1; i >= 0; --i)	// last node's index = length-1£¬its parent's index = (length-1-1)/2
+		for(int i = static_cast<int>(heap_.size() / 2) - 1; i >= 0; --i)	// last node's index = length-1ï¿½ï¿½its parent's index = (length-1-1)/2
 		{
 			max_heapify_descending(i);
 		}
@@ -100,7 +100,7 @@ namespace xf
 	template<class T, class _Container, class _Comparer>
 	void priority_queue<T, _Container, _Comparer>::max_heapify_descending(int index)
 	{
-		while(index >= 0)	// ÓÃindexÀ´Ö¸Ê¾ÊÇ·ñÍË³öÑ­»·
+		while(index >= 0)	// ï¿½ï¿½indexï¿½ï¿½Ö¸Ê¾ï¿½Ç·ï¿½ï¿½Ë³ï¿½Ñ­ï¿½ï¿½
 		{
 			size_t left_child = index * 2 + 1;
 			size_t right_child = (index + 1) * 2;

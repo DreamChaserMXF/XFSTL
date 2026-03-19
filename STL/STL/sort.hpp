@@ -7,18 +7,7 @@
 
 namespace xf
 {
-	template<class _Iter>
-	void sort(_Iter first, _Iter last)
-	{
-		_sort(first, last, *(static_cast<_Iterator_Traits<_Iter>::pointer>(NULL)));
-	}
-
-	template<class _Iter, class _Comparer>
-	void sort(_Iter first, _Iter last, const _Comparer &comparer)
-	{
-		_sort(first, last, comparer, *(static_cast<_Iterator_Traits<_Iter>::pointer>(NULL)));
-	}
-
+	// Internal dispatch helpers - must be declared before sort()
 	template<class _Iter, class value_type>
 	void _sort(_Iter first, _Iter last, const value_type &null_val)
 	{
@@ -33,9 +22,17 @@ namespace xf
 		quicksort(first, last, comparer, null_val);
 	}
 
+	template<class _Iter>
+	void sort(_Iter first, _Iter last)
+	{
+		_sort(first, last, *(static_cast<typename _Iterator_Traits<_Iter>::pointer>(NULL)));
+	}
 
-	
-
+	template<class _Iter, class _Comparer>
+	void sort(_Iter first, _Iter last, const _Comparer &comparer)
+	{
+		_sort(first, last, comparer, *(static_cast<typename _Iterator_Traits<_Iter>::pointer>(NULL)));
+	}
 }
 
 #endif

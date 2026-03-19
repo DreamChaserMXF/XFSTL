@@ -47,29 +47,29 @@ namespace xf
 	template<class T>
 	const T& _List_Iterator<T>::operator *() const
 	{
-		return p_->val_;
+		return this->p_->val_;
 	}
 	template<class T>
 	T& _List_Iterator<T>::operator *()
 	{
-		return p_->val_;
+		return this->p_->val_;
 	}
 
 	template<class T>
 	const T* _List_Iterator<T>::operator ->() const
 	{
-		return &(p_->val_);
+		return &(this->p_->val_);
 	}
 	template<class T>
 	T* _List_Iterator<T>::operator ->()
 	{
-		return &(p_->val_);
+		return &(this->p_->val_);
 	}
 
 	template<class T>
 	_List_Iterator<T>& _List_Iterator<T>::operator ++()
 	{
-		p_ = p_->item_ptr_[next_index_];
+		this->p_ = this->p_->item_ptr_[this->next_index_];
 		return *this;
 	}
 
@@ -77,14 +77,14 @@ namespace xf
 	_List_Iterator<T> _List_Iterator<T>::operator ++(int)
 	{
 		_List_Iterator<T> iter(*this);
-		p_ = p_->item_ptr_[next_index_];
+		this->p_ = this->p_->item_ptr_[this->next_index_];
 		return iter;
 	}
 
 	template<class T>
 	_List_Iterator<T>& _List_Iterator<T>::operator --()
 	{
-		p_ = p_->item_ptr_[prev_index_];
+		this->p_ = this->p_->item_ptr_[this->prev_index_];
 		return *this;
 	}
 
@@ -92,7 +92,7 @@ namespace xf
 	_List_Iterator<T> _List_Iterator<T>::operator --(int)
 	{
 		_List_Iterator<T> iter(*this);
-		p_ = p_->item_ptr_[prev_index_];
+		this->p_ = this->p_->item_ptr_[this->prev_index_];
 		return iter;
 	}
 }

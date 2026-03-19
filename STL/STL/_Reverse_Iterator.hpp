@@ -16,7 +16,7 @@ namespace xf
 
 		_Reverse_Iterator();
 		explicit _Reverse_Iterator(T right);
-		// ÓÃÓÚÀàĞÍ×ª»»µÄ¹¹Ôìº¯Êı
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ìº¯ï¿½ï¿½
 		template<class Other>
 		_Reverse_Iterator(const _Reverse_Iterator<Other> &right);
 
@@ -42,7 +42,7 @@ namespace xf
 		bool operator > (const _Reverse_Iterator &right) const;
 		bool operator >= (const _Reverse_Iterator &right) const;
 	//private:
-		// Éè¼ÆÎªpublic±äÁ¿£¬ÎªÁË±ãÓÚÀàĞÍ×ª»»£¨·ñÔòÔÚlistÊµÏÖÊ±£¬½«Ö¸Ïòtail_µÄreverse_iterator×ª»»Îªconst_reverse_iteratorÊ±»áÓĞ¿ÕÖ¸Õë´íÎó£©
+		// ï¿½ï¿½ï¿½Îªpublicï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½Ë±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½listÊµï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½tail_ï¿½ï¿½reverse_iterator×ªï¿½ï¿½Îªconst_reverse_iteratorÊ±ï¿½ï¿½ï¿½Ğ¿ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½
 		T iter_;
 	};
 
@@ -67,13 +67,13 @@ namespace xf
 	template<class T>
 	T _Reverse_Iterator<T>::base() const
 	{
-		//return iter_ + 1;	// Ô­ÊµÏÖ£¬µ«²»ÊÊÓÃÓÚlist£¬ÒòÎªlist²»ÔÊĞí¼Ó·¨
+		//return iter_ + 1;	// Ô­Êµï¿½Ö£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½listï¿½ï¿½ï¿½ï¿½Îªlistï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó·ï¿½
 		T ret_val = iter_;
 		return ++ret_val;
 	}
 
 	template<class T>
-	typename const _Reverse_Iterator<T>::reference _Reverse_Iterator<T>::operator*() const
+	const typename _Reverse_Iterator<T>::reference _Reverse_Iterator<T>::operator*() const
 	{
 		return *iter_;
 	}
@@ -84,7 +84,7 @@ namespace xf
 	}
 
 	template<class T>
-	typename const _Reverse_Iterator<T>::pointer _Reverse_Iterator<T>::operator ->() const
+	const typename _Reverse_Iterator<T>::pointer _Reverse_Iterator<T>::operator ->() const
 	{
 		return &(*iter_);
 	}

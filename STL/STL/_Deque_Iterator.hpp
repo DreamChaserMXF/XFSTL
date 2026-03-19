@@ -49,33 +49,33 @@ namespace xf
 	template<class T>
 	const T& _Deque_Iterator<T>::operator *() const
 	{
-		return (*map_iter_)[item_index_];
+		return (*this->map_iter_)[this->item_index_];
 	}
 	template<class T>
 	T& _Deque_Iterator<T>::operator *()
 	{
-		return (*map_iter_)[item_index_];
+		return (*this->map_iter_)[this->item_index_];
 	}
 	
 	template<class T>
 	const T* _Deque_Iterator<T>::operator ->() const
 	{
-		return *map_iter_ + item_index_;
+		return *this->map_iter_ + this->item_index_;
 	}
 	template<class T>
 	T* _Deque_Iterator<T>::operator ->()
 	{
-		return &(*map_iter_)[item_index_];
+		return &(*this->map_iter_)[this->item_index_];
 	}
 
 	template<class T>
 	_Deque_Iterator<T>& _Deque_Iterator<T>::operator ++()
 	{
-		++item_index_;
-		if(SEGMENT_LENGTH == item_index_)
+		++this->item_index_;
+		if(_Deque_Const_Iterator<T>::SEGMENT_LENGTH == this->item_index_)
 		{
-			++map_iter_;
-			item_index_ = 0;
+			++this->map_iter_;
+			this->item_index_ = 0;
 		}
 		return *this;
 	}
@@ -91,14 +91,14 @@ namespace xf
 	template<class T>
 	_Deque_Iterator<T>& _Deque_Iterator<T>::operator --()
 	{
-		if(0 == item_index_)
+		if(0 == this->item_index_)
 		{
-			item_index_ = SEGMENT_LENGTH - 1;
-			--map_iter_;
+			this->item_index_ = _Deque_Const_Iterator<T>::SEGMENT_LENGTH - 1;
+			--this->map_iter_;
 		}
 		else
 		{
-			--item_index_;
+			--this->item_index_;
 		}
 		return *this;
 	}
@@ -120,11 +120,11 @@ namespace xf
 		}
 		else
 		{
-			item_index_ += n;
-			if(item_index_ >= SEGMENT_LENGTH)
+			this->item_index_ += n;
+			if(this->item_index_ >= _Deque_Const_Iterator<T>::SEGMENT_LENGTH)
 			{
-				map_iter_ += item_index_ / SEGMENT_LENGTH;
-				item_index_ = item_index_ % SEGMENT_LENGTH;
+				this->map_iter_ += this->item_index_ / _Deque_Const_Iterator<T>::SEGMENT_LENGTH;
+				this->item_index_ = this->item_index_ % _Deque_Const_Iterator<T>::SEGMENT_LENGTH;
 			}
 		}
 		return *this;
@@ -144,15 +144,15 @@ namespace xf
 		{
 			*this += -n;
 		}
-		else if(item_index_ >= (size_t)n)
+		else if(this->item_index_ >= (size_t)n)
 		{
-			item_index_ -= n;
+			this->item_index_ -= n;
 		}
 		else
 		{
-			int remain_substraction = n - item_index_ - 1;	// remain_substractionÏàµ±ÓÚ£¬°Ñµ±Ç°bin¼õµôÖ®ºó£¬»¹Òª¼õ¶àÉÙ
-			map_iter_ -= 1 + remain_substraction / SEGMENT_LENGTH;
-			item_index_ = SEGMENT_LENGTH - 1 - remain_substraction % SEGMENT_LENGTH;
+			int remain_substraction = n - this->item_index_ - 1;	// remain_substractionï¿½àµ±ï¿½Ú£ï¿½ï¿½Ñµï¿½Ç°binï¿½ï¿½ï¿½ï¿½Ö®ï¿½ó£¬»ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			this->map_iter_ -= 1 + remain_substraction / _Deque_Const_Iterator<T>::SEGMENT_LENGTH;
+			this->item_index_ = _Deque_Const_Iterator<T>::SEGMENT_LENGTH - 1 - remain_substraction % _Deque_Const_Iterator<T>::SEGMENT_LENGTH;
 		}
 		return *this;
 	}

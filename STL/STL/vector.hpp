@@ -1,14 +1,17 @@
 #ifndef XF_VECTOR_HPP
 #define XF_VECTOR_HPP
 
+#ifdef _MSC_VER
 #pragma warning(disable:4290)	// for msvc's not fully supporting the exception specifications
 #pragma warning(disable:4996)	// for msvc's safety concern about uninitialized_xxxx()
+#endif
 
-#include "_Vector_Iterator.hpp"
+#include "_Vector_iterator.hpp"
 #include "_Reverse_Iterator.hpp"
 #include "memory.hpp"
 #include <cassert>
 #include <stdexcept>
+#include <type_traits>
 namespace xf
 {
 
@@ -26,11 +29,11 @@ namespace xf
 		vector(const vector<T> &right);
 		vector(size_t count);
 		vector(size_t count, const T &val);
-		template<class _Iter> vector(_Iter first, _Iter last);
-		template<> vector(int count, int val) : p_(NULL), size_(count), capacity_(count) 
+		template<class _Iter, typename std::enable_if<!std::is_integral<_Iter>::value, int>::type = 0> vector(_Iter first, _Iter last);
+		vector(int count, const T& val) : p_(NULL), size_(count), capacity_(count)
 		{
 			p_ = static_cast<T*>(operator new[](capacity_ * sizeof(T)));
-			xf::uninitialized_fill(p_, p_ + size_, static_cast<T>(val));	// construct elements
+			xf::uninitialized_fill(p_, p_ + size_, val);
 		}
 		virtual ~vector();
 
@@ -39,18 +42,18 @@ namespace xf
 		bool empty() const;
 		void reserve(size_t capacity);
 		void resize(size_t size, const T &new_val = T());
-		void shrink_to_fit();	// ÊÍ·Å¶àÓàµÄÄÚ´æ
+		void shrink_to_fit();	// ï¿½Í·Å¶ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½
 
 		static size_t max_size();
 
 		void clear();
 		void assign(size_t count, const T &val);
-		template<class _Iter> 
+		template<class _Iter, typename std::enable_if<!std::is_integral<_Iter>::value, int>::type = 0>
 		void assign(_Iter first, _Iter last);
-		// Õâ¸öÄ£°åµÄÌØ»¯²»ÄÜÔÚÀàÍâ¶¨Òå£¬²»ÖªµÀÎªÉ¶
-		template<> void assign<int>(int _Count, int _Value)
+		// ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½Ø»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â¶¨ï¿½å£¬ï¿½ï¿½Öªï¿½ï¿½ÎªÉ¶
+		void assign(int _Count, const T& _Value)
 		{
-			assign_n(_Count, static_cast<T>(_Value));
+			assign_n(_Count, _Value);
 		}
 
 		void push_back(const T &item);
@@ -63,23 +66,23 @@ namespace xf
 
 		iterator insert(const const_iterator &_Where, const T &_Value);
 		iterator insert(const const_iterator &_Where, size_t _Count, const T &_Value);
-		template<class Iter>
+		template<class Iter, typename std::enable_if<!std::is_integral<Iter>::value, int>::type = 0>
 		iterator insert(const const_iterator &_Where, Iter _First, Iter _Last);
-		template<> iterator insert<int>(const const_iterator &_Where, int _Count, int _Value)
+		iterator insert(const const_iterator &_Where, int _Count, const T& _Value)
 		{
 			return insert_n(_Where, _Count, _Value);
 		}
 
 
-		// TODO ÕâÀï²»¶®ÎªÊ²Ã´STLÔÚÉè¼ÆÊ±£¬Òª½ÓÊÜconst_iterator¶ø²»ÊÇiterator×ö²ÎÊý
+		// TODO ï¿½ï¿½ï¿½ï²»ï¿½ï¿½ÎªÊ²Ã´STLï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½const_iteratorï¿½ï¿½ï¿½ï¿½ï¿½ï¿½iteratorï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		iterator erase(const const_iterator &_First, const const_iterator &_Last);
 		iterator erase(const const_iterator &_Where);
 
-		const T& at(size_t index) const throw(std::out_of_range);	// ÕÒ³öµÚindex¸öÔªËØ£¬ÓÐÔ½½ç¼ì²é
-		T& at(size_t index) throw(std::out_of_range);				// ÕÒ³öµÚindex¸öÔªËØ£¬ÓÐÔ½½ç¼ì²é
+		const T& at(size_t index) const throw(std::out_of_range);	// ï¿½Ò³ï¿½ï¿½ï¿½indexï¿½ï¿½Ôªï¿½Ø£ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ï¿½ï¿½
+		T& at(size_t index) throw(std::out_of_range);				// ï¿½Ò³ï¿½ï¿½ï¿½indexï¿½ï¿½Ôªï¿½Ø£ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ï¿½ï¿½
 		
-		const T& operator [](size_t index) const;			// ÕÒ³öµÚindex¸öÔªËØ£¬ÎÞÔ½½ç¼ì²é
-		T& operator [](size_t index);						// ÕÒ³öµÚindex¸öÔªËØ£¬ÎÞÔ½½ç¼ì²é
+		const T& operator [](size_t index) const;			// ï¿½Ò³ï¿½ï¿½ï¿½indexï¿½ï¿½Ôªï¿½Ø£ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ï¿½ï¿½
+		T& operator [](size_t index);						// ï¿½Ò³ï¿½ï¿½ï¿½indexï¿½ï¿½Ôªï¿½Ø£ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ï¿½ï¿½
 
 		const T* data() const;
 		T* data();
@@ -122,7 +125,7 @@ namespace xf
 	template<class T>
 	vector<T>::vector(const vector<T> &right) : p_(static_cast<T*>(operator new[](right.size_ * sizeof(T)))), size_(right.size_), capacity_(right.size_) 
 	{
-		// Í¨¹ý¹¹Ôìº¯ÊýÔÚp_´¦½¨Á¢right.p_µÄ¸±±¾
+		// Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½p_ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½right.p_ï¿½Ä¸ï¿½ï¿½ï¿½
 		xf::uninitialized_copy(right.p_, right.p_ + size_, p_);
 	}
 
@@ -132,7 +135,7 @@ namespace xf
 		p_ = static_cast<T*>(operator new[](capacity_ * sizeof(T)));
 		for(size_t i = 0; i < size_; ++i)
 		{
-			new (p_ + i) T();	// µ÷ÓÃÕæÕýµÄÄ¬ÈÏ¹¹Ôìº¯Êý
+			new (p_ + i) T();	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½Ï¹ï¿½ï¿½ìº¯ï¿½ï¿½
 		}
 	}
 
@@ -144,8 +147,8 @@ namespace xf
 		xf::uninitialized_fill(p_, p_ + size_, val);	// construct elements
 	}
 
-	template<class T>template<class _Iter>
-	vector<T>::vector(_Iter first, _Iter last) : p_(NULL), size_(0U), capacity_(0U) 
+	template<class T>template<class _Iter, typename std::enable_if<!std::is_integral<_Iter>::value, int>::type>
+	vector<T>::vector(_Iter first, _Iter last) : p_(NULL), size_(0U), capacity_(0U)
 	{
 		size_ = xf::distance(first, last);
 		capacity_ = size_;
@@ -208,7 +211,7 @@ namespace xf
 	template<class T>
 	void vector<T>::resize(size_t new_size, const T &new_val)
 	{
-		// ±äÐ¡µÄ»°£¬Òª°Ñ¶àÓàµÄÔªËØÇå³ýµô
+		// ï¿½ï¿½Ð¡ï¿½Ä»ï¿½ï¿½ï¿½Òªï¿½Ñ¶ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if(new_size < size_)
 		{
 			for(size_t i = new_size; i < size_; ++i)
@@ -216,22 +219,22 @@ namespace xf
 				(p_ + i)->~T();
 			}
 		}
-		// ±ä´óÇÒÒªÀ©ÈÝµÄÇé¿ö
+		// ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½ï¿½
 		else if(new_size > capacity_)
 		{
 			reserve(new_size);
 		}
-		// ÏÖÔÚÈÝÁ¿¹»ÁË
-		// ¶Ô±ä´óµÄµØ·½½øÐÐ³õÊ¼»¯
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// ï¿½Ô±ï¿½ï¿½ÄµØ·ï¿½ï¿½ï¿½ï¿½Ð³ï¿½Ê¼ï¿½ï¿½
 		for(size_t i = size_; i < new_size; ++i)
 		{
 			new (p_ + i) T(new_val);
 		}
-		// µ÷Õûsize_
+		// ï¿½ï¿½ï¿½ï¿½size_
 		size_ = new_size;
 	}
 
-	// ÊÍ·Å¶àÓàµÄÄÚ´æ£¬Ê¹capacity_Óësize_ÏàÍ¬
+	// ï¿½Í·Å¶ï¿½ï¿½ï¿½ï¿½ï¿½Ú´æ£¬Ê¹capacity_ï¿½ï¿½size_ï¿½ï¿½Í¬
 	template<class T>
 	void vector<T>::shrink_to_fit()
 	{
@@ -253,7 +256,7 @@ namespace xf
 	template<class T>
 	size_t vector<T>::max_size()
 	{
-		return static_cast<size_t>(-1) / sizeof(T);
+		return static_cast<unsigned int>(-1) / sizeof(T);
 	}
 
 	template<class T>
@@ -273,11 +276,11 @@ namespace xf
 	}
 
 	template<class T>
-	template<class _Iter>
+	template<class _Iter, typename std::enable_if<!std::is_integral<_Iter>::value, int>::type>
 	void vector<T>::assign(_Iter first, _Iter last)
 	{
 		clear();
-		// ¼ÆËãÐÂµÄsize_
+		// ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½size_
 		size_ = xf::distance(first, last);
 		if(size_ > capacity_)
 		{
@@ -292,11 +295,11 @@ namespace xf
 	{
 		if(size_ == capacity_)
 		{
-			// À©ÈÝ
+			// ï¿½ï¿½ï¿½ï¿½
 			size_t new_capacity = get_new_capacity();
 			reserve(new_capacity);
 		}
-		// Ìí¼ÓÐÂÔªËØ
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½
 		new (p_ + size_) T(item);
 		++size_;
 	}
@@ -332,29 +335,29 @@ namespace xf
 	template<class T>
 	typename vector<T>::iterator vector<T>::insert(const const_iterator &_Where, const T &_Value)
 	{
-		if(size_ == capacity_)	// ÐëÒªÀ©ÈÝ
+		if(size_ == capacity_)	// ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½
 		{
-			size_t offset = _Where.p_ - p_;	// ¼ÇÂ¼²åÈëÔªËØµÄÆ«ÒÆÁ¿
-			// ÐÂÉêÇë¿Õ¼ä²¢·ÖÁ½¶Î¸´ÖÆ£¬¿ÕÏÂÐèÒª²åÈëµÄÔªËØµÄÎ»ÖÃ
+			size_t offset = _Where.p_ - p_;	// ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Ôªï¿½Øµï¿½Æ«ï¿½ï¿½ï¿½ï¿½
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ä²¢ï¿½ï¿½ï¿½ï¿½ï¿½Î¸ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½Øµï¿½Î»ï¿½ï¿½
 			size_t new_capacity = get_new_capacity();
 			T * new_ptr = static_cast<T*>(operator new[] (new_capacity * sizeof(T)));
-			xf::uninitialized_copy(p_, p_ + offset, new_ptr);	// Ç°¶Î
-			xf::uninitialized_copy(p_ + offset, p_ + size_, new_ptr + offset + 1);	// ºó¶Î
-			// ²åÈëÐÂµÄÔªËØ
+			xf::uninitialized_copy(p_, p_ + offset, new_ptr);	// Ç°ï¿½ï¿½
+			xf::uninitialized_copy(p_ + offset, p_ + size_, new_ptr + offset + 1);	// ï¿½ï¿½ï¿½
+			// ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½Ôªï¿½ï¿½
 			new (new_ptr + offset) T(_Value);
-			// Ïú»ÙÔ­À´µÄ¿Õ¼ä
+			// ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½Ä¿Õ¼ï¿½
 			for(size_t i = 0; i < size_; ++i)
 			{
 				p_[i].~T();
 			}
 			operator delete[](p_);
-			// ¸üÐÂvectorµÄÊôÐÔ
+			// ï¿½ï¿½ï¿½ï¿½vectorï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			p_ = new_ptr;
 			capacity_ = new_capacity;
 			++size_;
 			return iterator(p_ + offset);
 		}
-		else	// ²»ÐëÀ©ÈÝ
+		else	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
 			T *cur = const_cast<T*>(_Where.p_);
 			T *last = p_ + size_;
@@ -375,50 +378,50 @@ namespace xf
 		return insert_n(_Where, _Count, _Value);
 	}
 
-	template<class T>template<class Iter>
+	template<class T>template<class Iter, typename std::enable_if<!std::is_integral<Iter>::value, int>::type>
 	typename vector<T>::iterator vector<T>::insert(const const_iterator &_Where, Iter _First, Iter _Last)
 	{
-		//assert(_First < _Last);	// ÕâÀïÒª²»Òªassert£¿ÍòÒ»_IterÃ»ÓÐ¶¨ÒåÐ¡ÓÚºÅÔõÃ´°ì£¿
+		//assert(_First < _Last);	// ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Òªassertï¿½ï¿½ï¿½ï¿½Ò»_IterÃ»ï¿½Ð¶ï¿½ï¿½ï¿½Ð¡ï¿½Úºï¿½ï¿½ï¿½Ã´ï¿½ì£¿
 		size_t where_offset = _Where - cbegin();
 		size_t _Count = xf::distance(_First, _Last);
-		if(size_ + _Count > capacity_)	// ÐëÒªÀ©ÈÝ
+		if(size_ + _Count > capacity_)	// ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½
 		{
-			size_t offset = _Where.p_ - p_;	// ¼ÇÂ¼²åÈëÔªËØµÄÆ«ÒÆÁ¿
-			// ÐÂÉêÇë¿Õ¼ä²¢·Ö±ð¸´ÖÆ²åÈëµãÇ°°ë¶Î¡¢²åÈëµã¡¢²åÈëµãºó°ë¶Î
+			size_t offset = _Where.p_ - p_;	// ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Ôªï¿½Øµï¿½Æ«ï¿½ï¿½ï¿½ï¿½
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ä²¢ï¿½Ö±ï¿½ï¿½Æ²ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½Î¡ï¿½ï¿½ï¿½ï¿½ï¿½ã¡¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			size_t new_capacity = get_new_capacity(size_ + _Count);
 			T * new_ptr = static_cast<T*>(operator new[] (new_capacity * sizeof(T)));
 			xf::uninitialized_copy(p_, p_ + offset, new_ptr);
 			xf::uninitialized_copy(_First, _Last, new_ptr + offset);
 			xf::uninitialized_copy(p_ + offset, p_ + size_, new_ptr + offset + _Count);
-			//// ²åÈëÐÂµÄÔªËØ
+			//// ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½Ôªï¿½ï¿½
 			//for(size_t i = 0; i < count; ++i)
 			//{
 			//	new (new_ptr + offset + i) T(*_First);
 			//	++_First;
 			//}
 			//assert(_First == _Last);
-			// Ïú»ÙÔ­À´µÄ¿Õ¼ä
+			// ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½Ä¿Õ¼ï¿½
 			for(size_t i = 0; i < size_; ++i)
 			{
 				p_[i].~T();
 			}
 			operator delete[](p_);
-			// ¸üÐÂvectorµÄÊôÐÔ
+			// ï¿½ï¿½ï¿½ï¿½vectorï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			p_ = new_ptr;
 			capacity_ = new_capacity;
 			size_ += _Count;
 			return iterator(p_ + offset);
 		}
-		else	// ²»ÐëÀ©ÈÝ
+		else	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
-			// ²åÈëµãºó°ë¶ÎµÄ³¤¶È
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎµÄ³ï¿½ï¿½ï¿½
 			size_t last_segment_length = cend() - _Where;
-			// ¸ù¾Ýlast_segment_lengthÓë_CountµÄ´óÐ¡£¬¾ö¶¨insertµÄ¾ßÌå²½Öè
+			// ï¿½ï¿½ï¿½ï¿½last_segment_lengthï¿½ï¿½_Countï¿½Ä´ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½insertï¿½Ä¾ï¿½ï¿½å²½ï¿½ï¿½
 			if(_Count >= last_segment_length)
 			{
-				// 1. ²½Öè£ºÒÆ¶¯£»·½Ê½£º¹¹Ôì
-				// 2. ²½Öè£º²åÈë£»·½Ê½£º¸³Öµ
-				// 3. ²½Öè£º²åÈë£»·½Ê½£º¹¹Ôì
+				// 1. ï¿½ï¿½ï¿½è£ºï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				// 2. ï¿½ï¿½ï¿½è£ºï¿½ï¿½ï¿½ë£»ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½Öµ
+				// 3. ï¿½ï¿½ï¿½è£ºï¿½ï¿½ï¿½ë£»ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				T *old_end_element = p_ + size_ - 1;
 				T *new_end_element = p_ + size_ + _Count - 1;
 				for(size_t i = 0; i < last_segment_length; ++i)
@@ -433,9 +436,9 @@ namespace xf
 			}
 			else
 			{
-				// 1. ²½Öè£ºÒÆ¶¯£»·½Ê½£º¹¹Ôì
-				// 2. ²½Öè£ºÒÆ¶¯£»·½Ê½£º¸³Öµ
-				// 3. ²½Öè£º²åÈë£»·½Ê½£º¸³Öµ
+				// 1. ï¿½ï¿½ï¿½è£ºï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				// 2. ï¿½ï¿½ï¿½è£ºï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½Öµ
+				// 3. ï¿½ï¿½ï¿½è£ºï¿½ï¿½ï¿½ë£»ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½Öµ
 				T *old_end_element = p_ + size_ - 1;
 				T *new_end_element = p_ + size_ + _Count - 1;
 				for(size_t i = 0; i < _Count; ++i)	// 1.
@@ -611,8 +614,8 @@ namespace xf
 		return reverse_iterator(begin());
 	}
 
-	// STLÖÐµÄ=ÔËËã·ûÖÐ£¬¶ÔÃ¿¸öÔªËØµÄ¸´ÖÆ£¬²»Ò»¶¨ÓÃÃ¿¸öÔªËØµÄ=»¹ÊÇ¿½±´¹¹Ôìº¯Êý
-	// ÊÓrightÓë*thisµÄsize´óÐ¡¶ø¶¨
+	// STLï¿½Ðµï¿½=ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½Ôªï¿½ØµÄ¸ï¿½ï¿½Æ£ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½Ôªï¿½Øµï¿½=ï¿½ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½
+	// ï¿½ï¿½rightï¿½ï¿½*thisï¿½ï¿½sizeï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½
 	template<class T>
 	vector<T>& vector<T>::operator = (const vector<T> &right)
 	{
@@ -695,11 +698,11 @@ namespace xf
 	size_t vector<T>::get_new_capacity(size_t min_request_size) const
 	{
 		size_t new_capacity = 0U;
-		if(2 * capacity_ > max_size())		// ³¢ÊÔÉêÇë¸ü¶à
+		if(2 * capacity_ > max_size())		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
 			new_capacity = max_size();
 		}
-		else if(2 * capacity_ > min_request_size)	// ³¢ÊÔÉêÇë¸ü¶à
+		else if(2 * capacity_ > min_request_size)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
 			new_capacity = 2 * capacity_;
 		}
@@ -723,46 +726,46 @@ namespace xf
 		xf::uninitialized_fill(p_, p_ + count, val);
 	}
 
-	// ¹«ÓÃº¯Êý£¬ÓÃÓÚÕæÕýµÄcount valueÐÍ²åÈë£¬ÒÔ¼°µü´úÆ÷²åÈëµÄº¯ÊýÄ£°åµÄÌØ»¯°æ±¾
+	// ï¿½ï¿½ï¿½Ãºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½count valueï¿½Í²ï¿½ï¿½ë£¬ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½Ø»ï¿½ï¿½æ±¾
 	template<class T>
 	typename vector<T>::iterator vector<T>::insert_n(const const_iterator _Where, size_t _Count, const T &_Value)
 	{
-		if(size_ + _Count > capacity_)	// ÐëÒªÀ©ÈÝ
+		if(size_ + _Count > capacity_)	// ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½
 		{
-			size_t offset = _Where.p_ - p_;	// ¼ÇÂ¼²åÈëÔªËØµÄÆ«ÒÆÁ¿
-			// ÐÂÉêÇë¿Õ¼ä²¢·Ö±ð¸´ÖÆ²åÈëµãÇ°°ë¶Î¡¢²åÈëµã¡¢²åÈëµãºó°ë¶Î
+			size_t offset = _Where.p_ - p_;	// ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Ôªï¿½Øµï¿½Æ«ï¿½ï¿½ï¿½ï¿½
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ä²¢ï¿½Ö±ï¿½ï¿½Æ²ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½Î¡ï¿½ï¿½ï¿½ï¿½ï¿½ã¡¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			size_t new_capacity = get_new_capacity(size_ + _Count);
 			T * new_ptr = static_cast<T*>(operator new[] (new_capacity * sizeof(T)));
 			xf::uninitialized_copy(p_, p_ + offset, new_ptr);
 			xf::uninitialized_fill(new_ptr + offset, new_ptr + offset + _Count, _Value);
 			xf::uninitialized_copy(p_ + offset, p_ + size_, new_ptr + offset + _Count);
-			//// ²åÈëÐÂµÄÔªËØ
+			//// ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½Ôªï¿½ï¿½
 			//for(size_t i = 0; i < _Count; ++i)
 			//{
 			//	new (new_ptr + offset + i) T(_Value);
 			//}
-			// Ïú»ÙÔ­À´µÄ¿Õ¼ä
+			// ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½Ä¿Õ¼ï¿½
 			for(size_t i = 0; i < size_; ++i)
 			{
 				p_[i].~T();
 			}
 			operator delete[](p_);
-			// ¸üÐÂvectorµÄÊôÐÔ
+			// ï¿½ï¿½ï¿½ï¿½vectorï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			p_ = new_ptr;
 			capacity_ = new_capacity;
 			size_ += _Count;
 			return iterator(p_ + offset);
 		}
-		else	// ²»ÐëÀ©ÈÝ
+		else	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
-			// ²åÈëµãºó°ë¶ÎµÄ³¤¶È
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎµÄ³ï¿½ï¿½ï¿½
 			size_t last_segment_length = cend() - _Where;
-			// ¸ù¾Ýlast_segment_lengthÓë_CountµÄ´óÐ¡£¬¾ö¶¨insertµÄ¾ßÌå²½Öè
+			// ï¿½ï¿½ï¿½ï¿½last_segment_lengthï¿½ï¿½_Countï¿½Ä´ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½insertï¿½Ä¾ï¿½ï¿½å²½ï¿½ï¿½
 			if(_Count >= last_segment_length)
 			{
-				// 1. ²½Öè£ºÒÆ¶¯£»·½Ê½£º¹¹Ôì
-				// 2. ²½Öè£º²åÈë£»·½Ê½£º¸³Öµ
-				// 3. ²½Öè£º²åÈë£»·½Ê½£º¹¹Ôì
+				// 1. ï¿½ï¿½ï¿½è£ºï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				// 2. ï¿½ï¿½ï¿½è£ºï¿½ï¿½ï¿½ë£»ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½Öµ
+				// 3. ï¿½ï¿½ï¿½è£ºï¿½ï¿½ï¿½ë£»ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				T *old_end_element = p_ + size_ - 1;
 				T *new_end_element = p_ + size_ + _Count - 1;
 				for(size_t i = 0; i < last_segment_length; ++i)
@@ -777,9 +780,9 @@ namespace xf
 			}
 			else
 			{
-				// 1. ²½Öè£ºÒÆ¶¯£»·½Ê½£º¹¹Ôì
-				// 2. ²½Öè£ºÒÆ¶¯£»·½Ê½£º¸³Öµ
-				// 3. ²½Öè£º²åÈë£»·½Ê½£º¸³Öµ
+				// 1. ï¿½ï¿½ï¿½è£ºï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				// 2. ï¿½ï¿½ï¿½è£ºï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½Öµ
+				// 3. ï¿½ï¿½ï¿½è£ºï¿½ï¿½ï¿½ë£»ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½Öµ
 				T *old_end_element = p_ + size_ - 1;
 				T *new_end_element = p_ + size_ + _Count - 1;
 				for(size_t i = 0; i < _Count; ++i)	// 1.

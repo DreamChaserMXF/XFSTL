@@ -1,13 +1,16 @@
 #ifndef XF_LIST_HPP
 #define XF_LIST_HPP
 
+#ifdef _MSC_VER
 #pragma warning(disable:4290)	// for msvc's not fully supporting the exception specifications
 #pragma warning(disable:4996)	// for msvc's safety concern about uninitialized_xxxx()
+#endif
 
 #include "_List_Iterator.hpp"
 #include "_Reverse_Iterator.hpp"
 #include "list_item.hpp"
 #include <cassert>
+#include <type_traits>
 #include "memory.hpp"
 namespace xf
 {
@@ -25,9 +28,9 @@ namespace xf
 		list(const list<T> &right);
 		list(size_t _Count);
 		list(size_t _Count, const T &_Value);
-		template<class _Iter> list(_Iter first, _Iter last);
-		template<> list(int _Count, int _Value) : 
-			head_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), tail_(head_), size_(count), prev_index_(PREV_POS), next_index_(NEXT_POS)
+		template<class _Iter, typename std::enable_if<!std::is_integral<_Iter>::value, int>::type = 0> list(_Iter first, _Iter last);
+		list(int _Count, const T& _Value) :
+			head_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), tail_(head_), size_(_Count), prev_index_(PREV_POS), next_index_(NEXT_POS)
 		{
 			head_->item_ptr_[prev_index_] = NULL;
 			for(size_t i = 0; i < size_; ++i)
@@ -36,7 +39,7 @@ namespace xf
 				tail_->item_ptr_[next_index_] = new_item;
 				tail_ = new_item;
 			}
-			// ×îºóÔÙ¼ÓÒ»¸öÎ²°Í
+			// ï¿½ï¿½ï¿½ï¿½Ù¼ï¿½Ò»ï¿½ï¿½Î²ï¿½ï¿½
 			list_item<T> *new_item = static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)));
 			new_item->item_ptr_[prev_index_] = tail_;
 			new_item->item_ptr_[next_index_] = NULL;
@@ -45,12 +48,12 @@ namespace xf
 		}
 		virtual ~list();
 		void assign(size_t count, const T &val);
-		template<class _Iter> 
+		template<class _Iter, typename std::enable_if<!std::is_integral<_Iter>::value, int>::type = 0>
 		void assign(_Iter first, _Iter last);
-		// Õâ¸öÄ£°åµÄÌØ»¯²»ÄÜÔÚÀàÍâ¶¨Òå£¬²»ÖªµÀÎªÉ¶
-		template<> void assign<int>(int _Count, int _Value)
+		// ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½Ø»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â¶¨ï¿½å£¬ï¿½ï¿½Öªï¿½ï¿½ÎªÉ¶
+		void assign(int _Count, const T& _Value)
 		{
-			assign_n(_Count, static_cast<T>(_Value));
+			assign_n(_Count, _Value);
 		}
 
 		size_t size() const;
@@ -71,9 +74,9 @@ namespace xf
 
 		iterator insert(const const_iterator &_Where, const T &_Value);
 		iterator insert(const const_iterator &_Where, size_t _Count, const T &_Value);
-		template<class Iter>
+		template<class Iter, typename std::enable_if<!std::is_integral<Iter>::value, int>::type = 0>
 		iterator insert(const const_iterator &_Where, Iter _First, Iter _Last);
-		template<> iterator insert<int>(const const_iterator &_Where, int _Count, int _Value)
+		iterator insert(const const_iterator &_Where, int _Count, const T& _Value)
 		{
 			return insert_n(_Where, _Count, _Value);
 		}
@@ -136,7 +139,7 @@ namespace xf
 		head_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), tail_(head_), size_(right.size_), prev_index_(PREV_POS), next_index_(NEXT_POS)
 	{
 		head_->item_ptr_[prev_index_] = NULL;
-		// Öð¸ö¸´ÖÆ
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		list_item<T> *p = right.head_->item_ptr_[right.next_index_];
 		while(p != right.tail_)
 		{
@@ -145,7 +148,7 @@ namespace xf
 			tail_ = new_item;
 			p = p->item_ptr_[right.next_index_];
 		}
-		// ×îºóÔÙ¼ÓÒ»¸öÎ²°Í
+		// ï¿½ï¿½ï¿½ï¿½Ù¼ï¿½Ò»ï¿½ï¿½Î²ï¿½ï¿½
 		list_item<T> *new_item = static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)));
 		new_item->item_ptr_[prev_index_] = tail_;
 		new_item->item_ptr_[next_index_] = NULL;
@@ -164,7 +167,7 @@ namespace xf
 			tail_->item_ptr_[next_index_] = new_item;
 			tail_ = new_item;
 		}
-		// ×îºóÔÙ¼ÓÒ»¸öÎ²°Í
+		// ï¿½ï¿½ï¿½ï¿½Ù¼ï¿½Ò»ï¿½ï¿½Î²ï¿½ï¿½
 		list_item<T> *new_item = static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)));
 		new_item->item_ptr_[prev_index_] = tail_;
 		new_item->item_ptr_[next_index_] = NULL;
@@ -184,7 +187,7 @@ namespace xf
 			tail_->item_ptr_[next_index_] = new_item;
 			tail_ = new_item;
 		}
-		// ×îºóÔÙ¼ÓÒ»¸öÎ²°Í
+		// ï¿½ï¿½ï¿½ï¿½Ù¼ï¿½Ò»ï¿½ï¿½Î²ï¿½ï¿½
 		list_item<T> *new_item = static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)));
 		new_item->item_ptr_[prev_index_] = tail_;
 		new_item->item_ptr_[next_index_] = NULL;
@@ -192,7 +195,7 @@ namespace xf
 		tail_ = new_item;
 	}
 
-	template<class T>template<class _Iter>
+	template<class T>template<class _Iter, typename std::enable_if<!std::is_integral<_Iter>::value, int>::type>
 	list<T>::list(_Iter first, _Iter last) : 
 		head_(static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)))), tail_(head_), size_(0U), prev_index_(PREV_POS), next_index_(NEXT_POS)
 	{
@@ -204,7 +207,7 @@ namespace xf
 			tail_ = new_item;
 			++size_;
 		}
-		// ×îºóÔÙ¼ÓÒ»¸öÎ²°Í
+		// ï¿½ï¿½ï¿½ï¿½Ù¼ï¿½Ò»ï¿½ï¿½Î²ï¿½ï¿½
 		list_item<T> *new_item = static_cast<list_item<T>*>(operator new(sizeof(list_item<T>)));
 		new_item->item_ptr_[prev_index_] = tail_;
 		new_item->item_ptr_[next_index_] = NULL;
@@ -215,7 +218,7 @@ namespace xf
 	template<class T>
 	list<T>::~list()
 	{
-		// Ñ­»·Ïú»Ùhead_Óëtail_Ö®¼äµÄËùÓÐ½Úµã
+		// Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½head_ï¿½ï¿½tail_Ö®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð½Úµï¿½
 		for(const list_item<T> *p = head_->item_ptr_[next_index_];
 			p != tail_; p = head_->item_ptr_[next_index_])
 		{
@@ -236,11 +239,11 @@ namespace xf
 	}
 
 	template<class T>
-	template<class _Iter>
+	template<class _Iter, typename std::enable_if<!std::is_integral<_Iter>::value, int>::type>
 	void list<T>::assign(_Iter _First, _Iter _Last)
 	{
 		size_ = 0;
-		// ÏÈÐÞ¸ÄÒÑÓÐµÄ½Úµã
+		// ï¿½ï¿½ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ÐµÄ½Úµï¿½
 		list_item<T> *p = NULL;
 		for(p = head_->item_ptr_[next_index_];
 			p != tail_ && _First != _Last; p = p->item_ptr_[next_index_])
@@ -248,7 +251,7 @@ namespace xf
 			p->val_ = *_First++;
 			++size_;
 		}
-		if(_First != _Last)	// »¹Î´²åÈëÍê±ÏµÄÇé¿ö
+		if(_First != _Last)	// ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½
 		{
 			p = tail_->item_ptr_[prev_index_];
 			do
@@ -261,7 +264,7 @@ namespace xf
 			p->item_ptr_[next_index_] = tail_;
 			tail_->item_ptr_[prev_index_] = p;
 		}
-		else if(p != tail_)	// ²åÈëÍê±Ï£¬µ«»¹ÓÐ¶àÓàÔªËØÔÚÁ´±íÖÐ 
+		else if(p != tail_)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 		{
 			list_item<T> *last = p->item_ptr_[prev_index_];
 			do
@@ -290,7 +293,7 @@ namespace xf
 	template<class T>
 	size_t list<T>::max_size()
 	{
-		return static_cast<size_t>(-1) / sizeof(list_item<T>) - 1;	// ¼õ1ÊÇ¼õÈ¥Í·½áµã
+		return static_cast<unsigned int>(-1) / sizeof(list_item<T>) - 1;	// -1 is for the head node
 	}
 
 	template<class T>
@@ -302,7 +305,7 @@ namespace xf
 			head_->item_ptr_[next_index_] = p->item_ptr_[next_index_];
 			delete p;
 		}
-		// Ñ­»·½áÊøºóhead_µÄÏÂÒ»¸öÖ¸ÕëÖ¸Ïòtail_
+		// Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½head_ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ö¸ï¿½ï¿½Ö¸ï¿½ï¿½tail_
 		size_ = 0;
 	}
 
@@ -310,7 +313,7 @@ namespace xf
 	template<class T>
 	void list<T>::push_front(const T &_Value)
 	{
-		// Ìí¼ÓÐÂÔªËØ
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½
 		list_item<T> *first_node = head_->item_ptr_[next_index_];
 		list_item<T> *new_item = new list_item<T>(_Value, prev_index_, head_, next_index_, first_node);
 		first_node->item_ptr_[prev_index_] = new_item;
@@ -331,7 +334,7 @@ namespace xf
 	template<class T>
 	void list<T>::push_back(const T &_Value)
 	{
-		// Ìí¼ÓÐÂÔªËØ
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½
 		list_item<T> *last_node = tail_->item_ptr_[prev_index_];
 		list_item<T> *new_item = new list_item<T>(_Value, prev_index_, last_node, next_index_, tail_);
 		last_node->item_ptr_[next_index_] = new_item;
@@ -390,7 +393,7 @@ namespace xf
 		return insert_n(_Where, _Count, _Value);
 	}
 
-	template<class T>template<class Iter>
+	template<class T>template<class Iter, typename std::enable_if<!std::is_integral<Iter>::value, int>::type>
 	typename list<T>::iterator list<T>::insert(const const_iterator &_Where, Iter _First, Iter _Last)
 	{
 		list_item<T> *last_ptr = _Where.p_->item_ptr_[_Where.prev_index_];
@@ -436,11 +439,11 @@ namespace xf
 	template<class T>
 	void list<T>::reverse()
 	{
-		// ½»»»head_ºÍtail_
+		// ï¿½ï¿½ï¿½ï¿½head_ï¿½ï¿½tail_
 		list_item<T> *tmp_ptr = head_;
 		head_ = tail_;
 		tail_ = tmp_ptr;
-		// ¸ÄÐ´prev_index_ºÍnext_index_
+		// ï¿½ï¿½Ð´prev_index_ï¿½ï¿½next_index_
 		PTR_POS tmp_pos = prev_index_;
 		prev_index_ = next_index_;
 		next_index_ = tmp_pos;
@@ -513,20 +516,20 @@ namespace xf
 	template<class T>
 	void list<T>::sort()
 	{
-		// ÕâÀï²ÉÓÃ¹é²¢ÅÅÐò
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¹é²¢ï¿½ï¿½ï¿½ï¿½
 		merge_sort(head_, tail_, size_);
 	}
 
 	template<class T>template<class _Comparer>
 	void list<T>::sort(const _Comparer &comparer)
 	{
-		// ÕâÀï²ÉÓÃ¹é²¢ÅÅÐò
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¹é²¢ï¿½ï¿½ï¿½ï¿½
 		merge_sort(head_, tail_, size_, comparer);
 	}
 
 
-	// STLÖÐµÄ=ÔËËã·ûÖÐ£¬¶ÔÃ¿¸öÔªËØµÄ¸´ÖÆ£¬²»Ò»¶¨ÓÃÃ¿¸öÔªËØµÄ=»¹ÊÇ¿½±´¹¹Ôìº¯Êý
-	// ÊÓrightÓë*thisµÄsize´óÐ¡¶ø¶¨
+	// STLï¿½Ðµï¿½=ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½Ôªï¿½ØµÄ¸ï¿½ï¿½Æ£ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½Ôªï¿½Øµï¿½=ï¿½ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½
+	// ï¿½ï¿½rightï¿½ï¿½*thisï¿½ï¿½sizeï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½
 	template<class T>
 	list<T>& list<T>::operator = (const list<T> &right)
 	{
@@ -534,7 +537,7 @@ namespace xf
 		{
 			return *this;
 		}
-		// ÏÈÐÞ¸ÄÒÑÓÐµÄ½Úµã
+		// ï¿½ï¿½ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ÐµÄ½Úµï¿½
 		list_item<T> *p = NULL;
 		list_item<T> *q = right.head_->item_ptr_[next_index_];
 		for(p = head_->item_ptr_[next_index_];
@@ -542,7 +545,7 @@ namespace xf
 		{
 			p->val_ = q->val_;
 		}
-		if(q != right.tail_)	// »¹Î´¸³ÖµÍê±ÏµÄÇé¿ö
+		if(q != right.tail_)	// ï¿½ï¿½Î´ï¿½ï¿½Öµï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½
 		{
 			p = tail_->item_ptr_[prev_index_];
 			do
@@ -555,7 +558,7 @@ namespace xf
 			p->item_ptr_[next_index_] = tail_;
 			tail_->item_ptr_[prev_index_] = p;
 		}
-		else if(p != tail_)	// ¸³ÖµÍê±Ï£¬µ«»¹ÓÐ¶àÓàÔªËØÔÚÁ´±íÖÐ 
+		else if(p != tail_)	// ï¿½ï¿½Öµï¿½ï¿½Ï£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 		{
 			list_item<T> *last = p->item_ptr_[prev_index_];
 			do
@@ -575,7 +578,7 @@ namespace xf
 	void list<T>::assign_n(size_t _Count, const T &_Value)
 	{
 		size_ = 0;
-		// ÏÈÐÞ¸ÄÒÑÓÐµÄ½Úµã
+		// ï¿½ï¿½ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ÐµÄ½Úµï¿½
 		list_item<T> *p = NULL;
 		for(p = head_->item_ptr_[next_index_];
 			p != tail_ && size_ < _Count; p = p->item_ptr_[next_index_])
@@ -583,7 +586,7 @@ namespace xf
 			p->val_ = _Value;
 			++size_;
 		}
-		if(size_ < _Count)	// »¹Î´²åÈëÍê±ÏµÄÇé¿ö
+		if(size_ < _Count)	// ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½
 		{
 			p = tail_->item_ptr_[prev_index_];
 			do
@@ -596,7 +599,7 @@ namespace xf
 			p->item_ptr_[next_index_] = tail_;
 			tail_->item_ptr_[prev_index_] = p;
 		}
-		else if(p != tail_)	// ²åÈëÍê±Ï£¬µ«»¹ÓÐ¶àÓàÔªËØÔÚÁ´±íÖÐ 
+		else if(p != tail_)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 		{
 			list_item<T> *last = p->item_ptr_[prev_index_];
 			do
@@ -629,7 +632,7 @@ namespace xf
 	template<class T>
 	void list<T>::merge_sort(list_item<T> *head, list_item<T> *tail, size_t length)
 	{
-		// ÒªºÏ²¢µÄÁ´±íÖ»ÓÐ0¸ö»ò1¸öÔªËØ
+		// Òªï¿½Ï²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Ôªï¿½ï¿½
 		//if(head->item_ptr_[next_index_] == tail || head->item_ptr_[next_index_] == tail->item_ptr_[prev_index_])
 		if(length <= 1)
 		{
@@ -641,22 +644,22 @@ namespace xf
 		{
 			p = p->item_ptr_[next_index_];
 		}
-		// °Ñ(head, tail)·ÖÎª(head, p]ºÍ[q, tail)Á½¶Î£¬½øÐÐ¹é²¢ÅÅÐò
-		// 1. ²ð·Ö
+		// ï¿½ï¿½(head, tail)ï¿½ï¿½Îª(head, p]ï¿½ï¿½[q, tail)ï¿½ï¿½ï¿½Î£ï¿½ï¿½ï¿½ï¿½Ð¹é²¢ï¿½ï¿½ï¿½ï¿½
+		// 1. ï¿½ï¿½ï¿½
 		merge_sort(p, tail, length - half_length);
 		list_item<T> *q = p->item_ptr_[next_index_];
 		merge_sort(head, q, half_length);
-		// 2. ºÏ²¢
-		// ´ËÊ±qÒÑ¾­Ö¸ÏòÁËºó°ëÇø¼äµÄµÚÒ»¸öÔªËØ£¬ÏÈÁîpÖ¸Ïò×ó°ëÇø¼äµÄµÚÒ»¸öÔªËØ
+		// 2. ï¿½Ï²ï¿½
+		// ï¿½ï¿½Ê±qï¿½Ñ¾ï¿½Ö¸ï¿½ï¿½ï¿½Ëºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ò»ï¿½ï¿½Ôªï¿½Ø£ï¿½ï¿½ï¿½ï¿½ï¿½pÖ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ò»ï¿½ï¿½Ôªï¿½ï¿½
 		const list_item<T> *left_tail = q;
 		p = head->item_ptr_[next_index_];
 		list_item<T> *last = head;
-		// ÕÒ³ö½ÏÐ¡µÄ£¬ÍùheadºóÃæ¹Ò
+		// ï¿½Ò³ï¿½ï¿½ï¿½Ð¡ï¿½Ä£ï¿½ï¿½ï¿½headï¿½ï¿½ï¿½ï¿½ï¿½
 		while(p != left_tail || q != tail)
 		{
 			if(q == tail || (p != left_tail &&  p->val_ < q->val_))
 			{
-				// °Ñp½Úµã¹ÒÔÚlastºóÃæ
+				// ï¿½ï¿½pï¿½Úµï¿½ï¿½ï¿½ï¿½lastï¿½ï¿½ï¿½ï¿½
 				last->item_ptr_[next_index_] = p;
 				p->item_ptr_[prev_index_] = last;
 				last = p;
@@ -664,14 +667,14 @@ namespace xf
 			}
 			else
 			{
-				// °Ñq½Úµã¹ÒÔÚlastºóÃæ
+				// ï¿½ï¿½qï¿½Úµï¿½ï¿½ï¿½ï¿½lastï¿½ï¿½ï¿½ï¿½
 				last->item_ptr_[next_index_] = q;
 				q->item_ptr_[prev_index_] = last;
 				last = q;
 				q = q->item_ptr_[next_index_];
 			}
 		}
-		// °ÑlastºÍtail½ÓÆðÀ´
+		// ï¿½ï¿½lastï¿½ï¿½tailï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		last->item_ptr_[next_index_] = tail;
 		tail->item_ptr_[prev_index_] = last;
 	}
@@ -679,7 +682,7 @@ namespace xf
 	template<class T>template<class _Comparer>
 	void list<T>::merge_sort(list_item<T> *head, list_item<T> *tail, size_t length, const _Comparer &comparer)
 	{
-		// ÒªºÏ²¢µÄÁ´±íÖ»ÓÐ0¸ö»ò1¸öÔªËØ
+		// Òªï¿½Ï²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Ôªï¿½ï¿½
 		if(length <= 1)
 		{
 			return;
@@ -690,22 +693,22 @@ namespace xf
 		{
 			p = p->item_ptr_[next_index_];
 		}
-		// °Ñ(head, tail)·ÖÎª(head, p]ºÍ[q, tail)Á½¶Î£¬½øÐÐ¹é²¢ÅÅÐò
-		// 1. ²ð·Ö
+		// ï¿½ï¿½(head, tail)ï¿½ï¿½Îª(head, p]ï¿½ï¿½[q, tail)ï¿½ï¿½ï¿½Î£ï¿½ï¿½ï¿½ï¿½Ð¹é²¢ï¿½ï¿½ï¿½ï¿½
+		// 1. ï¿½ï¿½ï¿½
 		merge_sort(p, tail, length - half_length, comparer);
 		list_item<T> *q = p->item_ptr_[next_index_];
 		merge_sort(head, q, half_length, comparer);
-		// 2. ºÏ²¢
-		// ´ËÊ±qÒÑ¾­Ö¸ÏòÁËºó°ëÇø¼äµÄµÚÒ»¸öÔªËØ£¬ÏÈÁîpÖ¸Ïò×ó°ëÇø¼äµÄµÚÒ»¸öÔªËØ
+		// 2. ï¿½Ï²ï¿½
+		// ï¿½ï¿½Ê±qï¿½Ñ¾ï¿½Ö¸ï¿½ï¿½ï¿½Ëºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ò»ï¿½ï¿½Ôªï¿½Ø£ï¿½ï¿½ï¿½ï¿½ï¿½pÖ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ò»ï¿½ï¿½Ôªï¿½ï¿½
 		const list_item<T> *left_tail = q;
 		p = head->item_ptr_[next_index_];
 		list_item<T> *last = head;
-		// ÕÒ³ö½ÏÐ¡µÄ£¬ÍùheadºóÃæ¹Ò
+		// ï¿½Ò³ï¿½ï¿½ï¿½Ð¡ï¿½Ä£ï¿½ï¿½ï¿½headï¿½ï¿½ï¿½ï¿½ï¿½
 		while(p != left_tail || q != tail)
 		{
 			if(q == tail || (p != left_tail &&  comparer(p->val_, q->val_)))
 			{
-				// °Ñp½Úµã¹ÒÔÚlastºóÃæ
+				// ï¿½ï¿½pï¿½Úµï¿½ï¿½ï¿½ï¿½lastï¿½ï¿½ï¿½ï¿½
 				last->item_ptr_[next_index_] = p;
 				p->item_ptr_[prev_index_] = last;
 				last = p;
@@ -713,14 +716,14 @@ namespace xf
 			}
 			else
 			{
-				// °Ñq½Úµã¹ÒÔÚlastºóÃæ
+				// ï¿½ï¿½qï¿½Úµï¿½ï¿½ï¿½ï¿½lastï¿½ï¿½ï¿½ï¿½
 				last->item_ptr_[next_index_] = q;
 				q->item_ptr_[prev_index_] = last;
 				last = q;
 				q = q->item_ptr_[next_index_];
 			}
 		}
-		// °ÑlastºÍtail½ÓÆðÀ´
+		// ï¿½ï¿½lastï¿½ï¿½tailï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		last->item_ptr_[next_index_] = tail;
 		tail->item_ptr_[prev_index_] = last;
 	}

@@ -3,7 +3,7 @@
 #include "deque.hpp"
 namespace xf
 {
-	template<class T, class _Container = deque<T>>
+	template<class T, class _Container = deque<T> >
 	class queue
 	{
 	public:

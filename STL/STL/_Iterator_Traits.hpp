@@ -25,10 +25,10 @@ namespace xf
 	template<class _Iter>
 	struct _Iterator_Traits<_Iter*>
 	{
-		typedef typename _Iter* pointer;
-		typedef typename _Iter& reference;
-		typedef typename _Iter value_type;
-		typedef typename random_access_iterator_tag iterator_category;
+		typedef _Iter* pointer;
+		typedef _Iter& reference;
+		typedef _Iter value_type;
+		typedef random_access_iterator_tag iterator_category;
 	};
 
 	template<class _Iter>

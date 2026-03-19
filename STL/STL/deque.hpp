@@ -9,43 +9,45 @@
 
 #include <iostream>
 
+#ifdef _MSC_VER
 #include <crtdbg.h>
+#endif
 
 namespace xf
 {
 
-	// map_ÊÇ´æ´¢¶à¸öÄÚ´æ¿éµÄµØÖ·±í
-	// µÚÒ»¸öÄÚ´æ¿éµÄÓÐÐ§µØÖ·Îª[front_bin_index_, SEGMENT_LENGTH - 1]
-	// ×îºóÒ»¸öÄÚ´æ¿éµÄÓÐÐ§µØÖ·Îª[0, back_bin_index_]
-	// µ±map_ÓÐ³¬¹ýÒ»¸öÄÚ´æ¿éÊ±£¬front_bin_index_ºÍback_bin_index_¾ùÓÐÐ§
-	// µ±map_Ö»ÓÐÒ»¸öÄÚ´æ¿éÊ±£¬back_bin_index_ºÍfront_bin_index_²»Ò»¶¨ÄÄ¸öÊÇÓÐÐ§µÄ
-	// µ«µ±ÆäÎÞÐ§Ê±£¬ÄÜ±£Ö¤¸÷ÖÖ¼ÆËãµÄÍ¨ÓÃÐÔ
+	// map_ï¿½Ç´æ´¢ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½Äµï¿½Ö·ï¿½ï¿½
+	// ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½Ö·Îª[front_bin_index_, SEGMENT_LENGTH - 1]
+	// ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½Ö·Îª[0, back_bin_index_]
+	// ï¿½ï¿½map_ï¿½Ð³ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ú´ï¿½ï¿½Ê±ï¿½ï¿½front_bin_index_ï¿½ï¿½back_bin_index_ï¿½ï¿½ï¿½ï¿½Ð§
+	// ï¿½ï¿½map_Ö»ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ú´ï¿½ï¿½Ê±ï¿½ï¿½back_bin_index_ï¿½ï¿½front_bin_index_ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§Ê±ï¿½ï¿½ï¿½Ü±ï¿½Ö¤ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½
 
-	// ¶ÔdequeµÄmap_Á½¶ËµÄË÷Òý¶¨ÒåÈçÏÂ£º
-	// front_bin_index_±íÊ¾deque_µÚÒ»¸öÔªËØËùÔÚµÄmap_µÄbinÖÐµÄË÷Òý£¬µ±ÆäÓÐÐ§Ê±£¬¸ÃË÷Òý¶ÔÓ¦µÄÇ¡ºÃÊÇµÚÒ»¸öÔªËØµÄÎ»ÖÃ¡£ÎÞÐ§Ê±£¬Ä¬ÈÏÖµ¼ûÏÂ¡£
-	// back_bin_index_±íÊ¾deque_×îºóÒ»¸öÔªËØËùÔÚµÄmap_µÄbinÖÐµÄË÷Òý£¬µ±ÆäÓÐÐ§Ê±£¬¸ÃË÷Òý¶ÔÓ¦µÄÇ¡ºÃÊÇ×îºóÒ»¸öÔªËØµÄÎ»ÖÃ¡£ÎÞÐ§Ê±£¬Ä¬ÈÏÖµ¼ûÏÂ¡£
+	// ï¿½ï¿½dequeï¿½ï¿½map_ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â£ï¿½
+	// front_bin_index_ï¿½ï¿½Ê¾deque_ï¿½ï¿½Ò»ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½map_ï¿½ï¿½binï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½Ç¡ï¿½ï¿½ï¿½Çµï¿½Ò»ï¿½ï¿½Ôªï¿½Øµï¿½Î»ï¿½Ã¡ï¿½ï¿½ï¿½Ð§Ê±ï¿½ï¿½Ä¬ï¿½ï¿½Öµï¿½ï¿½ï¿½Â¡ï¿½
+	// back_bin_index_ï¿½ï¿½Ê¾deque_ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½map_ï¿½ï¿½binï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½Ç¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ôªï¿½Øµï¿½Î»ï¿½Ã¡ï¿½ï¿½ï¿½Ð§Ê±ï¿½ï¿½Ä¬ï¿½ï¿½Öµï¿½ï¿½ï¿½Â¡ï¿½
 	// front_bin_index_ = 0
 	// back_bin_index_ = SEGMENT_LENGTH - 1
-	// Ä¬ÈÏÖµµÄÉèÖÃ£¬Ö÷Òª¿¼ÂÇÁËsize()º¯Êý¼ÆËãµÄÍ¨ÓÃÐÔ
+	// Ä¬ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½size()ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½
 
 	template<class T>
 	class deque
 	{
 	public:
 
-		typedef typename _Deque_Iterator<T> iterator;
-		typedef typename _Deque_Const_Iterator<T> const_iterator;
-		typedef typename _Reverse_Iterator<iterator> reverse_iterator;
-		typedef typename _Reverse_Iterator<const_iterator> const_reverse_iterator;
+		typedef _Deque_Iterator<T> iterator;
+		typedef _Deque_Const_Iterator<T> const_iterator;
+		typedef _Reverse_Iterator<iterator> reverse_iterator;
+		typedef _Reverse_Iterator<const_iterator> const_reverse_iterator;
 
 		deque();
 		deque(const deque<T> & _Right);
 		deque(size_t n);
 		deque(size_t n, const T & _Value);
-		template<class _Iter> deque(_Iter begin, _Iter end);
-		template<> deque(int _Count, int _Value) : front_bin_index_(0), back_bin_index_(SEGMENT_LENGTH - 1), map_()
+		template<class _Iter, typename std::enable_if<!std::is_integral<_Iter>::value, int>::type = 0> deque(_Iter begin, _Iter end);
+		deque(int _Count, const T& _Value) : front_bin_index_(0), back_bin_index_(SEGMENT_LENGTH - 1), map_()
 		{
-			insert_n(begin(), _Count, _Value);
+			this->insert_n(this->begin(), _Count, _Value);
 		}
 		virtual ~deque();
 
@@ -58,22 +60,22 @@ namespace xf
 
 		iterator insert(const const_iterator &_Where, const T &_Value);
 		iterator insert(const const_iterator &_Where, size_t _Count, const T &_Value);
-		template<class _Iter>
+		template<class _Iter, typename std::enable_if<!std::is_integral<_Iter>::value, int>::type = 0>
 		iterator insert(const const_iterator &_Where, _Iter _First, _Iter _Last);
-		template<> iterator insert<int>(const const_iterator &_Where, int _Count, int _Value)
+		iterator insert(const const_iterator &_Where, int _Count, const T& _Value)
 		{
-			return insert_n(_Where, _Count, _Value);
+			return this->insert_n(_Where, _Count, _Value);
 		}
 
 		iterator erase(const const_iterator &_Where);
 		iterator erase(const const_iterator &_First, const const_iterator &_Last);
 
 		void assign(size_t count, const T &val);
-		template<class _Iter>
+		template<class _Iter, typename std::enable_if<!std::is_integral<_Iter>::value, int>::type = 0>
 		void assign(_Iter _First, _Iter _Last);
-		template<> void assign<int>(int _Count, int _Value)
+		void assign(int _Count, const T& _Value)
 		{
-			return assign_n(_Count, _Value);
+			return this->assign_n(_Count, _Value);
 		}
 
 		const T& front() const;
@@ -148,7 +150,7 @@ namespace xf
 	{
 		size_t right_map_size = _Right.map_.size();
 		map_.resize(right_map_size);
-		// µ±len=1Ê±£¬front_bin_index_ºÍback_bin_index_¶¼ÓÐÐ§£¬ÒªÍ¬Ê±¿¼ÂÇ
+		// ï¿½ï¿½len=1Ê±ï¿½ï¿½front_bin_index_ï¿½ï¿½back_bin_index_ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ÒªÍ¬Ê±ï¿½ï¿½ï¿½ï¿½
 		if(1 == right_map_size)
 		{
 			map_[0] = reinterpret_cast<T*>(operator new(SEGMENT_LENGTH * sizeof(T)));
@@ -162,14 +164,14 @@ namespace xf
 			for(size_t i = 0; i < right_map_size; ++i)
 			{
 				map_[i] = reinterpret_cast<T*>(operator new(SEGMENT_LENGTH * sizeof(T)));
-				if(0 == i)	// Ê×¸öbin
+				if(0 == i)	// ï¿½×¸ï¿½bin
 				{
 					for(size_t j = front_bin_index_; j < SEGMENT_LENGTH; ++j)
 					{
 						new(map_.front() + j) T(_Right.map_.front()[j]);
 					}
 				}
-				else if(i == right_map_size - 1)	// Ä©¸öbin
+				else if(i == right_map_size - 1)	// Ä©ï¿½ï¿½bin
 				{
 					for(size_t j = 0; j <= back_bin_index_; ++j)
 					{
@@ -229,7 +231,7 @@ namespace xf
 	}
 
 	template<class T>
-	template<class _Iter>
+	template<class _Iter, typename std::enable_if<!std::is_integral<_Iter>::value, int>::type>
 	deque<T>::deque(_Iter begin, _Iter end) : front_bin_index_(0), back_bin_index_(SEGMENT_LENGTH - 1), map_()
 	{
 		for(_Iter iter = begin; iter != end; ++iter)
@@ -242,7 +244,7 @@ namespace xf
 	deque<T>::~deque()
 	{
 		size_t len = map_.size();
-		// µ±len=1Ê±£¬¼´front_bin_index_ºÍback_bin_index_±íÊ¾µÄÊÇÍ¬Ò»¸öbinµÄÊ±ºò£¬ÒªÌØÊâ´¦Àí£¬ÅÐ¶Ïµ½µ×ÄÄ¸öÓÐÒâÒå
+		// ï¿½ï¿½len=1Ê±ï¿½ï¿½ï¿½ï¿½front_bin_index_ï¿½ï¿½back_bin_index_ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Í¬Ò»ï¿½ï¿½binï¿½ï¿½Ê±ï¿½ï¿½Òªï¿½ï¿½ï¿½â´¦ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ïµï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if(1 == len)
 		{
 			for(size_t j = front_bin_index_; j <= back_bin_index_; ++j)
@@ -251,11 +253,11 @@ namespace xf
 			}
 			operator delete[](map_.front());
 		}
-		else	// len!=1Ê±µÄÇé¿ö£¬Õý³£´¦Àí
+		else	// len!=1Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
 			for(size_t i = 0; i < len; ++i)
 			{
-				if(0 == i)	// Ê×¸öbin
+				if(0 == i)	// ï¿½×¸ï¿½bin
 				{
 					for(size_t j = front_bin_index_; j < SEGMENT_LENGTH; ++j)
 					{
@@ -263,7 +265,7 @@ namespace xf
 					}
 					operator delete[](map_.front());
 				}
-				else if(i == len - 1)	// Ä©¸öbin
+				else if(i == len - 1)	// Ä©ï¿½ï¿½bin
 				{
 					for(size_t j = 0; j <= back_bin_index_; ++j)
 					{
@@ -304,11 +306,11 @@ namespace xf
 		int erase_count = -insert_count;
 		if(insert_count > 0)
 		{
-			insert(end(), insert_count, new_value);
+			this->insert(this->end(), insert_count, new_value);
 		}
 		else if(erase_count > 0)
 		{
-			erase(end() - erase_count, end());
+			this->erase(this->end() - erase_count, this->end());
 		}
 	}
 
@@ -319,7 +321,7 @@ namespace xf
 	}
 
 	template<class T>
-	typename deque<T>::iterator deque<T>::insert(const const_iterator &_Where, const T &_Value)
+	typename deque<T>::iterator deque<T>::insert(const typename deque<T>::const_iterator &_Where, const T &_Value)
 	{
 		size_t where_offset = _Where - cbegin();
 		if(_Where == cend())
@@ -330,16 +332,16 @@ namespace xf
 		{
 			push_front(_Value);
 		}
-		else	// ÏÖÔÚ£¬¿ÉÒÔ±£Ö¤£¬insertµÄÔªËØ£¬Ò»¶¨ÔÚ·Ç¿ÕµÄdequeµÄÖÐ¼ä²¿Î»
+		else	// ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½Ô±ï¿½Ö¤ï¿½ï¿½insertï¿½ï¿½Ôªï¿½Ø£ï¿½Ò»ï¿½ï¿½ï¿½Ú·Ç¿Õµï¿½dequeï¿½ï¿½ï¿½Ð¼ä²¿Î»
 		{
-			// ²åÈëÊ±£¬ÅÐ¶ÏÒÆ¶¯Ç°°ë¶ÎÔªËØ»¹ÊÇÒÆ¶¯ºó°ë¶ÎÔªËØ
+			// ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½Æ¶ï¿½Ç°ï¿½ï¿½ï¿½Ôªï¿½Ø»ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½
 			if(where_offset * 2 < size())	
 			{
-				insert_front(where_offset, _Value);	// Î»ÖÃ¿¿Ç°£¬¾ÍÒÆ¶¯Ç°°ë¶Î
+				insert_front(where_offset, _Value);	// Î»ï¿½Ã¿ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½Ç°ï¿½ï¿½ï¿½
 			}
 			else
 			{
-				insert_back(where_offset, _Value);	// ·ñÔò£¬ÒÆ¶¯ºó°ë¶Î
+				insert_back(where_offset, _Value);	// ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½
 			}
 			
 		}
@@ -347,16 +349,16 @@ namespace xf
 	}
 
 	template<class T>
-	typename deque<T>::iterator deque<T>::insert(const const_iterator &_Where, size_t _Count, const T &_Value)
+	typename deque<T>::iterator deque<T>::insert(const typename deque<T>::const_iterator &_Where, size_t _Count, const T &_Value)
 	{
 		return insert_n(_Where, _Count, _Value);
 	}
 
-	template<class T>template<class _Iter >
-	typename deque<T>::iterator deque<T>::insert(const const_iterator &_Where, _Iter _First, _Iter _Last)
+	template<class T>template<class _Iter, typename std::enable_if<!std::is_integral<_Iter>::value, int>::type>
+	typename deque<T>::iterator deque<T>::insert(const typename deque<T>::const_iterator &_Where, _Iter _First, _Iter _Last)
 	{
 		size_t _Count = xf::distance(_First, _Last);
-		// ÒÔÏÂ²¿·Ö¸Ä±à×Ôinsert_n
+		// ï¿½ï¿½ï¿½Â²ï¿½ï¿½Ö¸Ä±ï¿½ï¿½ï¿½insert_n
 		if(empty())
 		{
 			assert(_Where == cbegin() || _Where == cend());
@@ -385,7 +387,7 @@ namespace xf
 		}
 		else
 		{
-			// 0. Ô¤¼ÇÂ¼µÄÖµ
+			// 0. Ô¤ï¿½ï¿½Â¼ï¿½ï¿½Öµ
 			size_t where_offset = _Where - cbegin();
 			if(where_offset * 2 < size())
 			{
@@ -401,7 +403,7 @@ namespace xf
 	}
 
 	template<class T>
-	typename deque<T>::iterator deque<T>::erase(const const_iterator &_Where)
+	typename deque<T>::iterator deque<T>::erase(const typename deque<T>::const_iterator &_Where)
 	{
 		const size_t where_offset = _Where - cbegin();
 		if(where_offset * 2 + 1 < size())
@@ -415,10 +417,10 @@ namespace xf
 		return begin() + where_offset;
 	}
 	template<class T>
-	typename deque<T>::iterator deque<T>::erase(const const_iterator &_First, const const_iterator &_Last)
+	typename deque<T>::iterator deque<T>::erase(const typename deque<T>::const_iterator &_First, const typename deque<T>::const_iterator &_Last)
 	{
 		int first_offset = _First - cbegin();
-		// _First == _LastµÄ´¦Àí
+		// _First == _Lastï¿½Ä´ï¿½ï¿½ï¿½
 		if(_First == _Last)
 		{
 			return begin() + first_offset;
@@ -437,14 +439,14 @@ namespace xf
 	template<class T>
 	void deque<T>::assign(size_t count, const T &val)
 	{
-		clear();
-		insert_n(begin(), count, val);
+		this->clear();
+		this->insert_n(this->begin(), count, val);
 	}
-	template<class T>template<class _Iter>
+	template<class T>template<class _Iter, typename std::enable_if<!std::is_integral<_Iter>::value, int>::type>
 	void deque<T>::assign(_Iter _First, _Iter _Last)
 	{
-		clear();
-		insert(begin(), _First, _Last);
+		this->clear();
+		this->insert(this->begin(), _First, _Last);
 	}
 
 
@@ -507,9 +509,9 @@ namespace xf
 	template<class T>
 	void deque<T>::pop_front()
 	{
-		map_.front()[front_bin_index_].~T();	// Ïú»Ù¸ÃÔªËØ
-		++front_bin_index_;						// ¸üÐÂÊ×¿éÖ¸Õë
-		if(SEGMENT_LENGTH == front_bin_index_)	// ÅÐ¶ÏÊÇ·ñÊ×¸öbinÒÑ¿Õ
+		map_.front()[front_bin_index_].~T();	// ï¿½ï¿½ï¿½Ù¸ï¿½Ôªï¿½ï¿½
+		++front_bin_index_;						// ï¿½ï¿½ï¿½ï¿½ï¿½×¿ï¿½Ö¸ï¿½ï¿½
+		if(SEGMENT_LENGTH == front_bin_index_)	// ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ï¿½×¸ï¿½binï¿½Ñ¿ï¿½
 		{
 			operator delete[] (map_.front());
 			map_.erase(map_.begin());
@@ -520,8 +522,8 @@ namespace xf
 	template<class T>
 	void deque<T>::pop_back()
 	{
-		map_.back()[back_bin_index_].~T();	// Ïú»Ù¸ÃÔªËØ
-		if(0 == back_bin_index_)			// ÅÐ¶ÏÊÇ·ñÄ©¸öbinÒÑ¿Õ
+		map_.back()[back_bin_index_].~T();	// ï¿½ï¿½ï¿½Ù¸ï¿½Ôªï¿½ï¿½
+		if(0 == back_bin_index_)			// ï¿½Ð¶ï¿½ï¿½Ç·ï¿½Ä©ï¿½ï¿½binï¿½Ñ¿ï¿½
 		{
 			operator delete[] (map_.back());
 			map_.pop_back();
@@ -616,9 +618,9 @@ namespace xf
 		}
 		else
 		{
-			// ÏÈ¼ÆËãdequeÖÐµÚindex¸öÔªËØÏà¶ÔÓÚmap_µÚÒ»¸öbinÖÐÊ×ÔªËØµÄÆ«ÒÆÁ¿
+			// ï¿½È¼ï¿½ï¿½ï¿½dequeï¿½Ðµï¿½indexï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½map_ï¿½ï¿½Ò»ï¿½ï¿½binï¿½ï¿½ï¿½ï¿½Ôªï¿½Øµï¿½Æ«ï¿½ï¿½ï¿½ï¿½
 			size_t offset = index + front_bin_index_;
-			// È»ºóÀàËÆ¶þÎ¬Êý×éÄÇÑù£¬·µ»ØÖµ
+			// È»ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½Î¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 			return map_[offset / SEGMENT_LENGTH][offset % SEGMENT_LENGTH];
 		}
 	}
@@ -631,9 +633,9 @@ namespace xf
 		}
 		else
 		{
-			// ÏÈ¼ÆËãdequeÖÐµÚindex¸öÔªËØÏà¶ÔÓÚmap_µÚÒ»¸öbinÖÐÊ×ÔªËØµÄÆ«ÒÆÁ¿
+			// ï¿½È¼ï¿½ï¿½ï¿½dequeï¿½Ðµï¿½indexï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½map_ï¿½ï¿½Ò»ï¿½ï¿½binï¿½ï¿½ï¿½ï¿½Ôªï¿½Øµï¿½Æ«ï¿½ï¿½ï¿½ï¿½
 			size_t offset = index + front_bin_index_;
-			// È»ºóÀàËÆ¶þÎ¬Êý×éÄÇÑù£¬·µ»ØÖµ
+			// È»ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½Î¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 			return map_[offset / SEGMENT_LENGTH][offset % SEGMENT_LENGTH];
 		}
 	}
@@ -641,25 +643,25 @@ namespace xf
 	template<class T>
 	const T& deque<T>::operator [](size_t index) const
 	{
-		// ÏÈ¼ÆËãdequeÖÐµÚindex¸öÔªËØÏà¶ÔÓÚmap_µÚÒ»¸öbinÖÐÊ×ÔªËØµÄÆ«ÒÆÁ¿
+		// ï¿½È¼ï¿½ï¿½ï¿½dequeï¿½Ðµï¿½indexï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½map_ï¿½ï¿½Ò»ï¿½ï¿½binï¿½ï¿½ï¿½ï¿½Ôªï¿½Øµï¿½Æ«ï¿½ï¿½ï¿½ï¿½
 		size_t offset = index + front_bin_index_;
-		// È»ºóÀàËÆ¶þÎ¬Êý×éÄÇÑù£¬·µ»ØÖµ
+		// È»ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½Î¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 		return map_[offset / SEGMENT_LENGTH][offset % SEGMENT_LENGTH];
 	}
 
 	template<class T>
 	T& deque<T>::operator [](size_t index)
 	{
-		// ÏÈ¼ÆËãdequeÖÐµÚindex¸öÔªËØÏà¶ÔÓÚmap_µÚÒ»¸öbinÖÐÊ×ÔªËØµÄÆ«ÒÆÁ¿
+		// ï¿½È¼ï¿½ï¿½ï¿½dequeï¿½Ðµï¿½indexï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½map_ï¿½ï¿½Ò»ï¿½ï¿½binï¿½ï¿½ï¿½ï¿½Ôªï¿½Øµï¿½Æ«ï¿½ï¿½ï¿½ï¿½
 		size_t offset = index + front_bin_index_;
-		// È»ºóÀàËÆ¶þÎ¬Êý×éÄÇÑù£¬·µ»ØÖµ
+		// È»ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½Î¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 		return map_[offset / SEGMENT_LENGTH][offset % SEGMENT_LENGTH];
 	}
 
 	template<class T>
 	void deque<T>::insert_back(const size_t where_offset, const T &_Value)
 	{
-		// 1. ÉêÇëÐÂµÄ¿Õ¼ä£¨Èç¹ûÓÐ±ØÒª£©£¬È»ºó°ÑinsertÖ®Ç°µÄ×îºóÒ»¸öÔªËØ£¬Ïòºó¸´ÖÆÒ»¸öµ¥Ôª
+		// 1. ï¿½ï¿½ï¿½ï¿½ï¿½ÂµÄ¿Õ¼ä£¨ï¿½ï¿½ï¿½ï¿½Ð±ï¿½Òªï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½insertÖ®Ç°ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ôªï¿½Ø£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ôª
 		if(SEGMENT_LENGTH - 1 == back_bin_index_)
 		{
 			T *p = reinterpret_cast<T*>(operator new[](SEGMENT_LENGTH * sizeof(T)));
@@ -672,8 +674,8 @@ namespace xf
 			new(map_.back() + back_bin_index_ + 1) T(back());
 			++back_bin_index_;
 		}
-		// 2. ½«[_Where, end - 2]µÄÔªËØÈ«²¿ÏòºóÒÆ¶¯Ò»Î»
-		iterator copy_iter = end() - 2;	// ÏÖÔÚcopy_iterÖ¸ÏòinsertÖ®Ç°µÄ×îºóÒ»¸öÔªËØ
+		// 2. ï¿½ï¿½[_Where, end - 2]ï¿½ï¿½Ôªï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½Ò»Î»
+		iterator copy_iter = end() - 2;	// ï¿½ï¿½ï¿½ï¿½copy_iterÖ¸ï¿½ï¿½insertÖ®Ç°ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ôªï¿½ï¿½
 		iterator prev_iter = copy_iter;
 		iterator insert_position = begin() + where_offset;
 		while(copy_iter != insert_position)
@@ -682,14 +684,14 @@ namespace xf
 			*copy_iter = *prev_iter;
 			copy_iter = prev_iter;
 		}
-		// 3. ÎªÐÂµÄÔªËØ¸³Öµ
+		// 3. Îªï¿½Âµï¿½Ôªï¿½Ø¸ï¿½Öµ
 		*insert_position = _Value;
 	}
 
 	template<class T>
 	void deque<T>::insert_front(const size_t where_offset, const T &_Value)
 	{
-		// 1. ÉêÇëÐÂµÄ¿Õ¼ä£¨Èç¹ûÓÐ±ØÒª£©£¬È»ºó°ÑinsertÖ®Ç°µÄ×îºóÒ»¸öÔªËØ£¬Ïòºó¸´ÖÆÒ»¸öµ¥Ôª
+		// 1. ï¿½ï¿½ï¿½ï¿½ï¿½ÂµÄ¿Õ¼ä£¨ï¿½ï¿½ï¿½ï¿½Ð±ï¿½Òªï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½insertÖ®Ç°ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ôªï¿½Ø£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ôª
 		if(0 == front_bin_index_)
 		{
 			T *p = reinterpret_cast<T*>(operator new[](SEGMENT_LENGTH * sizeof(T)));
@@ -702,7 +704,7 @@ namespace xf
 			new(map_.back() + front_bin_index_ - 1) T(front());
 			--front_bin_index_;
 		}
-		// 2. ½«[begin, _Where)µÄÔªËØÈ«²¿ÏòÇ°ÒÆ¶¯Ò»Î»
+		// 2. ï¿½ï¿½[begin, _Where)ï¿½ï¿½Ôªï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½Ç°ï¿½Æ¶ï¿½Ò»Î»
 		iterator copy_iter = begin();
 		iterator next_iter = copy_iter;
 		iterator insert_position = begin() + where_offset;
@@ -712,12 +714,12 @@ namespace xf
 			*copy_iter = *next_iter;
 			copy_iter = next_iter;
 		}
-		// 3. ÎªÐÂµÄÔªËØ¸³Öµ
+		// 3. Îªï¿½Âµï¿½Ôªï¿½Ø¸ï¿½Öµ
 		*insert_position = _Value;
 	}
 
 	template<class T>
-	typename deque<T>::iterator deque<T>::insert_n(const const_iterator _Where, size_t _Count, const T &_Value)
+	typename deque<T>::iterator deque<T>::insert_n(const typename deque<T>::const_iterator _Where, size_t _Count, const T &_Value)
 	{
 		if(empty())
 		{
@@ -742,7 +744,7 @@ namespace xf
 		}
 		else
 		{
-			// 0. Ô¤¼ÇÂ¼µÄÖµ
+			// 0. Ô¤ï¿½ï¿½Â¼ï¿½ï¿½Öµ
 			size_t orig_size = size();
 			size_t where_offset = _Where - cbegin();
 			if(where_offset * 2 < size())
@@ -761,9 +763,9 @@ namespace xf
 	void deque<T>::insert_n_back(const size_t where_offset, size_t _Count, const T &_Value)
 	{
 		size_t orig_size = size();
-		// 1. ÏÈÅÐ¶ÏÒªÉêÇëµÄ¶îÍâ³¤¶È£¬ÉêÇëºó£¬ÔÚdequeµÄ×îºó£¬Ó¦¸ÃÖÁÉÙÓÐ_Count¸öÎ´³õÊ¼»¯µÄÄÚ´æ¿Õ¼ä
+		// 1. ï¿½ï¿½ï¿½Ð¶ï¿½Òªï¿½ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½â³¤ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½dequeï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½_Countï¿½ï¿½Î´ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½Õ¼ï¿½
 		int new_count = _Count - (SEGMENT_LENGTH - 1 - back_bin_index_);
-		size_t remain_num = 0;	// ¼ÆËã²åÈëºó×îºóÒ»¸öbinÖÐÓ¦¸ÃÊ£ÓàµÄÔªËØÊýÁ¿
+		size_t remain_num = 0;	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½binï¿½ï¿½Ó¦ï¿½ï¿½Ê£ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if(new_count > 0)
 		{
 			remain_num = new_count % SEGMENT_LENGTH;
@@ -777,22 +779,22 @@ namespace xf
 		{
 			remain_num = back_bin_index_ + 1 + _Count;
 		}
-		// IMP ¸ü¸ÄdequeµÄË÷Òý²ÎÊý
+		// IMP ï¿½ï¿½ï¿½ï¿½dequeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		back_bin_index_ = (remain_num + SEGMENT_LENGTH - 1) % SEGMENT_LENGTH;
-		// Ô¤¼ÇÂ¼
+		// Ô¤ï¿½ï¿½Â¼
 		const iterator orig_end(begin() + orig_size);
-		// 2. ÒÆ¶¯Ô­ÓÐÔªËØ£¬²¢ÔÚ¿Õ³öµÄÎ»ÖÃ¸³ÓèÐÂÖµ
+		// 2. ï¿½Æ¶ï¿½Ô­ï¿½ï¿½Ôªï¿½Ø£ï¿½ï¿½ï¿½ï¿½Ú¿Õ³ï¿½ï¿½ï¿½Î»ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 		size_t last_length = orig_size - where_offset;
-		// 2a. Èôlast_length <= _Count
+		// 2a. ï¿½ï¿½last_length <= _Count
 		if(last_length <= _Count)
-		// 2a.1 Í¨¹ýplacement new£¬Ê¹ÓÃ¿½±´¹¹Ôìº¯Êý½«dequeµÄ[_Where, orig_end)¸´ÖÆµ½[new_end - last_length, new_end)£¬¸´ÖÆÊýÁ¿Îªlast_length£¬Ë³Ðò/µ¹Ðò½Ô¿É£¬ÕâÀïÓÃµ¹Ðò
-		// 2a.2 ÓÃÖØÔØ=Îª[_Where, end)¸öÔªËØ¸³ÐÂÖµ£¬¸³ÖµÊýÁ¿Îªlast_length
-		// 2a.3 Í¨¹ýplacement new£¬Ê¹ÓÃ¿½±´¹¹Ôìº¯Êý¶Ô[orig_end, orig_end + _Count - last_length)³õÊ¼»¯ÎªÐÂÖµ
+		// 2a.1 Í¨ï¿½ï¿½placement newï¿½ï¿½Ê¹ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½dequeï¿½ï¿½[_Where, orig_end)ï¿½ï¿½ï¿½Æµï¿½[new_end - last_length, new_end)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªlast_lengthï¿½ï¿½Ë³ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½Ô¿É£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½
+		// 2a.2 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½=Îª[_Where, end)ï¿½ï¿½Ôªï¿½Ø¸ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Îªlast_length
+		// 2a.3 Í¨ï¿½ï¿½placement newï¿½ï¿½Ê¹ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½[orig_end, orig_end + _Count - last_length)ï¿½ï¿½Ê¼ï¿½ï¿½Îªï¿½ï¿½Öµ
 		{
 			iterator src_iter = orig_end - 1;
 			iterator dst_iter = iterator(map_.end() - 1, back_bin_index_);
 			for(size_t i = 0; i < last_length; ++i)
-			//while(src_iter != _Where)	// ²»ÄÜÕâÃ´ÓÃ£¬ÒòÎª_WhereÖ¸ÏòµÄÔªËØÒ²Ó¦¸Ã±»¸´ÖÆ
+			//while(src_iter != _Where)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã´ï¿½Ã£ï¿½ï¿½ï¿½Îª_WhereÖ¸ï¿½ï¿½ï¿½Ôªï¿½ï¿½Ò²Ó¦ï¿½Ã±ï¿½ï¿½ï¿½ï¿½ï¿½
 			{
 				new(&*dst_iter) T(*src_iter);	// 2a.1
 				*src_iter = _Value;				// 2a.2
@@ -808,11 +810,11 @@ namespace xf
 			}
 		}
 
-		// 2b. Èôlast_length > _Count
+		// 2b. ï¿½ï¿½last_length > _Count
 		else
-		// 2b.1 Í¨¹ýplacement newÊ¹ÓÃ¿½±´¹¹Ôìº¯Êý£¬½«[end - _Count, end)¸´ÖÆµ½[new_end - _Count, new_end)£¬¸´ÖÆÊýÁ¿Îª_Count£¬µ¹Ðò¡¢ÕýÐò½Ô¿É£¬ÕâÀïÓÃµ¹Ðò
-		// 2b.2 ÓÃÖØÔØ=£¬½«[_Where, end - _Count)¸´ÖÆµ½[_Where + _Count, end)£¬¸´ÖÆÊýÁ¿Îªlast_length - _Count£¬µ¹Ðò¸´ÖÆ
-		// 2b.3 Í¨¹ýÖØÔØ=£¬¶Ô[_Where, _Where + _Count)µÄÔªËØ¸³ÓèÐÂÖµ£¬¸³ÖµÊýÁ¿Îª_Count
+		// 2b.1 Í¨ï¿½ï¿½placement newÊ¹ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[end - _Count, end)ï¿½ï¿½ï¿½Æµï¿½[new_end - _Count, new_end)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª_Countï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¿É£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½
+		// 2b.2 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½=ï¿½ï¿½ï¿½ï¿½[_Where, end - _Count)ï¿½ï¿½ï¿½Æµï¿½[_Where + _Count, end)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªlast_length - _Countï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// 2b.3 Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½=ï¿½ï¿½ï¿½ï¿½[_Where, _Where + _Count)ï¿½ï¿½Ôªï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Îª_Count
 		{
 			// 2b.1
 			iterator src_iter = orig_end - 1;
@@ -844,9 +846,9 @@ namespace xf
 	template<class T>
 	void deque<T>::insert_n_front(const size_t where_offset, size_t _Count, const T &_Value)
 	{
-		// 1. ÏÈÅÐ¶ÏÒªÉêÇëµÄ¶îÍâ³¤¶È£¬ÉêÇëºó£¬ÔÚdequeµÄ×îÇ°Ãæ£¬Ó¦¸ÃÖÁÉÙÓÐ_Count¸öÎ´³õÊ¼»¯µÄÄÚ´æ¿Õ¼ä
+		// 1. ï¿½ï¿½ï¿½Ð¶ï¿½Òªï¿½ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½â³¤ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½dequeï¿½ï¿½ï¿½ï¿½Ç°ï¿½æ£¬Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½_Countï¿½ï¿½Î´ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½Õ¼ï¿½
 		int new_count = _Count - front_bin_index_;
-		size_t remain_num = 0;	// ¼ÆËã²åÈëºóµÚÒ»¸öbinÖÐÓ¦¸ÃÊ£ÓàµÄÔªËØÊýÁ¿
+		size_t remain_num = 0;	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½binï¿½ï¿½Ó¦ï¿½ï¿½Ê£ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if(new_count > 0)
 		{
 			remain_num = new_count % SEGMENT_LENGTH;
@@ -860,16 +862,16 @@ namespace xf
 		{
 			remain_num = SEGMENT_LENGTH - front_bin_index_ + _Count;
 		}
-		// IMP ¸ü¸ÄdequeµÄË÷Òý²ÎÊý
+		// IMP ï¿½ï¿½ï¿½ï¿½dequeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		front_bin_index_ = (SEGMENT_LENGTH - remain_num) % SEGMENT_LENGTH;
-		// Ô¤¼ÇÂ¼
+		// Ô¤ï¿½ï¿½Â¼
 		const iterator orig_begin(begin() + _Count);
-		// 2. ÒÆ¶¯Ô­ÓÐÔªËØ£¬²¢ÔÚ¿Õ³öµÄÎ»ÖÃ¸³ÓèÐÂÖµ
-		// 2a. Èôwhere_offset <= _Count
+		// 2. ï¿½Æ¶ï¿½Ô­ï¿½ï¿½Ôªï¿½Ø£ï¿½ï¿½ï¿½ï¿½Ú¿Õ³ï¿½ï¿½ï¿½Î»ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+		// 2a. ï¿½ï¿½where_offset <= _Count
 		if(where_offset <= _Count)
-		// 2a.1 Í¨¹ýplacement new£¬Ê¹ÓÃ¿½±´¹¹Ôìº¯Êý½«dequeµÄ[orig_begin, orig_begin + where_offset)¸´ÖÆµ½[new_begin, new_begin + where_offset)£¬¸´ÖÆÊýÁ¿Îªwhere_offset£¬Ë³Ðò/µ¹Ðò½Ô¿É£¬ÕâÀïÓÃÕýÐò
-		// 2a.2 Í¨¹ýÖØÔØ=£¬¶Ô[orig_begin, orig_begin + where_offset)¸³ÐÂÖµ
-		// 2a.3 Í¨¹ýplacement new£¬Ê¹ÓÃ¿½±´¹¹Ôìº¯Êý¶Ô[new_begin + where_offset, orig_begin)µÄÔªËØ¸³ÐÂÖµ£¬¸³ÖµÊýÁ¿Îª_Count - where_offset
+		// 2a.1 Í¨ï¿½ï¿½placement newï¿½ï¿½Ê¹ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½dequeï¿½ï¿½[orig_begin, orig_begin + where_offset)ï¿½ï¿½ï¿½Æµï¿½[new_begin, new_begin + where_offset)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªwhere_offsetï¿½ï¿½Ë³ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½Ô¿É£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// 2a.2 Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½=ï¿½ï¿½ï¿½ï¿½[orig_begin, orig_begin + where_offset)ï¿½ï¿½ï¿½ï¿½Öµ
+		// 2a.3 Í¨ï¿½ï¿½placement newï¿½ï¿½Ê¹ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½[new_begin + where_offset, orig_begin)ï¿½ï¿½Ôªï¿½Ø¸ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Îª_Count - where_offset
 		{
 			iterator src_iter = orig_begin;
 			iterator dst_iter = begin();
@@ -887,11 +889,11 @@ namespace xf
 				++dst_iter;
 			}
 		}
-		// 2b. Èôwhere_offset > _Count
+		// 2b. ï¿½ï¿½where_offset > _Count
 		else
-		// 2b.1 Í¨¹ýplacement newÊ¹ÓÃ¿½±´¹¹Ôìº¯Êý£¬½«[orig_begin, orig_begin + _Count)¸´ÖÆµ½[new_begin, orig_begin)£¬¸´ÖÆÊýÁ¿Îª_Count£¬µ¹Ðò¡¢ÕýÐò½Ô¿É£¬ÕâÀïÓÃÕýÐò
-		// 2b.2 ÓÃÖØÔØ=£¬½«[orig_begin + _Count, orig_begin + where_offset)¸´ÖÆµ½[orig_begin, new_begin + where_offset)£¬¸´ÖÆÊýÁ¿Îªwhere_offset - _Count£¬ÕýÐò¸´ÖÆ
-		// 2b.3 Í¨¹ýÖØÔØ=£¬¶Ô[new_begin + where_offset, orig_begin + where_offset)µÄÔªËØ¸³ÓèÐÂÖµ£¬¸³ÖµÊýÁ¿Îª_Count
+		// 2b.1 Í¨ï¿½ï¿½placement newÊ¹ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[orig_begin, orig_begin + _Count)ï¿½ï¿½ï¿½Æµï¿½[new_begin, orig_begin)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª_Countï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¿É£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// 2b.2 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½=ï¿½ï¿½ï¿½ï¿½[orig_begin + _Count, orig_begin + where_offset)ï¿½ï¿½ï¿½Æµï¿½[orig_begin, new_begin + where_offset)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªwhere_offset - _Countï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// 2b.3 Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½=ï¿½ï¿½ï¿½ï¿½[new_begin + where_offset, orig_begin + where_offset)ï¿½ï¿½Ôªï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Îª_Count
 		{
 			// 2b.1
 			iterator src_iter = orig_begin;
@@ -927,9 +929,9 @@ namespace xf
 	{
 		size_t orig_size = size();
 		size_t _Count = distance(_First, _Last);
-		// 1. ÏÈÅÐ¶ÏÒªÉêÇëµÄ¶îÍâ³¤¶È£¬ÉêÇëºó£¬ÔÚdequeµÄ×îºó£¬Ó¦¸ÃÖÁÉÙÓÐ_Count¸öÎ´³õÊ¼»¯µÄÄÚ´æ¿Õ¼ä
+		// 1. ï¿½ï¿½ï¿½Ð¶ï¿½Òªï¿½ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½â³¤ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½dequeï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½_Countï¿½ï¿½Î´ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½Õ¼ï¿½
 		int new_count = _Count - (SEGMENT_LENGTH - 1 - back_bin_index_);
-		size_t remain_num = 0;	// ¼ÆËã²åÈëºó×îºóÒ»¸öbinÖÐÓ¦¸ÃÊ£ÓàµÄÔªËØÊýÁ¿
+		size_t remain_num = 0;	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½binï¿½ï¿½Ó¦ï¿½ï¿½Ê£ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if(new_count > 0)
 		{
 			remain_num = new_count % SEGMENT_LENGTH;
@@ -943,22 +945,22 @@ namespace xf
 		{
 			remain_num = back_bin_index_ + 1 + _Count;
 		}
-		// IMP ¸ü¸ÄdequeµÄË÷Òý²ÎÊý
+		// IMP ï¿½ï¿½ï¿½ï¿½dequeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		back_bin_index_ = (remain_num + SEGMENT_LENGTH - 1) % SEGMENT_LENGTH;
-		// Ô¤¼ÇÂ¼
+		// Ô¤ï¿½ï¿½Â¼
 		const iterator orig_end(begin() + orig_size);
-		// 2. °Ñ´Ó_Whereµ½end()µÄÇø¼ä(³¤¶ÈÎªlast_length)ÏòºóÒÆ¶¯_Count¸ö£¬´ÓºóÍùÇ°ÒÀ´Î¸´ÖÆ
+		// 2. ï¿½Ñ´ï¿½_Whereï¿½ï¿½end()ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½Îªlast_length)ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½_Countï¿½ï¿½ï¿½ï¿½ï¿½Óºï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½Î¸ï¿½ï¿½ï¿½
 		const size_t last_length = orig_size - where_offset;
-		// 2a. Èôlast_length <= _Count
+		// 2a. ï¿½ï¿½last_length <= _Count
 		if(last_length <= _Count)
-		// 2a.1 Í¨¹ýplacement new£¬Ê¹ÓÃ¿½±´¹¹Ôìº¯Êý½«dequeµÄ[_Where, orig_end)¸´ÖÆµ½[new_end - last_length, new_end)£¬¸´ÖÆÊýÁ¿Îªlast_length£¬Ë³Ðò/µ¹Ðò½Ô¿É£¬ÕâÀïÓÃµ¹Ðò
-		// 2a.2 ÓÃÖØÔØ=Îª[_Where, end)¸öÔªËØ¸³ÐÂÖµ£¬¸³ÖµÊýÁ¿Îªlast_length
-		// 2a.3 Í¨¹ýplacement new£¬Ê¹ÓÃ¿½±´¹¹Ôìº¯Êý¶Ô[orig_end, _Count - last_length)³õÊ¼»¯ÎªÐÂÖµ
+		// 2a.1 Í¨ï¿½ï¿½placement newï¿½ï¿½Ê¹ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½dequeï¿½ï¿½[_Where, orig_end)ï¿½ï¿½ï¿½Æµï¿½[new_end - last_length, new_end)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªlast_lengthï¿½ï¿½Ë³ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½Ô¿É£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½
+		// 2a.2 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½=Îª[_Where, end)ï¿½ï¿½Ôªï¿½Ø¸ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Îªlast_length
+		// 2a.3 Í¨ï¿½ï¿½placement newï¿½ï¿½Ê¹ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½[orig_end, _Count - last_length)ï¿½ï¿½Ê¼ï¿½ï¿½Îªï¿½ï¿½Öµ
 		{
 			iterator src_iter = orig_end - 1;
 			iterator dst_iter = iterator(map_.end() - 1, back_bin_index_);
 			for(size_t i = 0; i < last_length; ++i)
-			//while(src_iter != _Where)	// ²»ÄÜÕâÃ´ÓÃ£¬ÒòÎª_WhereÖ¸ÏòµÄÔªËØÒ²Ó¦¸Ã±»¸´ÖÆ
+			//while(src_iter != _Where)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã´ï¿½Ã£ï¿½ï¿½ï¿½Îª_WhereÖ¸ï¿½ï¿½ï¿½Ôªï¿½ï¿½Ò²Ó¦ï¿½Ã±ï¿½ï¿½ï¿½ï¿½ï¿½
 			{
 				new(&*dst_iter) T(*src_iter);	// 2a.1
 				*src_iter = *_First;			// 2a.2
@@ -976,11 +978,11 @@ namespace xf
 			}
 		}
 
-		// 2b. Èôlast_length > _Count
+		// 2b. ï¿½ï¿½last_length > _Count
 		else
-		// 2b.1 Í¨¹ýplacement newÊ¹ÓÃ¿½±´¹¹Ôìº¯Êý£¬½«[end - _Count, end)¸´ÖÆµ½[new_end - _Count, new_end)£¬¸´ÖÆÊýÁ¿Îª_Count£¬µ¹Ðò¡¢ÕýÐò½Ô¿É£¬ÕâÀïÓÃµ¹Ðò
-		// 2b.2 ÓÃÖØÔØ=£¬½«[_Where, orig_end - _Count)¸´ÖÆµ½[_Where + _Count, end)£¬¸´ÖÆÊýÁ¿Îªlast_length - _Count£¬µ¹Ðò¸´ÖÆ
-		// 2b.3 Í¨¹ýÖØÔØ=£¬¶Ô[_Where, _Where + _Count)µÄÔªËØ¸³ÓèÐÂÖµ£¬¸³ÖµÊýÁ¿Îª_Count
+		// 2b.1 Í¨ï¿½ï¿½placement newÊ¹ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[end - _Count, end)ï¿½ï¿½ï¿½Æµï¿½[new_end - _Count, new_end)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª_Countï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¿É£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½
+		// 2b.2 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½=ï¿½ï¿½ï¿½ï¿½[_Where, orig_end - _Count)ï¿½ï¿½ï¿½Æµï¿½[_Where + _Count, end)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªlast_length - _Countï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// 2b.3 Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½=ï¿½ï¿½ï¿½ï¿½[_Where, _Where + _Count)ï¿½ï¿½Ôªï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Îª_Count
 		{
 			// 2b.1
 			iterator src_iter = orig_end - 1;
@@ -1013,10 +1015,10 @@ namespace xf
 	template<class T>template<class _Iter>
 	void deque<T>::insert_front(const size_t where_offset, _Iter _First, _Iter _Last)
 	{
-		// 1. ÏÈÅÐ¶ÏÒªÉêÇëµÄ¶îÍâ³¤¶È£¬ÉêÇëºó£¬ÔÚdequeµÄ×îÇ°Ãæ£¬Ó¦¸ÃÖÁÉÙÓÐ_Count¸öÎ´³õÊ¼»¯µÄÄÚ´æ¿Õ¼ä
+		// 1. ï¿½ï¿½ï¿½Ð¶ï¿½Òªï¿½ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½â³¤ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½dequeï¿½ï¿½ï¿½ï¿½Ç°ï¿½æ£¬Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½_Countï¿½ï¿½Î´ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½Õ¼ï¿½
 		size_t _Count = distance(_First, _Last);
 		int new_count = _Count - front_bin_index_;
-		size_t remain_num = 0;	// ¼ÆËã²åÈëºóµÚÒ»¸öbinÖÐÓ¦¸ÃÊ£ÓàµÄÔªËØÊýÁ¿
+		size_t remain_num = 0;	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½binï¿½ï¿½Ó¦ï¿½ï¿½Ê£ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if(new_count > 0)
 		{
 			remain_num = new_count % SEGMENT_LENGTH;
@@ -1030,16 +1032,16 @@ namespace xf
 		{
 			remain_num = SEGMENT_LENGTH - front_bin_index_ + _Count;
 		}
-		// IMP ¸ü¸ÄdequeµÄË÷Òý²ÎÊý
+		// IMP ï¿½ï¿½ï¿½ï¿½dequeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		front_bin_index_ = (SEGMENT_LENGTH - remain_num) % SEGMENT_LENGTH;
-		// Ô¤¼ÇÂ¼
+		// Ô¤ï¿½ï¿½Â¼
 		const iterator orig_begin(begin() + _Count);
-		// 2. ÒÆ¶¯Ô­ÓÐÔªËØ£¬²¢ÔÚ¿Õ³öµÄÎ»ÖÃ¸³ÓèÐÂÖµ
-		// 2a. Èôwhere_offset <= _Count
+		// 2. ï¿½Æ¶ï¿½Ô­ï¿½ï¿½Ôªï¿½Ø£ï¿½ï¿½ï¿½ï¿½Ú¿Õ³ï¿½ï¿½ï¿½Î»ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+		// 2a. ï¿½ï¿½where_offset <= _Count
 		if(where_offset <= _Count)
-		// 2a.1 Í¨¹ýplacement new£¬Ê¹ÓÃ¿½±´¹¹Ôìº¯Êý½«dequeµÄ[orig_begin, orig_begin + where_offset)¸´ÖÆµ½[new_begin, new_begin + where_offset)£¬¸´ÖÆÊýÁ¿Îªwhere_offset£¬Ë³Ðò/µ¹Ðò½Ô¿É£¬ÕâÀïÓÃÕýÐò
-		// 2a.2 Í¨¹ýplacement new£¬Ê¹ÓÃ¿½±´¹¹Ôìº¯Êý¶Ô[new_begin + where_offset, orig_begin)µÄÔªËØ¸³ÐÂÖµ£¬¸³ÖµÊýÁ¿Îª_Count - where_offset
-		// 2a.3 Í¨¹ýÖØÔØ=£¬¶Ô[orig_begin, orig_begin + where_offset)¸³ÐÂÖµ
+		// 2a.1 Í¨ï¿½ï¿½placement newï¿½ï¿½Ê¹ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½dequeï¿½ï¿½[orig_begin, orig_begin + where_offset)ï¿½ï¿½ï¿½Æµï¿½[new_begin, new_begin + where_offset)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªwhere_offsetï¿½ï¿½Ë³ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½Ô¿É£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// 2a.2 Í¨ï¿½ï¿½placement newï¿½ï¿½Ê¹ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½[new_begin + where_offset, orig_begin)ï¿½ï¿½Ôªï¿½Ø¸ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Îª_Count - where_offset
+		// 2a.3 Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½=ï¿½ï¿½ï¿½ï¿½[orig_begin, orig_begin + where_offset)ï¿½ï¿½ï¿½ï¿½Öµ
 		{
 			iterator src_iter = orig_begin;
 			iterator dst_iter = begin();
@@ -1063,11 +1065,11 @@ namespace xf
 				++dst_iter;
 			}
 		}
-		// 2b. Èôwhere_offset > _Count
+		// 2b. ï¿½ï¿½where_offset > _Count
 		else
-		// 2b.1 Í¨¹ýplacement newÊ¹ÓÃ¿½±´¹¹Ôìº¯Êý£¬½«[orig_begin, orig_begin + _Count)¸´ÖÆµ½[new_begin, orig_begin)£¬¸´ÖÆÊýÁ¿Îª_Count£¬µ¹Ðò¡¢ÕýÐò½Ô¿É£¬ÕâÀïÓÃÕýÐò
-		// 2b.2 ÓÃÖØÔØ=£¬½«[orig_begin + _Count, orig_begin + where_offset)¸´ÖÆµ½[orig_begin, new_begin + where_offset)£¬¸´ÖÆÊýÁ¿Îªwhere_offset - _Count£¬ÕýÐò¸´ÖÆ
-		// 2b.3 Í¨¹ýÖØÔØ=£¬¶Ô[new_begin + where_offset, orig_begin + where_offset)µÄÔªËØ¸³ÓèÐÂÖµ£¬¸³ÖµÊýÁ¿Îª_Count
+		// 2b.1 Í¨ï¿½ï¿½placement newÊ¹ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[orig_begin, orig_begin + _Count)ï¿½ï¿½ï¿½Æµï¿½[new_begin, orig_begin)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª_Countï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¿É£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// 2b.2 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½=ï¿½ï¿½ï¿½ï¿½[orig_begin + _Count, orig_begin + where_offset)ï¿½ï¿½ï¿½Æµï¿½[orig_begin, new_begin + where_offset)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªwhere_offset - _Countï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// 2b.3 Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½=ï¿½ï¿½ï¿½ï¿½[new_begin + where_offset, orig_begin + where_offset)ï¿½ï¿½Ôªï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Îª_Count
 		{
 			// 2b.1
 			iterator src_iter = orig_begin;
@@ -1101,7 +1103,7 @@ namespace xf
 	template<class T>
 	void deque<T>::erase_front(const size_t where_offset)
 	{
-		// Æ½ÒÆ
+		// Æ½ï¿½ï¿½
 		iterator iter = begin() + where_offset;
 		iterator prev_iter = iter;
 		for(size_t i = 0; i < where_offset; ++i)
@@ -1110,9 +1112,9 @@ namespace xf
 			*iter = *prev_iter;
 			iter = prev_iter;
 		}
-		// Ïú»ÙµÚÒ»¸öÔªËØ
+		// ï¿½ï¿½ï¿½Ùµï¿½Ò»ï¿½ï¿½Ôªï¿½ï¿½
 		(*iter).~T();
-		// ¸üÐÂ³ÉÔ±±äÁ¿£¬²¢ÊÓÇé¿öÏú»ÙµÚÒ»¸öbin
+		// ï¿½ï¿½ï¿½Â³ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ùµï¿½Ò»ï¿½ï¿½bin
 		++front_bin_index_;
 		if(SEGMENT_LENGTH == front_bin_index_)
 		{
@@ -1124,7 +1126,7 @@ namespace xf
 	template<class T>
 	void deque<T>::erase_back(const size_t where_offset)
 	{
-		// Æ½ÒÆ
+		// Æ½ï¿½ï¿½
 		iterator iter = begin() + where_offset;
 		iterator next_iter = iter;
 		size_t move_length = size() - where_offset - 1;
@@ -1135,9 +1137,9 @@ namespace xf
 			*iter = *next_iter;
 			iter = next_iter;
 		}
-		// Ïú»Ù×îºóÒ»¸öÔªËØ
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ôªï¿½ï¿½
 		(*iter).~T();
-		// ¸üÐÂ³ÉÔ±±äÁ¿£¬²¢ÊÓÇé¿öÏú»Ù×îºóÒ»¸öbin
+		// ï¿½ï¿½ï¿½Â³ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½bin
 		if(0 == back_bin_index_)
 		{
 			back_bin_index_ = SEGMENT_LENGTH - 1;
@@ -1150,13 +1152,13 @@ namespace xf
 		}
 	}
 	template<class T>
-	void deque<T>::erase_front(const const_iterator &_First, const const_iterator &_Last)
+	void deque<T>::erase_front(const typename deque<T>::const_iterator &_First, const typename deque<T>::const_iterator &_Last)
 	{
 		size_t first_offset = _First - cbegin();
 		size_t last_offset = _Last - cbegin();
 		size_t erase_count = last_offset - first_offset;
 		//const_iterator orig_begin = cbegin();
-		// Æ½ÒÆ
+		// Æ½ï¿½ï¿½
 		iterator iter_src = begin() + first_offset;
 		iterator iter_dst = begin() + last_offset;
 		for(size_t i = 0; i < first_offset; ++i)
@@ -1171,11 +1173,11 @@ namespace xf
 			(*iter_src).~T();
 			++iter_src;
 		}
-		// É¾³ýÇ°ÃæµÄ¿ÕÏÐbin
-		// eraseºódequeÎª¿ÕµÄÊ±£¬Òª°ÑËùÓÐµÄbin¶¼É¾µô
+		// É¾ï¿½ï¿½Ç°ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½bin
+		// eraseï¿½ï¿½dequeÎªï¿½Õµï¿½Ê±ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½binï¿½ï¿½É¾ï¿½ï¿½
 		if(new_begin_iter == cend())
 		{
-			for(vector<T*>::iterator map_iter = map_.begin();
+			for(typename vector<T*>::iterator map_iter = map_.begin();
 				map_iter != map_.end();
 				++map_iter)
 			{
@@ -1187,7 +1189,7 @@ namespace xf
 		}
 		else 
 		{
-			vector<T*>::iterator map_iter = map_.begin();
+			typename vector<T*>::iterator map_iter = map_.begin();
 			while(map_iter < new_begin_iter.map_iter_)
 			{
 				operator delete[](*map_iter);
@@ -1198,11 +1200,11 @@ namespace xf
 		}
 	}
 	template<class T>
-	void deque<T>::erase_back(const const_iterator &_First, const const_iterator &_Last)
+	void deque<T>::erase_back(const typename deque<T>::const_iterator &_First, const typename deque<T>::const_iterator &_Last)
 	{
 		int first_offset = _First - cbegin();
 		const iterator orig_end = end();
-		// Æ½ÒÆ
+		// Æ½ï¿½ï¿½
 		iterator iter1 = begin() + first_offset;
 		const_iterator iter2 = _Last;
 		while(iter2 != orig_end)
@@ -1211,17 +1213,17 @@ namespace xf
 			++iter1;
 			++iter2;
 		}
-		iterator new_end_iter = iter1;	// Ô¤¼ÇÂ¼
+		iterator new_end_iter = iter1;	// Ô¤ï¿½ï¿½Â¼
 		while(iter1 != orig_end)
 		{
 			(*iter1).~T();
 			++iter1;
 		}
-		// É¾³ýºóÃæµÄ¿ÕÏÐbin
-		// new_end_iterËùÔÚµÄbinÒ²ÐèÒª±»É¾³ýµÄÇé¿ö£¨Á½ÖÖ£ºµÚÒ»ÖÖÊÇeraseºódequeÎª¿ÕµÄÇé¿ö£¬ÁíÒ»ÖÖÊÇnew_end_iter±¾ÉíËùÔÚµÄbinÃ»ÓÐÔªËØ£©
+		// É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½bin
+		// new_end_iterï¿½ï¿½ï¿½Úµï¿½binÒ²ï¿½ï¿½Òªï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö£ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½eraseï¿½ï¿½dequeÎªï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½new_end_iterï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½binÃ»ï¿½ï¿½Ôªï¿½Ø£ï¿½
 		if(new_end_iter == cbegin())
 		{
-			for(vector<T*>::iterator map_iter = map_.begin();
+			for(typename vector<T*>::iterator map_iter = map_.begin();
 				map_iter != map_.end();	++map_iter)
 			{
 				operator delete[](*map_iter);
@@ -1234,16 +1236,16 @@ namespace xf
 		{
 			if(0 == new_end_iter.item_index_)	
 			{
-				for(vector<T*>::iterator map_iter = new_end_iter.map_iter_;
+				for(typename vector<T*>::iterator map_iter = new_end_iter.map_iter_;
 				map_iter != map_.end();	++map_iter)
 				{
 					operator delete[](*map_iter);
 				}
 				map_.erase(new_end_iter.map_iter_, map_.cend());
 			}
-			else	// new_end_iterËùÔÚµÄbin»¹ÓÐÔªËØ
+			else	// new_end_iterï¿½ï¿½ï¿½Úµï¿½binï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½
 			{
-				for(vector<T*>::iterator map_iter = new_end_iter.map_iter_ + 1;
+				for(typename vector<T*>::iterator map_iter = new_end_iter.map_iter_ + 1;
 				map_iter != map_.end();	++map_iter)
 				{
 					operator delete[](*map_iter);
