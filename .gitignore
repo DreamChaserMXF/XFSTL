@@ -231,3 +231,9 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+
+# CMake build output
+build/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
